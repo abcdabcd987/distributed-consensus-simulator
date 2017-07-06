@@ -9,6 +9,6 @@ if TYPE_CHECKING:
 class AdversaryControllerBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def round_instruction(self,
-                          corrupted_nodes: Type['NodeBase'],
+                          corrupted_nodes: List['NodeBase'],
                           pending_messages: List['MessageTuple']) -> Dict['NodeId', Any]:
         pass

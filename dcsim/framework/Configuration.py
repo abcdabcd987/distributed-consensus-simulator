@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class Configuration(ConfigurationBase):
 
-    def __init__(self, num_nodes: int, num_corrupted_nodes: int,
+    def __init__(self, num_nodes: int, ratio_corrupted: int,
                  honest_node_type: Type['NodeBase'],
                  corrupted_node_type: Type['NodeBase'],
                  network_controller_type: Type['NetworkControllerBase'],
@@ -17,7 +17,7 @@ class Configuration(ConfigurationBase):
                  adversary_controller_type: Type['AdversaryControllerBase'],
                  measurement_type: Type['MeasurementBase']):
         self.m_num_nodes = num_nodes
-        self.m_num_corrupted_nodes = num_corrupted_nodes
+        self.m_ratio_corrupted = ratio_corrupted
         self.m_honest_node_type = honest_node_type
         self.m_corrupted_node_type = corrupted_node_type
         self.m_network_controller_type = network_controller_type
@@ -29,12 +29,6 @@ class Configuration(ConfigurationBase):
     def get_num_nodes(self) -> int:
         return self.m_num_nodes
     
-    def get_num_honest_nodes(self) -> int:
-        return self.m_num_nodes - self.m_num_corrupted_nodes
-
-    def get_num_corrupted_nodes(self) -> int:
-        return self.m_num_corrupted_nodes
-
     # @property
     def get_measurement_type(self) -> Type['MeasurementBase']:
         return self.m_measurement_type
@@ -49,7 +43,7 @@ class Configuration(ConfigurationBase):
 
     # @property
     def get_ratio_corrupted(self) -> float:
-        return self.m_num_corrupted_nodes / self.m_num_nodes
+        return self.m_ratio_corrupted
 
     # @property
     def get_network_controller_type(self) -> Type['NetworkControllerBase']:

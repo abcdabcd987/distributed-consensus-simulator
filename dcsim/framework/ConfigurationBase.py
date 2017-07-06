@@ -38,14 +38,6 @@ class ConfigurationBase(metaclass=abc.ABCMeta):
     def get_num_nodes(self) -> int:
         pass
 
-    @abc.abstractmethod
-    def get_num_honest_nodes(self) -> int:
-        pass
-
-    @abc.abstractmethod
-    def get_num_corrupted_nodes(self) -> int:
-        pass
-
     # @property
     @abc.abstractmethod
     def get_ratio_corrupted(self) -> float:
