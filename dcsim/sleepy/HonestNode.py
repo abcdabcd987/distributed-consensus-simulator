@@ -13,7 +13,7 @@
     * TNode class 
         we use tree to keep tract of main chain and alternative chains,
         TNode class represent node of the tree
-        * block : Block class
+        * block : Block
         * hv : Hashval (string) 
             the hash value of block in this node
             (store it so as to make searching blocks easier)
@@ -25,7 +25,7 @@
         implemented as a tree
     * CheckSolution(block : Block class) -> bool
         Check if H(pid, t) < D_p
-    * CheckTx(tx : Tx class) -> bool 
+    * CheckTx(tx : Tx) -> bool
         placeholder, simply return True now
         Check if transaction is valid
     * TxPool class
@@ -49,11 +49,33 @@
 
 from typing import *
 from dcsim.framework import *
+import hashlib
 
-class HonestNode(NodeBase):
+Hashval = string
+Tx = string
+Timestamp = int
+NodeId = int
+
+class HonestNode(NodeBase) :
     @property
-    def id(self) -> NodeId:
+    def id(self) -> NodeId :
         raise NotImplementedError
 
     def round_action(self, ctx: Context) -> None:
         raise NotImplementedError
+
+    def CheckTX(tx):
+        return True
+
+    def CheckSolution(block):
+        spid = '%s' % block.pid
+        st = '%s' % block.t
+        sha256 = hashlib.sha256()
+        k = spid + st
+        sha256.update(k.encode('utf-8'))
+        v = sha256.hexdigest()
+        if v < D_p:
+            return True
+        else:
+            return False
+
