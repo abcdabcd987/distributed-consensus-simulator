@@ -104,7 +104,7 @@ class SomeHonestNodeImpl(Node):
 
     def round_action(self, ctx):
         # Framework does not know the meaning or data structure of messages
-        for msg in ctx.messages:
+        for msg in ctx.received_messages:
             if msg not in self.seen:
                 self.seen += msg
                 ctx.broadcast(msg)
@@ -117,6 +117,7 @@ class SomeHonestNodeImpl(Node):
 class SomeCorruptedNodeImpl(Node):
     # there is no need for a corrupted node to send messages to the adversary
     # controller during a round, because the controller knows everything
+    # ctx.instruction: given by the adversary controller
     def round_action(self, ctx):
         pass
 
@@ -163,14 +164,15 @@ def run_simulation(conf):
     measure = conf.MeasurementType(corrupted_nodes, honest_nodes, network, adv)
 
     round = 0
-    messages_to_send = []
+    pending_messages = []
+    received_messages = []
     while not measure.should_stop():
         round += 1
         for node in nodes:
-            ctx = Context(round, node, messages_next_round, adversary_instructions)
+            ctx = Context(round, node, received_messages, adversary_instructions)
             node.round_action(ctx)
-            messages_to_send += ctx.messages_to_send
-        messages_next_round = network.round_filter(messages_to_send)
-        adversary_instructions = adv.round_instruction(corrupted_nodes, messages_to_send)
-        messages_to_send -= messages_next_round
+            pending_messages += ctx.messages_to_send
+        received_messages = network.round_filter(pending_messages)
+        adversary_instructions = adv.round_instruction(corrupted_nodes, pending_messages)
+        pending_messages -= received_messages
     measure.report()
