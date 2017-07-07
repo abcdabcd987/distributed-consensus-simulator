@@ -31,7 +31,8 @@
             Create a new node with block inside and make it the t_node's child.
             This method will automatically check the depth of newly inserted node
             and update the main chain if needed
-        * get_main_chain(self) -> List[block]
+        @ property
+        * main_chain(self) -> List[block]
             extract the main chain and form a list where every block just follows its father in the list
     * CheckSolution(block : Block class) -> bool
         Check if H(pid, t) < D_p
@@ -179,7 +180,7 @@ class OrphanBlockPool:
 Hashval = string
 Timestamp = int
 NodeId = int
-Message = TBlock
+Message = Any
 SignedMessage = Message
 
 def check_tx(transaction : Tx):
@@ -216,33 +217,43 @@ class HonestNode(NodeBase) :
         self._block_chain = BlockChain()
 
     @property
-    def id(self) -> NodeId :
+    def id(self) -> NodeId:
         return self._nodeId
 
+    @property
+    def main_chain(self):
+        raise NotImplemented
+        return self._block_chain.main_chain
+
     def round_action(self, ctx: Context) -> None :
-        # check input, not yet implement
-        # inputs : List['string'] = ctx.received_inputs
-        # for tx in inputs :
-        #     self._txPool.add_tx(tx)
-
         # check recieved blocks
-        blocks : List['TBlock'] = ctx.received_messages
-        for block in blocks :
-            if not check_solution(block) :
-                blocks.remove(block)
-            # check timestamp
-            elif block.timestamp > ctx.round :
-                blocks.remove(block)
-            # check block type : extend main chain, extend alternative chain, orphan block
-            else :
-                ctx.broadcast(block)
+        messages : List[Any] = ctx.received_messages
+        txs : List[Tx] = []
+        blocks : List[TBlock] = []
 
-                raise NotImplemented
-                block_father = self_block_chain.find(block.get_hash())
-                if block_father != None :
-                    self._block_chain.add_child(block_father, block)
+        for message in messages :
+            if message.type == 0 :   # its a transaction
+                if check_tx(message["value"]) :
+                    txs.append(message["value"])
+            elif message.type == 1 :   # its a block
+                if not check_solution(message["value"]) :
+                    continue
+                elif message["value"].timestamp >= ctx.round :
+                    continue
                 else :
-                    self._orphanpool.add(block)
+                    blocks.append(message["value"])
+
+        for block in blocks :
+            # check block type : extend main chain, extend alternative chain, orphan block
+            ctx.broadcast(block)
+
+            raise NotImplemented
+            block_father = self_block_chain.find(block.pbhv)
+            if block_father != None :
+                self._block_chain.add_child(block_father, block)
+
+            else :
+                self._orphanpool.add(block)
 
         # check
         raise NotImplemented
