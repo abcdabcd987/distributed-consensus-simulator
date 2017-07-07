@@ -45,27 +45,17 @@
         * AddBlock(self)
         * PopChild(self, hv) : 
             find the node with specified pbhv, if no match, return none
+    * SignMessage(message, priv_key) -> signedMessage : placeholder
+        use priv_key to sign message
 """
 
-from typing import *
-from dcsim.framework import *
 import hashlib
 import string
+import rsa
+from typing import *
+from dcsim.framework import *
 
-Hashval = string
-Tx = string
-Timestamp = int
-NodeId = int
-
-class HonestNode(NodeBase) :
-    @property
-    def id(self) -> NodeId :
-        raise NotImplementedError
-
-    def round_action(self, ctx: Context) -> None:
-        raise NotImplementedError
-
-D_p = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" # 这个值暂时定为这么多，后面会改
+D_p = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
 class tx:
 
@@ -119,8 +109,6 @@ class TBlock:
 
     def get_data(self) -> List[string]:
         return self.transaction
-
-
 
 class TNode:
 
@@ -181,6 +169,13 @@ class OrphanBlockPool:
                 return i
         return None
 
+Hashval = string
+Tx = string
+Timestamp = int
+NodeId = int
+Message = TBlock
+SignedMessage = Message
+
 def CheckTX(transaction : tx):
     return True
 
@@ -195,3 +190,42 @@ def CheckSolution(tblock : TBlock):
         return True
     else:
         return False
+
+def SignMessage(message : Message, priv_key) -> SignedMessage :
+    return message
+
+class HonestNode(NodeBase) :
+
+    def __init__(self, coorindator):
+        # coordinator provides the "permissioned" services
+        self._coorindator = coorindator
+        # codes to generate rsa key pair, not used yet
+        # (self.pub_key, self.priv_key) = rsa.newkeys(512)
+
+        # nodeId needs to be initialize by parameter passed by framework
+        self._nodeId = len(self._coorindator.nodes)
+        self._txpool = TxPool()
+        self._orphanpool = OrphanBlockPool()
+
+        raise NotImplemented
+        self._block_chain = BlockChain()
+
+    @property
+    def id(self) -> NodeId :
+        return self._nodeId
+
+    def round_action(self, ctx: Context) -> None :
+        # check input, not yet implement
+        # inputs : List['string'] = ctx.received_inputs
+        # for tx in inputs :
+        #     self._txPool.AddTx(tx)
+
+        # check recieved blocks
+        blocks : List['TBlock'] = ctx.received_messages
+        for block in blocks :
+            if not CheckSolution(block) :
+                blocks.remove(block)
+
+        # check t
+
+        raise NotImplemented
