@@ -22,7 +22,17 @@
             (namely, the height of this block)
         * and something else to organize this structure
     * BlockChain class
-        implemented as a tree
+        * __init__(self) -> None
+            remember to add genesis block as the root of the tree
+            pbhv = "0", txs = [], timestamp = 0, nid = 0
+        * find(self, hash_val) -> TNode
+            find the node that contain a block with specified hash value
+        * add_child(self, t_node, block) -> None
+            Create a new node with block inside and make it the t_node's child.
+            This method will automatically check the depth of newly inserted node
+            and update the main chain if needed
+        * get_main_chain(self) -> List[block]
+            extract the main chain and form a list where every block just follows its father in the list
     * CheckSolution(block : Block class) -> bool
         Check if H(pid, t) < D_p
     * CheckTx(tx : Tx) -> bool
@@ -51,58 +61,54 @@
 
 import hashlib
 import string
-import rsa
+# import rsa
+import secrets
 from typing import *
 from dcsim.framework import *
 
 D_p = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
-class tx:
+Tx = string
 
-    def __init__ (self, data):
-        self.data = data
 
-    def get_data(self) -> string:
-        return self.data
-
-# tx pool 存收到但没有放进去
+# tx pool 存收到但没有放进去的交易信息
 class TxPool:
 
-    def __init__ (self):
+    def __init__(self):
         self.transaction = []
 
-    def AddTx(self, transaction) -> tx:
+    def add_tx(self, transaction) -> Tx:
         self.transaction.append(transaction)
         return transaction
 
-    def RemoveTx(self, transaction) -> bool:
+    def remove_tx(self, transaction) -> bool:
         for item in self.transaction:
-            if (transaction == item):
+            if transaction == item:
                 self.transaction.remove(transaction)
                 return True
         return False
 
-    def FindTx(self, transaction) -> Optional['tx']:
+    def find_tx(self, transaction) -> Optional['Tx']:
         for item in self.transaction:
-            if (transaction == item):
+            if transaction == item:
                 return transaction
         return None
 
-    def PopAll(self): # get data
+    def pop_all(self):  # get data
         return self.transaction
 
 
 class TBlock:
 
-    def __init__ (self, pbhv, transaction, timestamp, pid):
+    def __init__(self, pbhv, transaction, timestamp, pid):
         # comes from TxPool
-        self.transaction = transaction # type: List[string]
+        self.transaction = transaction  # type: List[string]
         # father's hash, string
-        self.pbhv = pbhv # type: string
-        self.timestamp = timestamp # type: int
-        self.pid = pid # type: int
+        self.pbhv = pbhv  # type: string
+        self.timestamp = timestamp  # type: int
+        self.pid = pid  # type: int
 
-    def get_hash(self) -> string: # get its own hash
+    def get_hash(self) -> string:  # get its own hash
 
         hashstr = "".join(self.transaction) + str(self.timestamp) + str(self.pid)
         return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
@@ -110,18 +116,19 @@ class TBlock:
     def get_data(self) -> List[string]:
         return self.transaction
 
+
 class TNode:
 
-    def __init__ (self, depth, block, father): # father's(block's) hash
-        self.depth = depth # type: int
-        self.block = block # type: TBlock
+    def __init__(self, depth, block, father):  # father's(block's) hash
+        self.depth = depth  # type: int
+        self.block = block  # type: TBlock
         # own hash
-        self.hash = block.get_hash() # type: string
-        self.father = father # type: TNode
+        self.hash = block.get_hash()  # type: string
+        self.father = father  # type: TNode
 
-        self.index = [] # type: List[int]
-        self.children = [] # type: List[TNode]
-        self.num = 0 # type: int
+        self.index = []  # type: List[int]
+        self.children = []  # type: List[TNode]
+        self.num = 0  # type: int
 
     def get_children(self):
         return self.children
@@ -160,26 +167,25 @@ class OrphanBlockPool:
     def __init__ (self):
         self.block = []
 
-    def AddBlock(self, ablock):
+    def add_block(self, ablock):
         self.block.append(ablock)
 
-    def PopChild(self, hv) -> Optional['TBlock']:
+    def pop_child(self, hv) -> Optional['TBlock']:
         for i in self.block:
             if (i.pbhv == hv):
                 return i
         return None
 
 Hashval = string
-Tx = string
 Timestamp = int
 NodeId = int
 Message = TBlock
 SignedMessage = Message
 
-def CheckTX(transaction : tx):
+def check_tx(transaction : Tx):
     return True
 
-def CheckSolution(tblock : TBlock):
+def check_solution(tblock : TBlock):
     spid = '%s' % tblock.pid
     st = '%s' % tblock.timestamp
     sha256 = hashlib.sha256()
@@ -191,7 +197,7 @@ def CheckSolution(tblock : TBlock):
     else:
         return False
 
-def SignMessage(message : Message, priv_key) -> SignedMessage :
+def sign_message(message : Message, priv_key) -> SignedMessage :
     return message
 
 class HonestNode(NodeBase) :
@@ -202,8 +208,7 @@ class HonestNode(NodeBase) :
         # codes to generate rsa key pair, not used yet
         # (self.pub_key, self.priv_key) = rsa.newkeys(512)
 
-        # nodeId needs to be initialize by parameter passed by framework
-        self._nodeId = len(self._coorindator.nodes)
+        self._nodeId = secrets.randbelow(2**64)
         self._txpool = TxPool()
         self._orphanpool = OrphanBlockPool()
 
@@ -218,14 +223,26 @@ class HonestNode(NodeBase) :
         # check input, not yet implement
         # inputs : List['string'] = ctx.received_inputs
         # for tx in inputs :
-        #     self._txPool.AddTx(tx)
+        #     self._txPool.add_tx(tx)
 
         # check recieved blocks
         blocks : List['TBlock'] = ctx.received_messages
         for block in blocks :
-            if not CheckSolution(block) :
+            if not check_solution(block) :
                 blocks.remove(block)
+            # check timestamp
+            elif block.timestamp > ctx.round :
+                blocks.remove(block)
+            # check block type : extend main chain, extend alternative chain, orphan block
+            else :
+                ctx.broadcast(block)
 
-        # check t
+                raise NotImplemented
+                block_father = self_block_chain.find(block.get_hash())
+                if block_father != None :
+                    self._block_chain.add_child(block_father, block)
+                else :
+                    self._orphanpool.add(block)
 
+        # check
         raise NotImplemented
