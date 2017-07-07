@@ -9,7 +9,8 @@
             timestamp, indicating its t-th round
         * nid  : NodeId (int)
             node's identifier
-        * function GetHash(self) -> Hashval (string)
+        @ property
+        * hashval(self) -> Hashval (string)
     * TNode class 
         we use tree to keep tract of main chain and alternative chains,
         TNode class represent node of the tree
@@ -27,8 +28,9 @@
             pbhv = "0", txs = [], timestamp = 0, nid = 0
         * find(self, hash_val) -> TNode
             find the node that contain a block with specified hash value
-        * add_child(self, t_node, block) -> None
-            Create a new node with block inside and make it the t_node's child.
+        * add_child(self, t_node, block) -> TNode
+            Create a new node with block inside and make it the t_node's child,
+            and then return this node.
             This method will automatically check the depth of newly inserted node
             and update the main chain if needed
         @ property
@@ -70,6 +72,9 @@ from dcsim.framework import *
 D_p = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
 Tx = string
+Hashval = string
+Timestamp = int
+NodeId = int
 
 
 # tx pool 存收到但没有放进去的交易信息
@@ -105,16 +110,16 @@ class TBlock:
         # comes from TxPool
         self.transaction = transaction  # type: List[string]
         # father's hash, string
-        self.pbhv = pbhv  # type: string
-        self.timestamp = timestamp  # type: int
-        self.pid = pid  # type: int
+        self.pbhv = pbhv  # type: Hashval
+        self.timestamp = timestamp  # type: Timestamp
+        self.pid = pid  # type: NodeId
 
-    def get_hash(self) -> string:  # get its own hash
-
+    @property
+    def hashval(self) -> Hashval:  # get its own hash
         hashstr = "".join(self.transaction) + str(self.timestamp) + str(self.pid)
         return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
 
-    def get_data(self) -> List[string]:
+    def get_data(self) -> List[Tx]:
         return self.transaction
 
 
@@ -134,7 +139,7 @@ class TNode:
     def get_children(self):
         return self.children
 
-    def add_children(self, newnode : 'TNode') -> bool:
+    def add_children(self, newnode: 'TNode') -> bool:
         # if full, max is 16
         if len(self.children) == 16:
             return False
@@ -146,26 +151,26 @@ class TNode:
             newnode.father = self
             return True
 
-    def transfer_chain(self, i : int, j : int):
+    def transfer_chain(self, i: int, j: int):
         x = self.index[i]
         self.index[i] = self.index[j]
         self.index[j] = x
 
     def search(self, phash) -> Optional['TNode']:
-        res = None # type: Union[TNode, None]
+        res = None  # type: Union[TNode, None]
         for child in self.children:
-            if (child.hash == phash):
+            if child.hash == phash:
                 return child
             else:
                 res = child.search(phash)
-                if (None != res):
+                if res is not None:
                     break
         return res
 
 
 class OrphanBlockPool:
 
-    def __init__ (self):
+    def __init__(self):
         self.block = []
 
     def add_block(self, ablock):
@@ -173,20 +178,16 @@ class OrphanBlockPool:
 
     def pop_child(self, hv) -> Optional['TBlock']:
         for i in self.block:
-            if (i.pbhv == hv):
+            if i.pbhv == hv:
                 return i
         return None
 
-Hashval = string
-Timestamp = int
-NodeId = int
-Message = Any
-SignedMessage = Message
 
-def check_tx(transaction : Tx):
-    return True
+def check_tx(tx: Tx):
+    return True if tx is not None else False
 
-def check_solution(tblock : TBlock):
+
+def check_solution(tblock: TBlock):
     spid = '%s' % tblock.pid
     st = '%s' % tblock.timestamp
     sha256 = hashlib.sha256()
@@ -198,10 +199,15 @@ def check_solution(tblock : TBlock):
     else:
         return False
 
-def sign_message(message : Message, priv_key) -> SignedMessage :
-    return message
+Message = Any
+SignedMessage = Message
 
-class HonestNode(NodeBase) :
+
+def sign_message(message: Message, priv_key) -> SignedMessage:
+    return message if priv_key is not None else message
+
+
+class HonestNode(NodeBase):
 
     def __init__(self, coorindator):
         # coordinator provides the "permissioned" services
@@ -226,35 +232,35 @@ class HonestNode(NodeBase) :
         raise NotImplemented
         return self._block_chain.main_chain
 
-    def round_action(self, ctx: Context) -> None :
+    def round_action(self, ctx: Context) -> None:
         # check recieved blocks
-        messages : List[Any] = ctx.received_messages
-        txs : List[Tx] = []
-        blocks : List[TBlock] = []
+        messages: List[Any] = ctx.received_messages
+        txs: List[Tx] = []
+        blocks: List[TBlock] = []
 
-        for message in messages :
-            if message.type == 0 :   # its a transaction
-                if check_tx(message["value"]) :
+        for message in messages:
+            if message.type == 0:   # its a transaction
+                if check_tx(message["value"]):
                     txs.append(message["value"])
-            elif message.type == 1 :   # its a block
-                if not check_solution(message["value"]) :
+            elif message.type == 1:   # its a block
+                if not check_solution(message["value"]):
                     continue
-                elif message["value"].timestamp >= ctx.round :
+                elif message["value"].timestamp >= ctx.round:
                     continue
-                else :
+                else:
                     blocks.append(message["value"])
 
-        for block in blocks :
+        for block in blocks:
             # check block type : extend main chain, extend alternative chain, orphan block
             ctx.broadcast(block)
 
             raise NotImplemented
-            block_father = self_block_chain.find(block.pbhv)
-            if block_father != None :
-                self._block_chain.add_child(block_father, block)
-
-            else :
+            child_block = block
+            cur_node = self_block_chain.find(block.pbhv)
+            while (cur_node is not None) and (cur_node.block.timestamp < block.timestamp):
+                cur_node = self._block_chain.add_child(cur_node, child_block)
+                child_block = self._orphanpool.pop_child(child_block.hashval)
+            else:
                 self._orphanpool.add(block)
 
-        # check
         raise NotImplemented
