@@ -63,7 +63,7 @@
 import hashlib
 import string
 # import rsa
-import secrets
+import random
 from typing import *
 from dcsim.framework import *
 
@@ -209,7 +209,8 @@ class HonestNode(NodeBase) :
         # codes to generate rsa key pair, not used yet
         # (self.pub_key, self.priv_key) = rsa.newkeys(512)
 
-        self._nodeId = secrets.randbelow(2**64)
+        random.seed()
+        self._nodeId = random.randint(1, 2**32)
         self._txpool = TxPool()
         self._orphanpool = OrphanBlockPool()
 
