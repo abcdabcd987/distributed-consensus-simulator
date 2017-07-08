@@ -36,7 +36,7 @@
             and then return this node.
             This method will automatically check the depth of newly inserted node
             and update the main chain if needed
-        * get_head(self) -> TNode
+        * get_top(self) -> TNode
             Get the top block in main chain
         @ property
         * main_chain(self) -> List[block]
@@ -60,10 +60,10 @@
             pop out all transaction
     * OrphanBlockPool class
         Store blocks whose parent block is not in the chain currently
-        * AddBlock(self)
-        * PopChild(self, hv) :
+        * add_block(self)
+        * pop_child(self, hv) :
             find the node with specified pbhv, if no match, return none
-    * SignMessage(message, priv_key) -> signedMessage : placeholder
+    * sign_message(message, priv_key) -> signedMessage : placeholder
         use priv_key to sign message
 """
 
@@ -216,7 +216,7 @@ class BlockChain:
         temp_list.append(self.tail.block)
         return temp_list
 
-    def get_head(self) -> TNode:
+    def get_top(self) -> TNode:
         return self.tail
 
 
@@ -316,7 +316,7 @@ class HonestNode(NodeBase):
             else:
                 self._orphanpool.add_block(block)
 
-        pbhv = self._block_chain.get_head().block.hashval
+        pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx.round
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
