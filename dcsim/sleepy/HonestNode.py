@@ -272,7 +272,6 @@ class HonestNode(NodeBase):
         self._txpool = TxPool()
         self._orphanpool = OrphanBlockPool()
 
-        raise NotImplemented
         self._block_chain = BlockChain()
 
     @property
