@@ -74,7 +74,7 @@ import random
 from typing import *
 from dcsim.framework import *
 
-D_p = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
+D_p = "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
 Tx = string
 Hashval = string
@@ -321,7 +321,7 @@ class HonestNode(NodeBase):
         t = ctx.round
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
         if check_solution(my_block):
-            self._block_chain.add_child(self._block_chain.get_head(), my_block)
+            self._block_chain.add_child(self._block_chain.get_top(), my_block)
             ctx.broadcast({"type": 1, "value": my_block})
             self._txpool.clear_all()
         return None
