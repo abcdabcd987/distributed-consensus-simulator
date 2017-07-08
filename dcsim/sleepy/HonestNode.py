@@ -181,13 +181,14 @@ class TNode:
                     break
         return res
 
+
 class BlockChain:
 
-    def __init__ (self) -> None:
+    def __init__(self) -> None:
         # pbhv = "0", txs = [], timestamp = 0, nid = 0
-        self.genesis = TNode(0, TBlock("0", [], 0, 0), None) # type: TNode
-        self.head = self.genesis # type: TNode
-        self.tail = self.genesis # type: TNode
+        self.genesis = TNode(0, TBlock("0", [], 0, 0), None)    # type: TNode
+        self.head = self.genesis    # type: TNode
+        self.tail = self.genesis    # type: TNode
 
     def find(self, hash_val: str) -> Optional['TNode']:
         return self.head.search(hash_val)
@@ -201,19 +202,22 @@ class BlockChain:
                 index = temp_node.father.get_child_index(temp_node)
                 if index is not 0 and index is not -1:
                     temp_node.father.transfer_chain(0, index)
-        self.tail = new_node
-
+            self.tail = new_node
+        return new_node
 
     @property
     def main_chain(self) -> List['TBlock']:
-        temp_list = [] # type: List[TBlock]
-        temp_node = self.genesis # type: TNode
+        temp_list = []              # type: List[TBlock]
+        temp_node = self.genesis    # type: TNode
         while temp_node != self.tail:
-            temp_list.append(temp_node)
+            temp_list.append(temp_node.block)
             i = temp_node.index[0]
             temp_node = temp_node.children[i]
-        temp_list.append(self.tail)
+        temp_list.append(self.tail.block)
         return temp_list
+
+    def get_head(self) -> TNode:
+        return self.tail
 
 
 class OrphanBlockPool:
@@ -277,11 +281,10 @@ class HonestNode(NodeBase):
 
     @property
     def main_chain(self):
-        raise NotImplemented
         return self._block_chain.main_chain
 
     def round_action(self, ctx: Context) -> None:
-        # check recieved blocks
+        # check received blocks
         messages: List[Any] = ctx.received_messages
         txs: List[Tx] = []              # store valid txs
         blocks: List[TBlock] = []       # store valid blocks
@@ -312,15 +315,14 @@ class HonestNode(NodeBase):
                 cur_node = self._block_chain.add_child(cur_node, child_block)
                 child_block = self._orphanpool.pop_child(child_block.hashval)
             else:
-                self._orphanpool.add(block)
+                self._orphanpool.add_block(block)
 
-        raise NotImplemented
         pbhv = self._block_chain.get_head().block.hashval
         txs = self._txpool.get_all()
         t = ctx.round
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
         if check_solution(my_block):
             self._block_chain.add_child(self._block_chain.get_head(), my_block)
-            ctx.broadcast({"type": 1, "value": block})
-            self._txpool.clear()
+            ctx.broadcast({"type": 1, "value": my_block})
+            self._txpool.clear_all()
         return None
