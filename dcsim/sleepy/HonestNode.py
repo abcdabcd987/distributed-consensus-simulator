@@ -240,14 +240,14 @@ class HonestNode(NodeBase):
     def round_action(self, ctx: Context) -> None:
         # check recieved blocks
         messages: List[Any] = ctx.received_messages
-        txs: List[Tx] = []
-        blocks: List[TBlock] = []
+        txs: List[Tx] = []              # store valid txs
+        blocks: List[TBlock] = []       # store valid blocks
 
         for message in messages:
-            if message.type == 0:   # its a transaction
+            if message["type"] == 0:   # its a transaction
                 if check_tx(message["value"]):
                     txs.append(message["value"])
-            elif message.type == 1:   # its a block
+            elif message["type"] == 1:   # its a block
                 if not check_solution(message["value"]):
                     continue
                 elif message["value"].timestamp >= ctx.round:
@@ -256,18 +256,28 @@ class HonestNode(NodeBase):
                     blocks.append(message["value"])
 
         for block in blocks:
+            # check if block is already in the chain
+            if self._block_chain.find(block.hashval) is not None:
+                continue
             # check block type : extend main chain, extend alternative chain, orphan block
-            ctx.broadcast(block)
+            ctx.broadcast({"type": 1, "value": block})
 
-            child_block = block
             raise NotImplemented
             cur_node = self_block_chain.find(block.pbhv)
+            child_block = block
             while (cur_node is not None) and (cur_node.block.timestamp < block.timestamp):
                 cur_node = self._block_chain.add_child(cur_node, child_block)
                 child_block = self._orphanpool.pop_child(child_block.hashval)
             else:
                 self._orphanpool.add(block)
 
-
-
         raise NotImplemented
+        pbhv = self._block_chain.get_head().block.hashval
+        txs = self._txpool.get_all()
+        t = ctx.round
+        my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
+        if check_solution(my_block):
+            self._block_chain.add_child(self._block_chain.get_head(), my_block)
+            ctx.broadcast({"type": 1, "value": block})
+            self._txpool.clear()
+        return None
