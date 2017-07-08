@@ -84,27 +84,30 @@ NodeId = int
 class TxPool:
 
     def __init__(self):
-        self.transaction = []
+        self.txs = []
 
-    def add_tx(self, transaction) -> Tx:
-        self.transaction.append(transaction)
-        return transaction
+    def add_tx(self, txs) -> Tx:
+        self.txs.append(txs)
+        return txs
 
-    def remove_tx(self, transaction) -> bool:
-        for item in self.transaction:
-            if transaction == item:
-                self.transaction.remove(transaction)
+    def remove_tx(self, txs) -> bool:
+        for item in self.txs:
+            if txs == item:
+                self.txs.remove(txs)
                 return True
         return False
 
-    def find_tx(self, transaction) -> Optional['Tx']:
-        for item in self.transaction:
-            if transaction == item:
-                return transaction
+    def find_tx(self, txs) -> Optional['Tx']:
+        for item in self.txs:
+            if txs == item:
+                return txs
         return None
 
-    def pop_all(self):  # get data
-        return self.transaction
+    def get_all(self):  # get data
+        return self.txs
+
+    def clear_all(self):
+        del self.txs[:]
 
 
 class TBlock:
@@ -132,7 +135,7 @@ class TNode:
         self.depth = depth  # type: int
         self.block = block  # type: TBlock
         # own hash
-        self.hash = block.get_hash()  # type: string
+        self.hash = block.hashval()  # type: str
         self.father = father  # type: TNode
 
         self.index = []  # type: List[int]
@@ -142,16 +145,22 @@ class TNode:
     def get_children(self):
         return self.children
 
-    def add_children(self, newnode: 'TNode') -> bool:
+    def get_child_index(self, child_node: 'TNode') -> int:
+        for i in self.index:
+            if child_node.hash == self.children[self.index[i]].hash:
+                return i
+        return -1
+
+    def add_child(self, new_node: 'TNode') -> bool:
         # if full, max is 16
         if len(self.children) == 16:
             return False
         else:
-            self.children.append(newnode)
+            self.children.append(new_node)
             self.index.append(self.num)
             self.num += 1
-            newnode.depth = self.depth + 1
-            newnode.father = self
+            new_node.depth = self.depth + 1
+            new_node.father = self
             return True
 
     def transfer_chain(self, i: int, j: int):
@@ -159,16 +168,50 @@ class TNode:
         self.index[i] = self.index[j]
         self.index[j] = x
 
-    def search(self, phash) -> Optional['TNode']:
+    def search(self, p_hash: str) -> Optional['TNode']:
         res = None  # type: Union[TNode, None]
         for child in self.children:
-            if child.hash == phash:
+            if child.hash == p_hash:
                 return child
             else:
-                res = child.search(phash)
+                res = child.search(p_hash)
                 if res is not None:
                     break
         return res
+
+class BlockChain:
+
+    def __init__ (self) -> None:
+        # pbhv = "0", txs = [], timestamp = 0, nid = 0
+        self.genesis = TNode(0, TBlock("0", [], 0, 0), None) # type: TNode
+        self.head = self.genesis # type: TNode
+        self.tail = self.genesis # type: TNode
+
+    def find(self, hash_val: str) -> Optional['TNode']:
+        return self.head.search(hash_val)
+
+    def add_child(self, t_node: 'TNode', block: 'TBlock'):
+        new_node = TNode(t_node.depth+1, block.hashval(), t_node)
+        t_node.add_child(new_node)
+        if new_node.depth > self.tail.depth:
+            temp_node = new_node
+            while temp_node is not self.head:
+                index = temp_node.father.get_child_index(temp_node)
+                if index is not 0 and index is not -1:
+                    temp_node.father.transfer_chain(0, index)
+        self.tail = new_node
+
+
+    @property
+    def main_chain(self) -> List['TBlock']:
+        temp_list = [] # type: List[TBlock]
+        temp_node = self.genesis # type: TNode
+        while temp_node != self.tail:
+            temp_list.append(temp_node)
+            i = temp_node.index[0]
+            temp_node = temp_node.children[i]
+        temp_list.append(self.tail)
+        return temp_list
 
 
 class OrphanBlockPool:
@@ -223,7 +266,7 @@ class HonestNode(NodeBase):
         self._txpool = TxPool()
         self._orphanpool = OrphanBlockPool()
 
-        raise NotImplemented
+        # raise NotImplemented
         self._block_chain = BlockChain()
 
     @property
@@ -232,7 +275,7 @@ class HonestNode(NodeBase):
 
     @property
     def main_chain(self):
-        raise NotImplemented
+        # raise NotImplemented
         return self._block_chain.main_chain
 
     def round_action(self, ctx: Context) -> None:
@@ -257,13 +300,13 @@ class HonestNode(NodeBase):
             # check block type : extend main chain, extend alternative chain, orphan block
             ctx.broadcast(block)
 
-            raise NotImplemented
+            # raise NotImplemented
             child_block = block
-            cur_node = self_block_chain.find(block.pbhv)
+            cur_node = self._block_chain.find(block.hashval)
             while (cur_node is not None) and (cur_node.block.timestamp < block.timestamp):
                 cur_node = self._block_chain.add_child(cur_node, child_block)
                 child_block = self._orphanpool.pop_child(child_block.hashval)
             else:
-                self._orphanpool.add(block)
+                self._orphanpool.add_block(block)
 
         raise NotImplemented
