@@ -9,6 +9,8 @@
             timestamp, indicating its t-th round
         * nid  : NodeId (int)
             node's identifier
+        * data(self) -> List[Tx]
+            get txs stored in the block
         @ property
         * hashval(self) -> Hashval (string)
     * TNode class 
@@ -25,6 +27,7 @@
     * BlockChain class
         * __init__(self) -> None
             remember to add genesis block as the root of the tree
+            gensis block consist of:
             pbhv = "0", txs = [], timestamp = 0, nid = 0
         * find(self, hash_val) -> TNode
             find the node that contain a block with specified hash value
@@ -43,13 +46,13 @@
         Check if transaction is valid
     * TxPool class
         Store transactions that will be added into block
-        * FindTx(self, tx) -> 
+        * FindTx(self, tx) -> bool : placeholder
             check if a specifix transaction is already in it
         * AddTx(self, tx) -> bool
             add a transaction into pool if 
-        * RemoveTx(self, tx) 
+        * RemoveTx(self, tx) : placeholder
             remove a specific transaction
-        * PopOne(self) : placeholder now
+        * PopOne(self) : placeholder
             pop the transaction with highest priority
         * PopAll(self) : 
             pop out all transaction
@@ -106,21 +109,21 @@ class TxPool:
 
 class TBlock:
 
-    def __init__(self, pbhv, transaction, timestamp, pid):
+    def __init__(self, pbhv, txs, timestamp, pid):
         # comes from TxPool
-        self.transaction = transaction  # type: List[string]
-        # father's hash, string
+        self.txs = txs  # type: List[Tx]
+        # father's hash
         self.pbhv = pbhv  # type: Hashval
         self.timestamp = timestamp  # type: Timestamp
         self.pid = pid  # type: NodeId
 
+    def get_data(self) -> List[Tx]:
+        return self.txs
+
     @property
     def hashval(self) -> Hashval:  # get its own hash
-        hashstr = "".join(self.transaction) + str(self.timestamp) + str(self.pid)
+        hashstr = "".join(self.txs) + str(self.timestamp) + str(self.pid)
         return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
-
-    def get_data(self) -> List[Tx]:
-        return self.transaction
 
 
 class TNode:
