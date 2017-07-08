@@ -26,9 +26,9 @@
         * and something else to organize this structure
     * BlockChain class
         * __init__(self) -> None
-            remember to add genesis block as the root of the tree
-            gensis block consist of:
-            pbhv = "0", txs = [], timestamp = 0, nid = 0
+            Remember to add genesis block as the root of the tree
+            Gensis block consist of:
+                pbhv = "0", txs = [], timestamp = 0, nid = 0
         * find(self, hash_val) -> TNode
             find the node that contain a block with specified hash value
         * add_child(self, t_node, block) -> TNode
@@ -36,25 +36,27 @@
             and then return this node.
             This method will automatically check the depth of newly inserted node
             and update the main chain if needed
+        * get_head(self) -> TNode
+            Get the top block in main chain
         @ property
         * main_chain(self) -> List[block]
             extract the main chain and form a list where every block just follows its father in the list
-    * CheckSolution(block : Block class) -> bool
+    * check_solution(block : Block class) -> bool
         Check if H(pid, t) < D_p
-    * CheckTx(tx : Tx) -> bool
+    * check_tx(tx : Tx) -> bool
         placeholder, simply return True now
         Check if transaction is valid
     * TxPool class
         Store transactions that will be added into block
-        * FindTx(self, tx) -> bool : placeholder
-            check if a specifix transaction is already in it
-        * AddTx(self, tx) -> bool
+        * find_tx(self, tx) -> bool : placeholder
+            check if a specific transaction is already in it
+        * add_tx(self, tx) -> bool
             add a transaction into pool if 
-        * RemoveTx(self, tx) : placeholder
+        * remove_tx(self, tx) : placeholder
             remove a specific transaction
-        * PopOne(self) : placeholder
+        * pop_one(self) : placeholder
             pop the transaction with highest priority
-        * PopAll(self) : 
+        * pop_all(self) :
             pop out all transaction
     * OrphanBlockPool class
         Store blocks whose parent block is not in the chain currently
@@ -257,13 +259,15 @@ class HonestNode(NodeBase):
             # check block type : extend main chain, extend alternative chain, orphan block
             ctx.broadcast(block)
 
-            raise NotImplemented
             child_block = block
+            raise NotImplemented
             cur_node = self_block_chain.find(block.pbhv)
             while (cur_node is not None) and (cur_node.block.timestamp < block.timestamp):
                 cur_node = self._block_chain.add_child(cur_node, child_block)
                 child_block = self._orphanpool.pop_child(child_block.hashval)
             else:
                 self._orphanpool.add(block)
+
+
 
         raise NotImplemented
