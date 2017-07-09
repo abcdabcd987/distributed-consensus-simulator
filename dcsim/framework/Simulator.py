@@ -21,6 +21,7 @@ class Simulator:
         self.adversary = config.get_adversary_controller_type()()
         self.measure = config.get_measurement_type()()
         self.trust_length = config.get_trust_length()
+        self.max_delay = config.get_max_delay()
 
     def run(self):
         round_counter = 0
@@ -34,7 +35,7 @@ class Simulator:
             adversarial_instructions = self.adversary.round_instruction(self.corrupted_nodes, pending_message_tuples, round_counter, self.trust_length)
 
             # filter message to deliver
-            received_message_tuples = self.network.round_filter(pending_message_tuples)
+            received_message_tuples = self.network.round_filter(pending_message_tuples, self.max_delay, round_counter, self.corrupted_nodes)
             pending_message_tuples = [message_tuple
                                       for message_tuple in pending_message_tuples
                                       if message_tuple not in received_message_tuples
