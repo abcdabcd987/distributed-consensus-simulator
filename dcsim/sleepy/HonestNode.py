@@ -12,6 +12,7 @@
         @ property
         * hashval(self) -> Hashval (string)
             hashval is encrypted with SHA256 whose parameters are txs, timestamp and pid.
+
     * TNode class
         we use tree to keep tract of main chain and alternative chains,
         TNode class represent node of the tree
@@ -42,6 +43,7 @@
             transfer to child chains
         * search(self, p_hash: str) -> Optional['TNode']
             search for a child whose hash equals to p_hash
+
     * BlockChain class
         * __init__(self) -> None
             Remember to add genesis block as the root of the tree
@@ -60,11 +62,7 @@
         @ property
         * main_chain(self) -> List[block]
             extract the main chain and form a list where every block just follows its father in the list
-    * check_solution(block : Block class) -> bool
-        Check if H(pid, t) < D_p
-    * check_tx(tx : Tx) -> bool
-        placeholder, simply return True now
-        Check if transaction is valid
+
     * TxPool class
         Store transactions that will be added into block
         * find_tx(self, tx) -> bool : placeholder
@@ -77,12 +75,19 @@
             pop the transaction with highest priority
         * pop_all(self) :
             pop out all transaction
+
     * OrphanBlockPool class
         Store blocks whose parent block is not in the chain currently
         * add_block(self)
         * find(self, Hashval) -> bool
         * pop_children(self, hv) -> List['TBlock'] :
             find nodes with specified pbhv, if no match, return None
+
+    * check_solution(block : Block class) -> bool
+        Check if H(pid, t) < D_p
+    * check_tx(tx : Tx) -> bool
+        placeholder, simply return True now
+        Check if transaction is valid
     * sign_message(message, priv_key) -> signedMessage : placeholder
         use priv_key to sign message
 """
