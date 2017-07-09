@@ -7,28 +7,49 @@
             recorded transactions (input)
         * timestamp  : Timestamp (int)
             timestamp, indicating its t-th round
-        * nid  : NodeId (int)
+        * pid  : NodeId (int)
             node's identifier
-        * data(self) -> List[Tx]
+        * get_data(self) -> List[Tx]
             get txs stored in the block
         @ property
         * hashval(self) -> Hashval (string)
-    * TNode class 
+            hashval is encrypted with SHA256 whose parameters are txs, timestamp and pid.
+    * TNode class
         we use tree to keep tract of main chain and alternative chains,
         TNode class represent node of the tree
         * block : Block
-        * hv : Hashval (string) 
+        * hash : Hashval (string)
             the hash value of block in this node
             (store it so as to make searching blocks easier)
-        * depth : int 
+        * depth : int
             the depth from this node to root
             (namely, the height of this block)
-        * and something else to organize this structure
+        * father : Optional('TNode')
+            the father node of this TNode
+            only genesis' father can be None
+        * index : List[int]
+            array pointer to the children[]
+            index[i] is the index of children, for example, you can say children[index[i]]
+        * children : List[TNode]
+            this TNode's children list
+        * num : int
+            index[i] = num
+        * get_children(self) -> List[TNode]
+            returns this TNode's children list
+        * get_child_index(self, child_node: 'TNode') -> int
+            return i, children[index[i]] == child_node
+        * add_child(self, new_node: 'TNode') -> bool
+            add a new_node to children
+        * transfer_chain(self, i: int, j: int)
+            transfer to child chains
+        * search(self, p_hash: str) -> Optional['TNode']
+            search for a child whose hash equals to p_hash
     * BlockChain class
         * __init__(self) -> None
             Remember to add genesis block as the root of the tree
             Gensis block consist of:
                 pbhv = "0", txs = [], timestamp = 0, nid = 0
+                self.genesis = TNode(0, TBlock("0", [], 0, 0), None)    # type: TNode
         * find(self, hash_val) -> TNode
             find the node that contain a block with specified hash value
         * add_child(self, t_node, block) -> TNode
@@ -139,7 +160,7 @@ class TNode:
         self.block = block  # type: TBlock
         # own hash
         self.hash = block.hashval  # type: str
-        self.father = father  # type: Optional['TNode']
+        self.father = father  # type: TNode
 
         self.index = []  # type: List[int]
         self.children = []  # type: List[TNode]
@@ -154,7 +175,7 @@ class TNode:
         return self.children
 
     def get_child_index(self, child_node: 'TNode') -> int:
-        for i in self.index:
+        for i in range(len(self.index)):
             if child_node.hash == self.children[self.index[i]].hash:
                 return i
         return -1
@@ -239,11 +260,24 @@ class OrphanBlockPool:
     def add_block(self, ablock):
         self.block.append(ablock)
 
-    def pop_child(self, hv) -> Optional['TBlock']:
+    def pop_child(self, hv) -> Optional[List['TBlock']]:
+        temp_block = []
         for i in self.block:
             if i.pbhv == hv:
-                return i
-        return None
+                temp_block.append(i)
+                self.block.remove(i)
+        if temp_block == []:
+            return None
+        return temp_block
+
+    def find(self, hashval) -> Optional[List['TBlock']]:
+        temp_block = []
+        for i in self.block:
+            if i.hashval == hashval:
+                temp_block.append(i)
+        if temp_block == []:
+            return None
+        return temp_block
 
 
 def check_tx(tx: Tx):
