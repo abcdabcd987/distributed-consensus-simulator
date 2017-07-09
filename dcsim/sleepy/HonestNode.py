@@ -9,8 +9,6 @@
             timestamp, indicating its t-th round
         * pid  : NodeId (int)
             node's identifier
-        * get_data(self) -> List[Tx]
-            get txs stored in the block
         @ property
         * hashval(self) -> Hashval (string)
             hashval is encrypted with SHA256 whose parameters are txs, timestamp and pid.
@@ -83,14 +81,13 @@
         Store blocks whose parent block is not in the chain currently
         * add_block(self)
         * find(self, Hashval) -> bool
-        * pop_child(self, hv) -> block :
-            find the node with specified pbhv, if no match, return none
+        * pop_children(self, hv) -> List['TBlock'] :
+            find nodes with specified pbhv, if no match, return None
     * sign_message(message, priv_key) -> signedMessage : placeholder
         use priv_key to sign message
 """
 
 import hashlib
-import string
 # import rsa
 import random
 from typing import *
@@ -144,9 +141,6 @@ class TBlock:
         self.timestamp = timestamp  # type: Timestamp
         self.pid = pid  # type: NodeId
 
-    def get_data(self) -> List[Tx]:
-        return self.txs
-
     @property
     def hashval(self) -> Hashval:  # get its own hash
         hashstr = "".join(self.txs) + str(self.timestamp) + str(self.pid)
@@ -166,7 +160,7 @@ class TNode:
         self.children = []  # type: List[TNode]
         self.num = 0  # type: int
 
-        if father == None:
+        if father is None:
             self.block.pbhv = "0"
         else:
             self.block.pbhv = father.hash
@@ -260,7 +254,7 @@ class OrphanBlockPool:
     def add_block(self, ablock):
         self.block.append(ablock)
 
-    def pop_child(self, hv) -> Optional[List['TBlock']]:
+    def pop_children(self, hv) -> Optional[List['TBlock']]:
         temp_block = []
         for i in self.block:
             if i.pbhv == hv:
@@ -269,7 +263,6 @@ class OrphanBlockPool:
         if temp_block == []:
             return None
         return temp_block
-
     def find(self, hashval) -> Optional[List['TBlock']]:
         temp_block = []
         for i in self.block:
@@ -326,19 +319,38 @@ class HonestNode(NodeBase):
     def main_chain(self):
         return self._block_chain.main_chain
 
+    # remove all the children of block from the orphan pool
+    def recursive_remove_block_from_orphan_pool(self, block: TBlock):
+        blocks_to_remove = self._orphanpool.pop_children(block.hashval)
+        if blocks_to_remove is None:
+            return
+        else:
+            for b2r in blocks_to_remove:
+                self.recursive_remove_block_from_orphan_pool(b2r)
+
+    # add all the orphan that could be connected on to the chain
+    def recursive_add_block_from_orphan_pool(self, curnode: TNode):
+        blocks_to_add = self._orphanpool.pop_children(curnode.block.hashval)
+        if blocks_to_add is None:
+            return
+        else:
+            for b2a in blocks_to_add:
+                # timestamp check failed
+                if curnode.block.timestamp >= b2a.timestamp:
+                    self.recursive_remove_block_from_orphan_pool(b2a)
+                else:
+                    new_node = self._block_chain.add_child(curnode, b2a)
+                    self.recursive_add_block_from_orphan_pool(new_node)
+
     def round_action(self, ctx: Context) -> None:
         # check received blocks
         messages: List[Any] = ctx.received_messages
-        txs: List[Tx] = []              # store valid txs
         blocks: List[TBlock] = []       # store valid blocks
 
-        # TODO: assume txs could come from the network (not just from input)
-        # TODO: deal with them and broadcast txs that haven't been received
-        # TODO: this would also require txs that are already in block chain to be removed from txpool
         for message in messages:
             if message["type"] == 0:   # its a transaction
                 if check_tx(message["value"]):
-                    txs.append(message["value"])
+                    self._txpool.add_tx(message["value"])
             elif message["type"] == 1:   # its a block
                 if not check_solution(message["value"]):
                     continue
@@ -356,17 +368,14 @@ class HonestNode(NodeBase):
 
             ctx.broadcast({"type": 1, "value": block})
             cur_node = self._block_chain.find(block.pbhv)
-            child_block = block
             if cur_node is None:
                 self._orphanpool.add_block(block)
+            # timestamp check failed
+            elif cur_node.block.timestamp >= block.timestamp:
+                self.recursive_remove_block_from_orphan_pool(block)
             else:
-                while cur_node is not None:
-                    # timestamp is invalid (bigger than father's)
-                    if cur_node.block.timestamp >= child_block.timestamp:
-                        continue
-                    else:   # timestamp check pass
-                        cur_node = self._block_chain.add_child(cur_node, child_block)
-                        child_block = self._orphanpool.pop_child(child_block.hashval)
+                new_node = self._block_chain.add_child(cur_node, block)
+                self.recursive_add_block_from_orphan_pool(new_node)
 
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
