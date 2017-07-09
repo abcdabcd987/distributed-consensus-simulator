@@ -61,7 +61,8 @@
     * OrphanBlockPool class
         Store blocks whose parent block is not in the chain currently
         * add_block(self)
-        * pop_child(self, hv) :
+        * find(self, Hashval) -> bool
+        * pop_child(self, hv) -> block :
             find the node with specified pbhv, if no match, return none
     * sign_message(message, priv_key) -> signedMessage : placeholder
         use priv_key to sign message
@@ -220,6 +221,7 @@ class BlockChain:
         return self.tail
 
 
+# TODO: add function find(Hashval) -> bool
 class OrphanBlockPool:
 
     def __init__(self):
@@ -271,7 +273,6 @@ class HonestNode(NodeBase):
         self._nodeId = random.randint(1, 2**32)
         self._txpool = TxPool()
         self._orphanpool = OrphanBlockPool()
-
         self._block_chain = BlockChain()
 
     @property
@@ -288,6 +289,9 @@ class HonestNode(NodeBase):
         txs: List[Tx] = []              # store valid txs
         blocks: List[TBlock] = []       # store valid blocks
 
+        # TODO: assume txs could come from the network (not just from input)
+        # TODO: deal with them and broadcast txs that haven't been received
+        # TODO: this would also require txs that are already in block chain to be removed from txpool
         for message in messages:
             if message["type"] == 0:   # its a transaction
                 if check_tx(message["value"]):
@@ -301,20 +305,25 @@ class HonestNode(NodeBase):
                     blocks.append(message["value"])
 
         for block in blocks:
-            # check if block is already in the chain
+            # check if this block has been received
             if self._block_chain.find(block.hashval) is not None:
                 continue
-            # check block type : extend main chain, extend alternative chain, orphan block
-            ctx.broadcast({"type": 1, "value": block})
+            elif self._orphanpool.find(block.hashval):
+                continue
 
-            # raise NotImplemented
+            ctx.broadcast({"type": 1, "value": block})
             cur_node = self._block_chain.find(block.pbhv)
             child_block = block
-            while (cur_node is not None) and (cur_node.block.timestamp < block.timestamp):
-                cur_node = self._block_chain.add_child(cur_node, child_block)
-                child_block = self._orphanpool.pop_child(child_block.hashval)
-            else:
+            if cur_node is None:
                 self._orphanpool.add_block(block)
+            else:
+                while cur_node is not None:
+                    # timestamp is invalid (bigger than father's)
+                    if cur_node.block.timestamp >= child_block.timestamp:
+                        continue
+                    else:   # timestamp check pass
+                        cur_node = self._block_chain.add_child(cur_node, child_block)
+                        child_block = self._orphanpool.pop_child(child_block.hashval)
 
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
