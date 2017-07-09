@@ -77,8 +77,8 @@ from dcsim.framework import *
 
 D_p = "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
-Tx = string
-Hashval = string
+Tx = str
+Hashval = str
 Timestamp = int
 NodeId = int
 
@@ -138,12 +138,17 @@ class TNode:
         self.depth = depth  # type: int
         self.block = block  # type: TBlock
         # own hash
-        self.hash = block.hashval()  # type: str
-        self.father = father  # type: TNode
+        self.hash = block.hashval  # type: str
+        self.father = father  # type: Optional['TNode']
 
         self.index = []  # type: List[int]
         self.children = []  # type: List[TNode]
         self.num = 0  # type: int
+
+        if father == None:
+            self.block.pbhv = "0"
+        else:
+            self.block.pbhv = father.hash
 
     def get_children(self):
         return self.children
@@ -192,10 +197,13 @@ class BlockChain:
         self.tail = self.genesis    # type: TNode
 
     def find(self, hash_val: str) -> Optional['TNode']:
-        return self.head.search(hash_val)
+        if self.head.hash == hash_val:
+            return self.head
+        else:
+            return self.head.search(hash_val)
 
     def add_child(self, t_node: 'TNode', block: 'TBlock'):
-        new_node = TNode(t_node.depth+1, block.hashval(), t_node)
+        new_node = TNode(t_node.depth+1, block, t_node)
         t_node.add_child(new_node)
         if new_node.depth > self.tail.depth:
             temp_node = new_node
@@ -203,6 +211,7 @@ class BlockChain:
                 index = temp_node.father.get_child_index(temp_node)
                 if index is not 0 and index is not -1:
                     temp_node.father.transfer_chain(0, index)
+                temp_node = temp_node.father
             self.tail = new_node
         return new_node
 
