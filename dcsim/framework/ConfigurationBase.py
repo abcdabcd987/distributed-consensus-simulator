@@ -47,3 +47,7 @@ class ConfigurationBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_max_delay(self) -> int:
         pass
+
+    @abc.abstractclassmethod
+    def get_trust_length(self) -> int:
+        pass

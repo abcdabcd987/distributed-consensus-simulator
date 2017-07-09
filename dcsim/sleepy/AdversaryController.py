@@ -135,7 +135,8 @@ class AdversaryController(AdversaryControllerBase):
     def round_instruction(self,
                           corrupted_nodes: List[NodeBase],
                           pending_messages: List[MessageTuple],
-                          current_round: int) -> Dict['NodeId', Any]:
+                          current_round: int,
+                          T: int) -> Dict['NodeId', Any]:
         for message in pending_messages:
             if message["type"] == 0:
                 if not self._tx.containKey(message["value"]):
@@ -144,6 +145,7 @@ class AdversaryController(AdversaryControllerBase):
                 if valid(message["value"], current_round):
                     self._root.insert(message["value"])
 
+        ret = {}
         for badNode in corrupted_nodes:
             if check(badNode.id, current_round):
                 srcStr = "".join(self._chain[-1].hsh).join(self._tx.getAll()).join("%d" % current_round).join("%d" % badNode.id)
@@ -153,3 +155,5 @@ class AdversaryController(AdversaryControllerBase):
                 self._chain.append(block)
                 if len(self._chain) > self._root._depth + T:
                     badNode.addSend(self._chain)
+                ret[badNode.id] = None
+        return ret

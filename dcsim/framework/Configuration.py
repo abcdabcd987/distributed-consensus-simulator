@@ -15,7 +15,8 @@ class Configuration(ConfigurationBase):
                  network_controller_type: Type['NetworkControllerBase'],
                  max_delay: int,
                  adversary_controller_type: Type['AdversaryControllerBase'],
-                 measurement_type: Type['MeasurementBase']):
+                 measurement_type: Type['MeasurementBase'],
+                 trust_length: int):
         self.m_num_nodes = num_nodes
         self.m_ratio_corrupted = ratio_corrupted
         self.m_honest_node_type = honest_node_type
@@ -24,6 +25,10 @@ class Configuration(ConfigurationBase):
         self.m_max_delay = max_delay
         self.m_adversary_controller_type = adversary_controller_type
         self.m_measurement_type = measurement_type
+        self.m_trust_length = trust_length
+
+    def get_trust_length(self) -> int:
+        return self.m_trust_length
 
     # @property
     def get_num_nodes(self) -> int:
