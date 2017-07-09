@@ -69,8 +69,8 @@
         Store transactions that will be added into block
         * find_tx(self, tx) -> bool : placeholder
             check if a specific transaction is already in it
-        * add_tx(self, tx) -> bool
-            add a transaction into pool if
+        * add_tx(self, tx)
+            add a transaction into pool
         * remove_tx(self, tx) : placeholder
             remove a specific transaction
         * pop_one(self) : placeholder
@@ -107,21 +107,20 @@ class TxPool:
     def __init__(self):
         self.txs = []
 
-    def add_tx(self, txs) -> Tx:
-        self.txs.append(txs)
-        return txs
+    def add_tx(self, tx: Tx):
+        self.txs.append(tx)
 
-    def remove_tx(self, txs) -> bool:
-        for item in self.txs:
-            if txs == item:
-                self.txs.remove(txs)
+    def remove_tx(self, tx) -> bool:
+        for item in self.tx:
+            if tx == item:
+                self.txs.remove(tx)
                 return True
         return False
 
-    def find_tx(self, txs) -> Optional['Tx']:
+    def find_tx(self, tx) -> Optional['Tx']:
         for item in self.txs:
-            if txs == item:
-                return txs
+            if tx == item:
+                return tx
         return None
 
     def get_all(self):  # get data
@@ -153,7 +152,7 @@ class TNode:
         self.depth = depth  # type: int
         self.block = block  # type: TBlock
         # own hash
-        self.hash = block.hashval  # type: str
+        self.hash = block.hashval  # type: Hashval
         self.father = father  # type: Optional['TNode']
 
         self.index = []  # type: List[int]
@@ -191,8 +190,8 @@ class TNode:
         self.index[i] = self.index[j]
         self.index[j] = x
 
-    def search(self, p_hash: str) -> Optional['TNode']:
-        res = None  # type: Union[TNode, None]
+    def search(self, p_hash: Hashval) -> Optional['TNode']:
+        res = None      # type: Union[TNode, None]
         for child in self.children:
             if child.hash == p_hash:
                 return child
@@ -211,7 +210,7 @@ class BlockChain:
         self.head = self.genesis    # type: TNode
         self.tail = self.genesis    # type: TNode
 
-    def find(self, hash_val: str) -> Optional['TNode']:
+    def find(self, hash_val: Hashval) -> Optional['TNode']:
         if self.head.hash == hash_val:
             return self.head
         else:
@@ -245,7 +244,6 @@ class BlockChain:
         return self.tail
 
 
-# TODO: add function find(Hashval) -> bool
 class OrphanBlockPool:
 
     def __init__(self):
@@ -263,7 +261,8 @@ class OrphanBlockPool:
         if temp_block == []:
             return None
         return temp_block
-    def find(self, hashval) -> Optional[List['TBlock']]:
+
+    def find(self, hashval: Hashval) -> Optional[List['TBlock']]:
         temp_block = []
         for i in self.block:
             if i.hashval == hashval:
