@@ -7,14 +7,14 @@ if TYPE_CHECKING:
 class Coordinator:
     def __init__(self, configuration: Type['ConfigurationBase']) -> None:
         self.config = configuration
-        raise NotImplementedError
+        self.m_nodes = []
 
-    def add_node(self, node: Type['NodeBase']) -> None:
-        raise NotImplementedError
+    def add_node(self, node: NodeBase) -> None:
+        self.m_nodes.append(node)
 
     @property
-    def nodes(self) -> List[Type['NodeBase']]:
-        raise NotImplementedError
+    def nodes(self) -> List[NodeBase]:
+        return self.m_nodes
 
     @property
     def configuration(self) -> Type['ConfigurationBase']:
