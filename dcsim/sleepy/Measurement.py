@@ -6,11 +6,9 @@ class Measurement(MeasurementBase):
     def should_stop(self) -> bool:
         raise NotImplementedError
 
-    def __init__(self,
-                 corrupted_nodes: List[Type[NodeBase]],
-                 honest_nodes: List[Type[NodeBase]],
-                 network: Type[NetworkControllerBase],
-                 adv: Type[AdversaryControllerBase]) -> None:
+    def __init__(self, corrupted_nodes: List[Type[NodeBase]], honest_nodes: List[Type[NodeBase]],
+                 network: Type[NetworkControllerBase], adv: Type[AdversaryControllerBase]) -> None:
+        super().__init__(corrupted_nodes, honest_nodes, network, adv)
         self.corrupted_nodes = corrupted_nodes
         self.honest_nodes = honest_nodes
         self.num_corrupted_nodes = len(corrupted_nodes)
