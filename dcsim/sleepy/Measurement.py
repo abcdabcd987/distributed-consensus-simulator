@@ -11,7 +11,16 @@ class Measurement(MeasurementBase):
                  honest_nodes: List[Type[NodeBase]],
                  network: Type[NetworkControllerBase],
                  adv: Type[AdversaryControllerBase]) -> None:
-        raise NotImplementedError
+        self.corrupted_nodes = corrupted_nodes
+        self.honest_nodes = honest_nodes
+        self.num_corrupted_nodes = len(corrupted_nodes)
+        self.num_honest_nodes = len(honest_nodes)
+        self.num_nodes = self.num_corrupted_nodes + self.num_honest_nodes
+
 
     def report(self) -> None:
-        raise NotImplementedError
+        s = "Trivial Consistency Attack: \n" \
+            + "# Honest Nodes:\t" + self.num_honest_nodes + "\n" \
+            + "# Corrupted Nodes:\t" + self.num_corrupted_nodes + "\n" \
+            + "Corrupted Ratio:\t" + self.num_corrupted_nodes / self.num_nodes + "\n"
+        repr(s)
