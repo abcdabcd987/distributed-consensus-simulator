@@ -1,6 +1,7 @@
 from typing import *
 from dcsim.framework import *
 import hashlib
+import random
 
 D_p = "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 
@@ -15,8 +16,9 @@ def check(id:int, timestamp:int):
 
 class transaction():
 
-    def __init__(self, id:int, key:str):
-        self._id = id
+    def __init__(self, key="empty transaction"):
+        random.seed()
+        self._id = random.randint(0, 1 << 32)
         self._key = key
 
     @property
