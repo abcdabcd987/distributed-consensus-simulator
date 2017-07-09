@@ -160,7 +160,7 @@ class TNode:
         self.block = block  # type: TBlock
         # own hash
         self.hash = block.hashval  # type: str
-        self.father = father  # type: TNode
+        self.father = father  # type: Optional['TNode']
 
         self.index = []  # type: List[int]
         self.children = []  # type: List[TNode]
