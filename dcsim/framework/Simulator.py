@@ -1,11 +1,46 @@
 from typing import *
-if TYPE_CHECKING:
-    from .ConfigurationBase import ConfigurationBase
+from .ConfigurationBase import ConfigurationBase
+from .Coordinator import Coordinator
+from .Context import Context
 
 
 class Simulator:
     def __init__(self, config: Type['ConfigurationBase']) -> None:
-        raise NotImplementedError
+        
+        self.coordinator = Coordinator(configuration=config)
+
+        num_corrupted_nodes = int(config.get_num_nodes() * config.get_ratio_corrupted())
+        num_honest_nodes = config.get_num_nodes() - num_corrupted_nodes
+        self.honest_nodes = [config.get_honest_node_type()() for _ in range(0, num_honest_nodes)]
+        self.corrupted_nodes = [config.get_corrupted_node_type()() for _ in range(0, num_corrupted_nodes)]
+        self.nodes = self.honest_nodes + self.corrupted_nodes
+        for node in self.nodes:
+            self.coordinator.add_node(node)
+        
+        self.network = config.get_network_controller_type()()
+        self.adversary = config.get_adversary_controller_type()()
+        self.measure = config.get_measurement_type()()
 
     def run(self):
-        raise NotImplementedError
+        round_counter = 0
+        pending_message_tuples = []
+        # received_message_tuples = []
+        while not self.measure.should_stop():
+            # increase round counter
+            round_counter += 1
+            
+            # get adversarial instructions from adversary controller
+            adversarial_instructions = self.adversary.round_instruction(self.corrupted_nodes, pending_message_tuples)
+            
+            # filter message to deliver
+            received_message_tuples = self.network.round_filter(pending_message_tuples)
+            pending_message_tuples = [message_tuple
+                                      for message_tuple in pending_message_tuples
+                                      if message_tuple not in received_message_tuples
+                                      ]
+            
+            for node in self.nodes:
+                ctx = Context(round_counter, node, self.coordinator, received_message_tuples, adversarial_instructions)
+                node.round_action(ctx)
+                pending_message_tuples += ctx.get_messages_to_send()
+        self.measure.report()

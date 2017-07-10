@@ -6,5 +6,5 @@ if TYPE_CHECKING:
 
 class NetworkControllerBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def round_filter(self, messages_to_send: List['MessageTuple']) -> List[bool]:
+    def round_filter(self, messages_to_send: List['MessageTuple']) -> List[MessageTuple]:
         pass

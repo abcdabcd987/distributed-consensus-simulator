@@ -4,7 +4,7 @@ if TYPE_CHECKING:
 
 
 class MessageTuple(NamedTuple):
-    sender: 'NodeId'
-    receiver: 'NodeId'
+    sender: NodeId
+    receiver: NodeId
     round: int
     message: Any
