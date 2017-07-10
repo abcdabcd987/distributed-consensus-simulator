@@ -17,7 +17,7 @@ class Context:
         self.node = node
         self.coordinator = coordinator
         self.received_messages = [
-            message_tuple.message
+            message_tuple
             for message_tuple in received_messages
             if message_tuple.receiver == node.id
         ]
@@ -35,7 +35,7 @@ class Context:
             self.send(receiver_id, message)
 
     # @property
-    def get_received_messages(self) -> List[Any]:
+    def get_received_messages(self) -> List[MessageTuple]:
         return self.received_messages
 
     # @property
