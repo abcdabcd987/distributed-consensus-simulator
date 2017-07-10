@@ -46,5 +46,8 @@ class Context:
     def get_instruction(self) -> Any:
         return self.instruction
     
-    def get_coordinator(self):
-        return self.coordinator
+    def sign(self, message: str, sender: NodeId) -> str:
+        return self.coordinator.sign(message, sender)
+    
+    def verify(self, signature: str, message: str, sender: NodeId) -> bool:
+        return self.coordinator.verify(signature, message, sender)
