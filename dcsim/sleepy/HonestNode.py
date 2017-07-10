@@ -147,9 +147,12 @@ class TBlock:
 
     @property
     def hashval(self) -> Hashval:  # get its own hash
-        hashstr = "".join(self.txs) + str(self.timestamp) + str(self.pid)
+        hashstr = self.str
         return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
 
+    @property
+    def str(self) -> str:   # get its string
+        return self.pbhv + "".join(self.txs) + str(self.timestamp) + str(self.pid)
 
 class TNode:
 
@@ -294,11 +297,7 @@ def check_solution(tblock: TBlock):
         return False
 
 Message = Any
-SignedMessage = Message
-
-
-def sign_message(message: Message, priv_key) -> SignedMessage:
-    return message if priv_key is not None else message
+# {"type": *, "value": *, "signature": *}
 
 
 class HonestNode(NodeBase):
@@ -344,10 +343,12 @@ class HonestNode(NodeBase):
     # TODO: broadcast txs and deal with duplicate txs in chain and pool
     def round_action(self, ctx: Context) -> None:
         # check received blocks
-        messages: List[Any] = ctx.received_messages
+        message_tuples: List[MessageTuple] = ctx.received_messages()
         blocks: List[TBlock] = []       # store valid blocks
 
-        for message in messages:
+        for message_tuple in message_tuples:
+            message = message_tuple.message
+
             if message["type"] == 0:   # its a transaction
                 if check_tx(message["value"]):
                     self._txpool.add_tx(message["value"])
