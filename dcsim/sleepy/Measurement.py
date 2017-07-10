@@ -4,7 +4,7 @@ from dcsim.framework import *
 
 class Measurement(MeasurementBase):
     def should_stop(self, round) -> bool:
-        return round > 100
+        return round > 5
 
     def __init__(self, corrupted_nodes: List[Type[NodeBase]], honest_nodes: List[Type[NodeBase]],
                  network: Type[NetworkControllerBase], adv: Type[AdversaryControllerBase]) -> None:

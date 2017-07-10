@@ -100,7 +100,20 @@ from dcsim.framework import *
 
 D_p = "0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
-Tx = str
+class Tx:
+    def __init__(self, key="0"):
+        random.seed()
+        self._id = random.randint(0, 1 << 32)
+        self._key = key
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def key(self):
+        return self.key
+
 Hashval = str
 Timestamp = int
 NodeId = int
@@ -116,7 +129,7 @@ class TxPool:
         self.txs.append(tx)
 
     def remove_tx(self, tx) -> bool:
-        for item in self.tx:
+        for item in self.txs:
             if tx == item:
                 self.txs.remove(tx)
                 return True
@@ -137,13 +150,14 @@ class TxPool:
 
 class TBlock:
 
-    def __init__(self, pbhv, txs, timestamp, pid):
+    def __init__(self, pbhv: object, txs: object, timestamp: object, pid: object) -> object:
         # comes from TxPool
         self.txs = txs  # type: List[Tx]
         # father's hash
         self.pbhv = pbhv  # type: Hashval
         self.timestamp = timestamp  # type: Timestamp
         self.pid = pid  # type: NodeId
+        self.children = []
 
     @property
     def id(self):
@@ -159,9 +173,13 @@ class TBlock:
 
     @property
     def hashval(self) -> Hashval:  # get its own hash
-        hashstr = str(self.pbhv) + "".join(self.txs) + str(self.timestamp) + str(self.pid)
+        txs_Str = ""
+        for item in self.txs:
+            txs_Str.join("(%d,%s)" % (item.id, item.key))
+        hashstr = str(self.pbhv) + txs_Str + str(self.timestamp) + str(self.pid)
         return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
 
+SuperRoot = TBlock("0", [], 0, 0)
 
 class TNode:
 
@@ -223,7 +241,7 @@ class BlockChain:
 
     def __init__(self) -> None:
         # pbhv = "0", txs = [], timestamp = 0, nid = 0
-        self.genesis = TNode(0, TBlock("0", [], 0, 0), None)    # type: TNode
+        self.genesis = TNode(0, SuperRoot, None)    # type: TNode
         self.head = self.genesis    # type: TNode
         self.tail = self.genesis    # type: TNode
 
@@ -375,6 +393,9 @@ class HonestNode(NodeBase):
                     continue
                 else:
                     blocks.append(message["value"])
+
+        #print("Honest node line 395:")
+        #print(blocks)
 
         for block in blocks:
             # check if this block has been received

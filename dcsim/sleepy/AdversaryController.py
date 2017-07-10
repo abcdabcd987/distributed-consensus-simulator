@@ -1,7 +1,8 @@
 import hashlib
 import random
 from dcsim.framework import *
-from .HonestNode import TBlock, D_p
+from .HonestNode import TBlock, D_p, SuperRoot
+from .HonestNode import Tx as Transaction
 from typing import *
 if TYPE_CHECKING:
     from .CorruptedNode import CorruptedNode
@@ -13,21 +14,6 @@ def check(id:int, timestamp:int):
     return sha.hexdigest() < D_p
 
 
-class Transaction:
-    def __init__(self, key="empty transaction"):
-        random.seed()
-        self._id = random.randint(0, 1 << 32)
-        self._key = key
-
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def key(self):
-        return self.key
-
-
 class TransactionPool:
     def __init__(self):
         self._keys = {}
@@ -35,7 +21,7 @@ class TransactionPool:
     def contain_key(self, key):
         return key in self._keys.keys()
 
-    def insert(self, key):
+    def insert(self, key:Transaction):
         self._keys[key.id] = key
 
     def get_all(self):
@@ -50,35 +36,22 @@ class TransactionPool:
 
 class BlockTree():
     def __init__(self, key):
-        self._key = key
-        self._children = []
-        self._blockPool = {}
         self._depth = 0
+        self._blockPool = {SuperRoot.hashval:SuperRoot}
 
     @property
     def depth(self) -> int:
         return self._depth
 
-    @property
-    def key(self) -> TBlock:
-        return self._key
-
-    @property
-    def children(self):
-        return self._children
-
-    def contain_child(self, cur: TBlock):
-        for child in self._children:
-            if child.hash == cur.hashval:
-                return True
-        return False
-
     def insert(self, cur: TBlock):
+        if cur.hashval in self._blockPool.keys():
+            return
         tmp = cur
         seq = []
-        while tmp.prev_hash != "":
+        while tmp.hashval != SuperRoot.hashval:
             seq.append(tmp)
-            tmp = self._blockPool.get(tmp.prev_hash, "404")
+            print("### %s %s" % (tmp.hashval, tmp.pbhv))
+            tmp = self._blockPool.get(tmp.pbhv, "404")
             if tmp == "404":
                 break
         if tmp == "404":
@@ -91,17 +64,14 @@ class BlockTree():
             self._depth = max(self._depth, len(seq))
 
 
-EMPTY_NODE = TBlock("", "", 0, 0)
-
-
 def valid(block: TBlock, timestamp: int):
     return check(block.id, block.round) and block.round <= timestamp
 
 
 class AdversaryController(AdversaryControllerBase):
     def __init__(self):
-        self._root = BlockTree(EMPTY_NODE)
-        self._chain = [EMPTY_NODE]
+        self._root = BlockTree(SuperRoot)
+        self._chain = [SuperRoot]
         self._tx = TransactionPool()
 
     def round_instruction(self,
@@ -110,12 +80,17 @@ class AdversaryController(AdversaryControllerBase):
                           current_round: int,
                           confirm_time: int) -> Dict['NodeId', Any]:
         print('AdversaryController.round_instruction')
+        #print('Pending messages:')
+        #print(pending_messages)
+        print("SuperRoot hash: %s" % SuperRoot.hashval)
         for message in pending_messages:
             message = message.message
+            print(message["type"], message["value"])
             if message["type"] == 0:
                 if not self._tx.contain_key(message["value"]):
                     self._tx.insert(message["value"])
             else:
+                print(message["value"].id, message["value"].round, message["value"].pbhv)
                 if valid(message["value"], current_round):
                     self._root.insert(message["value"])
 
@@ -129,5 +104,7 @@ class AdversaryController(AdversaryControllerBase):
                 if len(self._chain) > self._root._depth + confirm_time:
                     badNode.add_send(self._chain)
                     self._chain = [EMPTY_NODE]
+                    print("Corrupt chain pushed")
                 ret[badNode.id] = None
+        print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain)))
         return ret
