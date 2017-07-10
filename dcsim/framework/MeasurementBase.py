@@ -16,7 +16,7 @@ class MeasurementBase(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def should_stop(self) -> bool:
+    def should_stop(self, round) -> bool:
         pass
 
     @abc.abstractmethod
