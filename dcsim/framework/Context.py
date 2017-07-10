@@ -45,3 +45,6 @@ class Context:
     # @property
     def get_instruction(self) -> Any:
         return self.instruction
+    
+    def get_coordinator(self):
+        return self.coordinator
