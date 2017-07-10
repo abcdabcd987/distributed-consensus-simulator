@@ -1,11 +1,10 @@
 import hashlib
 import random
 from dcsim.framework import *
+from .HonestNode import TBlock, D_p
 from typing import *
 if TYPE_CHECKING:
     from .CorruptedNode import CorruptedNode
-
-D_p = "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 
 
 def check(id:int, timestamp:int):
@@ -49,31 +48,6 @@ class TransactionPool:
         self._keys = {}
 
 
-class Block:
-    def __init__(self, prev_hash, txs, time, id, hash):
-        self._prev_hash = prev_hash
-        self._txs = txs
-        self._round = time
-        self._id = id
-        self._hash = hash
-
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def hsh(self) -> str:
-        return self._hash
-
-    @property
-    def prev_hash(self) -> str:
-        return self._prev_hash
-
-    @property
-    def round(self) -> int:
-        return self.round
-
-
 class BlockTree():
     def __init__(self, key):
         self._key = key
@@ -86,27 +60,29 @@ class BlockTree():
         return self._depth
 
     @property
-    def key(self) -> Block:
+    def key(self) -> TBlock:
         return self._key
 
     @property
     def children(self):
         return self._children
 
-    def contain_child(self, cur:Block):
+    def contain_child(self, cur: TBlock):
         for child in self._children:
-            if child.hsh == cur.hsh:
+            if child.hash == cur.hashval:
                 return True
         return False
 
-    def insert(self, cur:Block):
+    def insert(self, cur: TBlock):
         tmp = cur
         seq = []
         while tmp.prev_hash != "":
             seq.append(tmp)
-            tmp = self._blockPool.get(tmp.prev_hash, default="404")
+            tmp = self._blockPool.get(tmp.prev_hash, "404")
+            if tmp == "404":
+                break
         if tmp == "404":
-            self._blockPool[cur.hsh] = cur
+            self._blockPool[cur.hashval] = cur
         else:
             for node in seq:
                 if node not in tmp.children:
@@ -115,10 +91,10 @@ class BlockTree():
             self._depth = max(self._depth, len(seq))
 
 
-EMPTY_NODE = Block("", "", 0, 0, "ROOT")
+EMPTY_NODE = TBlock("", "", 0, 0)
 
 
-def valid(block: Block, timestamp: int):
+def valid(block: TBlock, timestamp: int):
     return check(block.id, block.round) and block.round <= timestamp
 
 
@@ -133,6 +109,7 @@ class AdversaryController(AdversaryControllerBase):
                           pending_messages: List['MessageTuple'],
                           current_round: int,
                           confirm_time: int) -> Dict['NodeId', Any]:
+        print('AdversaryController.round_instruction')
         for message in pending_messages:
             message = message.message
             if message["type"] == 0:
@@ -145,12 +122,12 @@ class AdversaryController(AdversaryControllerBase):
         ret = {}
         for badNode in corrupted_nodes:
             if check(badNode.id, current_round):
-                src_str = "".join(self._chain[-1].hsh).join(self._tx.get_all()).join("%d" % current_round).join("%d" % badNode.id)
-                hsh = hashlib.sha256(src_str.encode("utf-8")).hexdigest()
-                block = Block(self._chain[-1].hsh, self._tx.get_all(), current_round, badNode.id, hsh)
+                print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
+                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), current_round, badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
                 if len(self._chain) > self._root._depth + confirm_time:
                     badNode.add_send(self._chain)
+                    self._chain = [EMPTY_NODE]
                 ret[badNode.id] = None
         return ret

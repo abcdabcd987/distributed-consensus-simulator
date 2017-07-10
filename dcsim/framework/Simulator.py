@@ -28,11 +28,13 @@ class Simulator:
         while not self.measure.should_stop(round_counter):
             # increase round counter
             round_counter += 1
+            print('Simulator: current round', round_counter)
             # get adversarial instructions from adversary controller
             adversarial_instructions = self.adversary.round_instruction(self.corrupted_nodes, pending_message_tuples, round_counter, self.trust_length)
 
             # filter message to deliver
-            received_message_tuples = self.network.round_filter(pending_message_tuples, self.max_delay, round_counter, self.corrupted_nodes)
+            filtered = self.network.round_filter(pending_message_tuples, self.max_delay, round_counter, self.corrupted_nodes)
+            received_message_tuples = [m for m, p in zip(pending_message_tuples, filtered) if p]
             pending_message_tuples = [message_tuple
                                       for message_tuple in pending_message_tuples
                                       if message_tuple not in received_message_tuples

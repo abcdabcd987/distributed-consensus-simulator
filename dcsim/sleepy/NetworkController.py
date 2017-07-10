@@ -8,6 +8,7 @@ class NetworkController(NetworkControllerBase):
                      max_delay: int,
                      current_round: int,
                      corrupted_nodes: List[NodeBase]) -> List[bool]:
+        print('NetworkController.round_filter')
         corrupted_set = set([c.id for c in corrupted_nodes])
         res = []
         for messageTuple in messages_to_send:

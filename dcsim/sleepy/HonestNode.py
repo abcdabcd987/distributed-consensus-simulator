@@ -98,7 +98,7 @@ import random
 from typing import *
 from dcsim.framework import *
 
-D_p = "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
+D_p = "0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
 Tx = str
 Hashval = str
@@ -146,8 +146,20 @@ class TBlock:
         self.pid = pid  # type: NodeId
 
     @property
+    def id(self):
+        return self.pid
+
+    @property
+    def prev_hash(self) -> str:
+        return self.pbhv
+
+    @property
+    def round(self) -> int:
+        return self.timestamp
+
+    @property
     def hashval(self) -> Hashval:  # get its own hash
-        hashstr = "".join(self.txs) + str(self.timestamp) + str(self.pid)
+        hashstr = str(self.pbhv) + "".join(self.txs) + str(self.timestamp) + str(self.pid)
         return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
 
 
@@ -347,6 +359,7 @@ class HonestNode(NodeBase):
                     self.recursive_add_block_from_orphan_pool(new_node)
 
     def round_action(self, ctx: Context) -> None:
+        print('HonestNode.round_action: nodeId', self._nodeId)
         # check received blocks
         messages: List[Any] = ctx.received_messages
         blocks: List[TBlock] = []       # store valid blocks
@@ -386,6 +399,7 @@ class HonestNode(NodeBase):
         t = ctx.round
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
         if check_solution(my_block):
+            print('HonestNode.round_action: NodeId', self._nodeId, 'chosen as the leader')
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             ctx.broadcast({"type": 1, "value": my_block})
             self._txpool.clear_all()

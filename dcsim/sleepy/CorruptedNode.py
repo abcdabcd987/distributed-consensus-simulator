@@ -17,5 +17,6 @@ class CorruptedNode(NodeBase):
         self._cache = blocks
 
     def round_action(self, ctx: Context) -> None:
+        print('CorruptedNode.round_action: nodeId', self._id)
         while len(self._cache) > 0:
             ctx.broadcast({"type": 1, "value": self._cache.pop()})

@@ -26,7 +26,7 @@ class Context:
 
     def send(self, receiver: NodeId, message: Any) -> None:
         sender = self.node.id
-        message_tuple = MessageTuple.__new__((sender, receiver, round, message))
+        message_tuple = MessageTuple(sender=sender, receiver=receiver, round=self.round, message=message)
         self.message_tuples_to_send.append(message_tuple)
 
     def broadcast(self, message: Any) -> None:
