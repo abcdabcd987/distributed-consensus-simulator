@@ -116,7 +116,7 @@ class TxPool:
         self.txs.append(tx)
 
     def remove_tx(self, tx) -> bool:
-        for item in self.tx:
+        for item in self.txs:
             if tx == item:
                 self.txs.remove(tx)
                 return True
@@ -263,7 +263,7 @@ class OrphanBlockPool:
             if i.pbhv == hv:
                 temp_block.append(i)
                 self.block.remove(i)
-        if temp_block == []:
+        if not temp_block:
             return None
         return temp_block
 
@@ -272,7 +272,7 @@ class OrphanBlockPool:
         for i in self.block:
             if i.hashval == hashval:
                 temp_block.append(i)
-        if temp_block == []:
+        if not temp_block:
             return None
         return temp_block
 
@@ -303,12 +303,7 @@ def sign_message(message: Message, priv_key) -> SignedMessage:
 
 class HonestNode(NodeBase):
 
-    def __init__(self, coorindator):
-        # coordinator provides the "permissioned" services
-        self._coorindator = coorindator
-        # codes to generate rsa key pair, not used yet
-        # (self.pub_key, self.priv_key) = rsa.newkeys(512)
-
+    def __init__(self):
         random.seed()
         self._nodeId = random.randint(1, 2**32)
         self._txpool = TxPool()
@@ -346,6 +341,7 @@ class HonestNode(NodeBase):
                     new_node = self._block_chain.add_child(curnode, b2a)
                     self.recursive_add_block_from_orphan_pool(new_node)
 
+    # TODO: broadcast txs and deal with duplicate txs in chain and pool
     def round_action(self, ctx: Context) -> None:
         # check received blocks
         messages: List[Any] = ctx.received_messages
@@ -370,6 +366,7 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
+            # TODO: sign message, first change message to JSON string and then use ctx.coordinator.sign()
             ctx.broadcast({"type": 1, "value": block})
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
@@ -387,6 +384,7 @@ class HonestNode(NodeBase):
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
         if check_solution(my_block):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
+            # TODO: sign message, first change message to JSON string and then use ctx.coordinator.sign()
             ctx.broadcast({"type": 1, "value": my_block})
             self._txpool.clear_all()
         return None
