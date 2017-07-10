@@ -12,6 +12,10 @@
         @ property
         * hashval(self) -> Hashval (string)
             hashval is encrypted with SHA256 whose parameters are txs, timestamp and pid.
+        @property
+        * str(self) -> str
+            change block to str
+            make sure to use it only when you are calling ctx.sign
 
     * TNode class
         we use tree to keep tract of main chain and alternative chains,
