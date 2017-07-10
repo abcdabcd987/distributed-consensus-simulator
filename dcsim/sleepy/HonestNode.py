@@ -340,7 +340,6 @@ class HonestNode(NodeBase):
                     new_node = self._block_chain.add_child(curnode, b2a)
                     self.recursive_add_block_from_orphan_pool(new_node)
 
-    # TODO: broadcast txs and deal with duplicate txs in chain and pool
     def round_action(self, ctx: Context) -> None:
         # check received blocks
         message_tuples: List[MessageTuple] = ctx.received_messages()
@@ -348,17 +347,25 @@ class HonestNode(NodeBase):
 
         for message_tuple in message_tuples:
             message = message_tuple.message
-
+            sender = message_tuple.sender
             if message["type"] == 0:   # its a transaction
-                if check_tx(message["value"]):
-                    self._txpool.add_tx(message["value"])
-            elif message["type"] == 1:   # its a block
-                if not check_solution(message["value"]):
-                    continue
-                elif message["value"].timestamp >= ctx.round:
-                    continue
+                if ctx.verify(message["signature"], message["value"], sender) \
+                        and check_tx(message["value"]):
+                    if not self._txpool.find_tx(message["value"]):
+                        my_sig = ctx.sign(message["value"], self.id)
+                        ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
+                        self._txpool.add_tx(message["value"])
+                    else:
+                        continue
                 else:
+                    continue
+            elif message["type"] == 1:   # its a block
+                if ctx.verify(message["signature"], message["value"].str, sender) \
+                        and check_solution(message["value"])\
+                        and message["value"].timestamp >= ctx.round:
                     blocks.append(message["value"])
+                else:
+                    continue
 
         for block in blocks:
             # check if this block has been received
@@ -367,8 +374,8 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
-            # TODO: sign message, first change message to JSON string and then use ctx.coordinator.sign()
-            ctx.broadcast({"type": 1, "value": block})
+            my_sig = ctx.sign(block.str, self.id)
+            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
@@ -376,6 +383,9 @@ class HonestNode(NodeBase):
             elif cur_node.block.timestamp >= block.timestamp:
                 self.recursive_remove_block_from_orphan_pool(block)
             else:
+                if cur_node == self._block_chain.get_top():
+                    for tx in block.txs:
+                        self._txpool.remove_tx(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
 
@@ -385,7 +395,7 @@ class HonestNode(NodeBase):
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
         if check_solution(my_block):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
-            # TODO: sign message, first change message to JSON string and then use ctx.coordinator.sign()
-            ctx.broadcast({"type": 1, "value": my_block})
+            my_sig = ctx.sign(my_block.str, self.id)
+            ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
             self._txpool.clear_all()
         return None
