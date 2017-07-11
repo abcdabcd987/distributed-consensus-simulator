@@ -43,4 +43,5 @@ class Simulator:
                 ctx = Context(round_counter, node, self.coordinator, received_message_tuples, adversarial_instructions)
                 node.round_action(ctx)
                 pending_message_tuples += ctx.get_messages_to_send()
+            self.measure.report_every(self.honest_nodes, self.corrupted_nodes, round_counter)
         self.measure.report()

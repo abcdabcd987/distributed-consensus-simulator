@@ -1,0 +1,306 @@
+Simulator: current round 1
+AdversaryController.round_instruction: NodeId 2932337374 chosen as the leader
+AdversaryController.round_instruction: NodeId 1590176712 chosen as the leader
+Current honest length 0, corrupt chain length 2
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 1
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+----------------------------------------------------------------
+Simulator: current round 2
+AdversaryController.round_instruction: NodeId 2932337374 chosen as the leader
+Corrupt chain pushed
+Current honest length 0, corrupt chain length 0
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 2
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+----------------------------------------------------------------
+Simulator: current round 3
+Current honest length 1, corrupt chain length 0
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 3
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 4
+AdversaryController.round_instruction: NodeId 2932337374 chosen as the leader
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 4
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 5
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 5
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 6
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 6
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 7
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 7
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 8
+AdversaryController.round_instruction: NodeId 629751025 chosen as the leader
+Current honest length 1, corrupt chain length 2
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 8
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 9
+Current honest length 1, corrupt chain length 2
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 9
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 10
+Current honest length 1, corrupt chain length 2
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 10
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 11
+Current honest length 1, corrupt chain length 2
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 11
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 12
+AdversaryController.round_instruction: NodeId 1590176712 chosen as the leader
+Current honest length 1, corrupt chain length 3
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 12
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 13
+Current honest length 1, corrupt chain length 3
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 13
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 14
+AdversaryController.round_instruction: NodeId 629751025 chosen as the leader
+Corrupt chain pushed
+Current honest length 1, corrupt chain length 0
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 14
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+9549b5adedcfe1163a888a87eab2c037f73b049a99dc78226c7224bbd4c5e9e5
+----------------------------------------------------------------
+Simulator: current round 15
+Current honest length 1, corrupt chain length 0
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 15
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+dbd9559d74a74a752582730a4cf55b72e179fda981d1e721ccfd466c7df9f7f4
+5632ed33f53e5692eae94d2bee2dc3ad0ff5b2ccca4ceceaa5991b5872ec3970
+11e9eee8d27b1f9fbc9122ca1c20515d1f11a3c022a5afaa7624b472369c2005
+517697bc2aa2e714f6cfa3208fd00f3e64403b0ecf9691338b301b3ddd88f6d1
+----------------------------------------------------------------
+Simulator: current round 16
+AdversaryController.round_instruction: NodeId 1590176712 chosen as the leader
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 16
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+dbd9559d74a74a752582730a4cf55b72e179fda981d1e721ccfd466c7df9f7f4
+5632ed33f53e5692eae94d2bee2dc3ad0ff5b2ccca4ceceaa5991b5872ec3970
+11e9eee8d27b1f9fbc9122ca1c20515d1f11a3c022a5afaa7624b472369c2005
+517697bc2aa2e714f6cfa3208fd00f3e64403b0ecf9691338b301b3ddd88f6d1
+----------------------------------------------------------------
+Simulator: current round 17
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 17
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+dbd9559d74a74a752582730a4cf55b72e179fda981d1e721ccfd466c7df9f7f4
+5632ed33f53e5692eae94d2bee2dc3ad0ff5b2ccca4ceceaa5991b5872ec3970
+11e9eee8d27b1f9fbc9122ca1c20515d1f11a3c022a5afaa7624b472369c2005
+517697bc2aa2e714f6cfa3208fd00f3e64403b0ecf9691338b301b3ddd88f6d1
+----------------------------------------------------------------
+Simulator: current round 18
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 18
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+dbd9559d74a74a752582730a4cf55b72e179fda981d1e721ccfd466c7df9f7f4
+5632ed33f53e5692eae94d2bee2dc3ad0ff5b2ccca4ceceaa5991b5872ec3970
+11e9eee8d27b1f9fbc9122ca1c20515d1f11a3c022a5afaa7624b472369c2005
+517697bc2aa2e714f6cfa3208fd00f3e64403b0ecf9691338b301b3ddd88f6d1
+----------------------------------------------------------------
+Simulator: current round 19
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 19
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+dbd9559d74a74a752582730a4cf55b72e179fda981d1e721ccfd466c7df9f7f4
+5632ed33f53e5692eae94d2bee2dc3ad0ff5b2ccca4ceceaa5991b5872ec3970
+11e9eee8d27b1f9fbc9122ca1c20515d1f11a3c022a5afaa7624b472369c2005
+517697bc2aa2e714f6cfa3208fd00f3e64403b0ecf9691338b301b3ddd88f6d1
+----------------------------------------------------------------
+Simulator: current round 20
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 20
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+dbd9559d74a74a752582730a4cf55b72e179fda981d1e721ccfd466c7df9f7f4
+5632ed33f53e5692eae94d2bee2dc3ad0ff5b2ccca4ceceaa5991b5872ec3970
+11e9eee8d27b1f9fbc9122ca1c20515d1f11a3c022a5afaa7624b472369c2005
+517697bc2aa2e714f6cfa3208fd00f3e64403b0ecf9691338b301b3ddd88f6d1
+----------------------------------------------------------------
+Simulator: current round 21
+Current honest length 1, corrupt chain length 1
+NetworkController.round_filter
+CorruptedNode.round_action: nodeId 2932337374
+CorruptedNode.round_action: nodeId 629751025
+CorruptedNode.round_action: nodeId 1590176712
+CorruptedNode.round_action: nodeId 2064981779
+----------------------------------------------------------------
+@ Round 21
+The chain of node 1818920249 is:
+2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef
+dbd9559d74a74a752582730a4cf55b72e179fda981d1e721ccfd466c7df9f7f4
+5632ed33f53e5692eae94d2bee2dc3ad0ff5b2ccca4ceceaa5991b5872ec3970
+11e9eee8d27b1f9fbc9122ca1c20515d1f11a3c022a5afaa7624b472369c2005
+517697bc2aa2e714f6cfa3208fd00f3e64403b0ecf9691338b301b3ddd88f6d1
+----------------------------------------------------------------
+Trivial Consistency Attack:
+# Honest Nodes: 1
+# Corrupted Nodes: 4
+Corrupted Ratio: 0.8 

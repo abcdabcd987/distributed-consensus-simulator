@@ -377,7 +377,7 @@ class HonestNode(NodeBase):
                     self.recursive_add_block_from_orphan_pool(new_node)
 
     def round_action(self, ctx: Context) -> None:
-        print('HonestNode.round_action: nodeId', self._nodeId)
+        #print('HonestNode.round_action: nodeId', self._nodeId)
         # check received blocks
         messages: List[Any] = ctx.received_messages
         blocks: List[TBlock] = []       # store valid blocks

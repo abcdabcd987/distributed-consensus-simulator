@@ -50,7 +50,7 @@ class BlockTree():
         seq = []
         while tmp.hashval != SuperRoot.hashval:
             seq.append(tmp)
-            print("### %s %s" % (tmp.hashval, tmp.pbhv))
+            #print("AdversaryController - BlockTree.insert: searching %s %s" % (tmp.hashval, tmp.pbhv))
             tmp = self._blockPool.get(tmp.pbhv, "404")
             if tmp == "404":
                 break
@@ -61,6 +61,7 @@ class BlockTree():
                 if node not in tmp.children:
                     tmp.children.append(node)
                 tmp = node
+            self._blockPool[cur.hashval] = cur
             self._depth = max(self._depth, len(seq))
 
 
@@ -79,18 +80,18 @@ class AdversaryController(AdversaryControllerBase):
                           pending_messages: List['MessageTuple'],
                           current_round: int,
                           confirm_time: int) -> Dict['NodeId', Any]:
-        print('AdversaryController.round_instruction')
+        #print('AdversaryController.round_instruction')
         #print('Pending messages:')
         #print(pending_messages)
-        print("SuperRoot hash: %s" % SuperRoot.hashval)
+        #print("SuperRoot hash: %s" % SuperRoot.hashval)
         for message in pending_messages:
             message = message.message
-            print(message["type"], message["value"])
+            #print(message["type"], message["value"])
             if message["type"] == 0:
                 if not self._tx.contain_key(message["value"]):
                     self._tx.insert(message["value"])
             else:
-                print(message["value"].id, message["value"].round, message["value"].pbhv)
+                #print("Dealing with ", message["value"].id, message["value"].round, message["value"].hashval, message["value"].pbhv)
                 if valid(message["value"], current_round):
                     self._root.insert(message["value"])
 
@@ -101,10 +102,10 @@ class AdversaryController(AdversaryControllerBase):
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), current_round, badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
-                if len(self._chain) > self._root._depth + confirm_time:
+                if len(self._chain) - 1 > self._root._depth + confirm_time:
                     badNode.add_send(self._chain)
-                    self._chain = [EMPTY_NODE]
+                    self._chain = [SuperRoot]
                     print("Corrupt chain pushed")
                 ret[badNode.id] = None
-        print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain)))
+        print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
         return ret

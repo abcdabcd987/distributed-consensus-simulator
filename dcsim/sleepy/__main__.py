@@ -6,6 +6,6 @@ from .Measurement import Measurement
 from .NetworkController import NetworkController
 
 
-config = Configuration(10, 0.3, HonestNode, CorruptedNode, NetworkController, 5, AdversaryController, Measurement, 2)
+config = Configuration(5, 0.8, HonestNode, CorruptedNode, NetworkController, 5, AdversaryController, Measurement, 2)
 simulator = Simulator(config)
 simulator.run()
