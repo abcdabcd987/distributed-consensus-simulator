@@ -12,6 +12,10 @@
         @ property
         * hashval(self) -> Hashval (string)
             hashval is encrypted with SHA256 whose parameters are txs, timestamp and pid.
+        @property
+        * str(self) -> str
+            change block to str
+            make sure to use it only when you are calling ctx.sign
 
     * TNode class
         we use tree to keep tract of main chain and alternative chains,
@@ -100,24 +104,10 @@ from dcsim.framework import *
 
 D_p = "0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"  # 这个值暂时定为这么多，后面会改
 
-class Tx:
-    def __init__(self, key="0"):
-        random.seed()
-        self._id = random.randint(0, 1 << 32)
-        self._key = key
-
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def key(self):
-        return self.key
-
+Tx = str
 Hashval = str
 Timestamp = int
 NodeId = int
-
 
 # tx pool 存收到但没有放进去的交易信息
 class TxPool:
@@ -150,7 +140,7 @@ class TxPool:
 
 class TBlock:
 
-    def __init__(self, pbhv: object, txs: object, timestamp: object, pid: object) -> object:
+    def __init__(self, pbhv: Hashval, txs: List[Type['Tx']], timestamp: int, pid: int) -> object:
         # comes from TxPool
         self.txs = txs  # type: List[Tx]
         # father's hash
@@ -160,26 +150,21 @@ class TBlock:
         self.children = []
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self.pid
-
-    @property
-    def prev_hash(self) -> str:
-        return self.pbhv
-
+    
     @property
     def round(self) -> int:
         return self.timestamp
 
     @property
     def hashval(self) -> Hashval:  # get its own hash
-        txs_Str = ""
-        for item in self.txs:
-            txs_Str.join("(%d,%s)" % (item.id, item.key))
-        hashstr = str(self.pbhv) + txs_Str + str(self.timestamp) + str(self.pid)
+        hashstr = self.str
         return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
 
-SuperRoot = TBlock("0", [], 0, 0)
+    @property
+    def str(self) -> str:   # get its string
+        return self.pbhv + "".join(self.txs) + str(self.timestamp) + str(self.pid)
 
 class TNode:
 
@@ -235,6 +220,9 @@ class TNode:
                 if res is not None:
                     break
         return res
+
+
+SuperRoot = TBlock("0", [], 0, 0)
 
 
 class BlockChain:
@@ -293,7 +281,7 @@ class OrphanBlockPool:
             if i.pbhv == hv:
                 temp_block.append(i)
                 self.block.remove(i)
-        if temp_block == []:
+        if not temp_block:
             return None
         return temp_block
 
@@ -302,7 +290,7 @@ class OrphanBlockPool:
         for i in self.block:
             if i.hashval == hashval:
                 temp_block.append(i)
-        if temp_block == []:
+        if not temp_block:
             return None
         return temp_block
 
@@ -324,21 +312,11 @@ def check_solution(tblock: TBlock):
         return False
 
 Message = Any
-SignedMessage = Message
-
-
-def sign_message(message: Message, priv_key) -> SignedMessage:
-    return message if priv_key is not None else message
 
 
 class HonestNode(NodeBase):
 
-    def __init__(self, coorindator):
-        # coordinator provides the "permissioned" services
-        self._coorindator = coorindator
-        # codes to generate rsa key pair, not used yet
-        # (self.pub_key, self.priv_key) = rsa.newkeys(512)
-
+    def __init__(self):
         random.seed()
         self._nodeId = random.randint(1, 2**32)
         self._txpool = TxPool()
@@ -377,25 +355,31 @@ class HonestNode(NodeBase):
                     self.recursive_add_block_from_orphan_pool(new_node)
 
     def round_action(self, ctx: Context) -> None:
-        #print('HonestNode.round_action: nodeId', self._nodeId)
         # check received blocks
-        messages: List[Any] = ctx.received_messages
+        message_tuples: List[MessageTuple] = ctx.received_messages
         blocks: List[TBlock] = []       # store valid blocks
 
-        for message in messages:
+        for message_tuple in message_tuples:
+            message = message_tuple.message
+            sender = message_tuple.sender
             if message["type"] == 0:   # its a transaction
-                if check_tx(message["value"]):
-                    self._txpool.add_tx(message["value"])
-            elif message["type"] == 1:   # its a block
-                if not check_solution(message["value"]):
-                    continue
-                elif message["value"].timestamp >= ctx.round:
-                    continue
+                if ctx.verify(message["signature"], message["value"], sender) \
+                        and check_tx(message["value"]):
+                    if not self._txpool.find_tx(message["value"]):
+                        my_sig = ctx.sign(message["value"], self.id)
+                        ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
+                        self._txpool.add_tx(message["value"])
+                    else:
+                        continue
                 else:
+                    continue
+            elif message["type"] == 1:   # its a block
+                if ctx.verify(message["signature"], message["value"].str, sender) \
+                        and check_solution(message["value"])\
+                        and message["value"].timestamp >= ctx.round:
                     blocks.append(message["value"])
-
-        #print("Honest node line 395:")
-        #print(blocks)
+                else:
+                    continue
 
         for block in blocks:
             # check if this block has been received
@@ -404,7 +388,8 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
-            ctx.broadcast({"type": 1, "value": block})
+            my_sig = ctx.sign(block.str, self.id)
+            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
@@ -412,6 +397,9 @@ class HonestNode(NodeBase):
             elif cur_node.block.timestamp >= block.timestamp:
                 self.recursive_remove_block_from_orphan_pool(block)
             else:
+                if cur_node == self._block_chain.get_top():
+                    for tx in block.txs:
+                        self._txpool.remove_tx(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
 
@@ -420,8 +408,8 @@ class HonestNode(NodeBase):
         t = ctx.round
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
         if check_solution(my_block):
-            print('HonestNode.round_action: NodeId', self._nodeId, 'chosen as the leader')
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
-            ctx.broadcast({"type": 1, "value": my_block})
+            my_sig = ctx.sign(my_block.str, self.id)
+            ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
             self._txpool.clear_all()
         return None

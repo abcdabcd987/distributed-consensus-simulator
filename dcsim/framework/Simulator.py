@@ -10,7 +10,7 @@ class Simulator:
 
         num_corrupted_nodes = int(config.get_num_nodes() * config.get_ratio_corrupted())
         num_honest_nodes = config.get_num_nodes() - num_corrupted_nodes
-        self.honest_nodes = [config.get_honest_node_type()(self.coordinator) for _ in range(0, num_honest_nodes)]
+        self.honest_nodes = [config.get_honest_node_type()() for _ in range(0, num_honest_nodes)]
         self.corrupted_nodes = [config.get_corrupted_node_type()() for _ in range(0, num_corrupted_nodes)]
         self.nodes = self.honest_nodes + self.corrupted_nodes
         for node in self.nodes:
