@@ -17,8 +17,8 @@ class Simulator:
             self.coordinator.add_node(node)
         self.network = config.get_network_controller_type()()
         self.adversary = config.get_adversary_controller_type()()
-        self.measure = config.get_measurement_type()(self.corrupted_nodes, self.honest_nodes, self.network, self.adversary)
         self.trust_length = config.get_trust_length()
+        self.measure = config.get_measurement_type()(self.corrupted_nodes, self.honest_nodes, self.network, self.adversary, self.trust_length)
         self.max_delay = config.get_max_delay()
 
     def run(self):

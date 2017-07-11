@@ -2,7 +2,6 @@ import hashlib
 import random
 from dcsim.framework import *
 from .HonestNode import TBlock, D_p, SuperRoot
-from .HonestNode import Tx as Transaction
 from typing import *
 if TYPE_CHECKING:
     from .CorruptedNode import CorruptedNode
@@ -18,20 +17,20 @@ class TransactionPool:
     def __init__(self):
         self._keys = {}
 
-    def contain_key(self, key):
-        return key in self._keys.keys()
+    def contain_key(self, tx: str):
+        return tx in self._keys.keys()
 
-    def insert(self, key:Transaction):
-        self._keys[key.id] = key
+    def insert(self, tx: str):
+        self._keys[tx] = 1
 
     def get_all(self):
-        res = ""
-        for item in self._keys.values():
-            res.join("(%d,%s)" % (item.id, item.key))
-        return res
+        return [key for key in self._keys.keys()]
+
+    def erase(self, tx: str):
+        del self._keys[tx]
 
     def clear(self):
-        self._keys = {}
+        self._keys.clear()
 
 
 class BlockTree():
@@ -57,11 +56,11 @@ class BlockTree():
         if tmp == "404":
             self._blockPool[cur.hashval] = cur
         else:
+            self._blockPool[cur.hashval] = cur
             for node in seq:
                 if node not in tmp.children:
                     tmp.children.append(node)
                 tmp = node
-            self._blockPool[cur.hashval] = cur
             self._depth = max(self._depth, len(seq))
 
 
@@ -102,7 +101,7 @@ class AdversaryController(AdversaryControllerBase):
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), current_round, badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
-                if len(self._chain) - 1 > self._root._depth + confirm_time:
+                if len(self._chain) - 2 > self._root._depth + confirm_time:
                     badNode.add_send(self._chain)
                     self._chain = [SuperRoot]
                     print("Corrupt chain pushed")

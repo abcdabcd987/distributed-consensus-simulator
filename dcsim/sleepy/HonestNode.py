@@ -374,9 +374,11 @@ class HonestNode(NodeBase):
                 else:
                     continue
             elif message["type"] == 1:   # its a block
+                print("HonestNode.round_action: NodeId %d dealing with " % self._nodeId + message["value"].hashval)
                 if ctx.verify(message["signature"], message["value"].str, sender) \
                         and check_solution(message["value"])\
-                        and message["value"].timestamp >= ctx.round:
+                        and message["value"].timestamp <= ctx.round:
+                    print("HonestNode.round_action: NodeId %d accepted message" % self._nodeId + message["value"].hashval)
                     blocks.append(message["value"])
                 else:
                     continue

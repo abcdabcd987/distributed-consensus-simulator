@@ -22,3 +22,6 @@ class MeasurementBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def report(self) -> None:
         pass
+
+    def report_every(self, honest_nodes, corrupted_nodes, round_counter):
+        pass

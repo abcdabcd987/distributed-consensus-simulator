@@ -17,6 +17,7 @@ class CorruptedNode(NodeBase):
         self._cache = blocks
 
     def round_action(self, ctx: Context) -> None:
-        print('CorruptedNode.round_action: nodeId', self._id)
+        #print('CorruptedNode.round_action: nodeId', self._id)
         while len(self._cache) > 0:
-            ctx.broadcast({"type": 1, "value": self._cache.pop()})
+            message = self._cache.pop()
+            ctx.broadcast({"type": 1, "value": message, "signature": ctx.sign(message.str, self._id)})
