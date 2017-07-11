@@ -17,7 +17,7 @@ class Context:
         self.node = node
         self.coordinator = coordinator
         self.received_messages = [
-            message_tuple.message
+            message_tuple
             for message_tuple in received_messages
             if message_tuple.receiver == node.id
         ]
@@ -35,7 +35,7 @@ class Context:
             self.send(receiver_id, message)
 
     # @property
-    def get_received_messages(self) -> List[Any]:
+    def get_received_messages(self) -> List['MessageTuple']:
         return self.received_messages
 
     # @property
@@ -45,3 +45,9 @@ class Context:
     # @property
     def get_instruction(self) -> Any:
         return self.instruction
+
+    def sign(self, message: str, sender: NodeId) -> str:
+        return self.coordinator.sign(message, sender)
+
+    def verify(self, signature: str, message: str, sender: NodeId) -> bool:
+        return self.coordinator.verify(signature, message, sender)
