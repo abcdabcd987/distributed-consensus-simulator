@@ -8,46 +8,47 @@ if TYPE_CHECKING:
 
 
 class ConfigurationBase(metaclass=abc.ABCMeta):
-    # @property
+    @property
     @abc.abstractmethod
-    def get_honest_node_type(self) -> Type['NodeBase']:
+    def honest_node_type(self) -> Type['NodeBase']:
         pass
 
-    # @property
+    @property
     @abc.abstractmethod
-    def get_corrupted_node_type(self) -> Type['NodeBase']:
+    def corrupted_node_type(self) -> Type['NodeBase']:
         pass
 
-    # @property
+    @property
     @abc.abstractmethod
-    def get_network_controller_type(self) -> Type['NetworkControllerBase']:
+    def network_controller_type(self) -> Type['NetworkControllerBase']:
         pass
 
-    # @property
+    @property
     @abc.abstractmethod
-    def get_adversary_controller_type(self) -> Type['AdversaryControllerBase']:
+    def adversary_controller_type(self) -> Type['AdversaryControllerBase']:
         pass
 
-    # @property
+    @property
     @abc.abstractmethod
-    def get_measurement_type(self) -> Type['MeasurementBase']:
+    def measurement_type(self) -> Type['MeasurementBase']:
         pass
 
-    # @property
+    @property
     @abc.abstractmethod
-    def get_num_nodes(self) -> int:
+    def num_nodes(self) -> int:
         pass
 
-    # @property
+    @property
     @abc.abstractmethod
-    def get_ratio_corrupted(self) -> float:
+    def ratio_corrupted(self) -> float:
         pass
 
-    # @property
+    @property
     @abc.abstractmethod
-    def get_max_delay(self) -> int:
+    def max_delay(self) -> int:
         pass
 
-    @abc.abstractclassmethod
-    def get_trust_length(self) -> int:
+    @property
+    @abc.abstractmethod
+    def confirm_time(self) -> int:
         pass

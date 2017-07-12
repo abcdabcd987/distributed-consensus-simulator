@@ -1,9 +1,10 @@
 import hashlib
-import random
+import itertools
 from dcsim.framework import *
 from .HonestNode import TBlock, D_p, SuperRoot
 from typing import *
 if TYPE_CHECKING:
+    from .Configuration import Configuration
     from .CorruptedNode import CorruptedNode
 
 
@@ -69,42 +70,34 @@ def valid(block: TBlock, timestamp: int):
 
 
 class AdversaryController(AdversaryControllerBase):
-    def __init__(self):
+    def __init__(self, corrupted_nodes: List['NodeBase'], config: Type['Configuration']):
+        super().__init__(corrupted_nodes, config)
         self._root = BlockTree(SuperRoot)
         self._chain = [SuperRoot]
         self._tx = TransactionPool()
 
     def round_instruction(self,
-                          corrupted_nodes: List['CorruptedNode'],
-                          pending_messages: List['MessageTuple'],
-                          current_round: int,
-                          confirm_time: int) -> Dict['NodeId', Any]:
-        #print('AdversaryController.round_instruction')
-        #print('Pending messages:')
-        #print(pending_messages)
-        #print("SuperRoot hash: %s" % SuperRoot.hashval)
-        for message in pending_messages:
-            message = message.message
-            #print(message["type"], message["value"])
-            if message["type"] == 0:
-                if not self._tx.contain_key(message["value"]):
-                    self._tx.insert(message["value"])
-            else:
-                #print("Dealing with ", message["value"].id, message["value"].round, message["value"].hashval, message["value"].pbhv)
-                if valid(message["value"], current_round):
-                    self._root.insert(message["value"])
+                          honest_messages_to_send: Dict[NodeId, List[MessageTuple]],
+                          corrupted_messages_to_send: Dict[NodeId, List[MessageTuple]],
+                          current_round: int):
+        for message_list in itertools.chain(honest_messages_to_send.values(), corrupted_messages_to_send.values()):
+            for message_tuple in message_list:
+                message = message_tuple.message
+                if message["type"] == 0:
+                    if not self._tx.contain_key(message["value"]):
+                        self._tx.insert(message["value"])
+                else:
+                    if valid(message["value"], current_round):
+                        self._root.insert(message["value"])
 
-        ret = {}
-        for badNode in corrupted_nodes:
+        for badNode in self._corrupted_nodes:
             if check(badNode.id, current_round):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), current_round, badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
-                if len(self._chain) - 2 > self._root._depth + confirm_time:
+                if len(self._chain) - 2 > self._root._depth + self._config.confirm_time:
                     badNode.add_send(self._chain)
                     self._chain = [SuperRoot]
                     print("Corrupt chain pushed")
-                ret[badNode.id] = None
         print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
-        return ret

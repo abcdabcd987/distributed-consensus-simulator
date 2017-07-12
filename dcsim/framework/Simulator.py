@@ -2,46 +2,54 @@ from typing import *
 from .ConfigurationBase import ConfigurationBase
 from .Coordinator import Coordinator
 from .Context import Context
+from .MessageTuple import MessageTuple
+from .NodeId import NodeId
 
 
 class Simulator:
     def __init__(self, config: Type['ConfigurationBase']) -> None:
         self.coordinator = Coordinator(configuration=config)
+        self._config = config
 
-        num_corrupted_nodes = int(config.get_num_nodes() * config.get_ratio_corrupted())
-        num_honest_nodes = config.get_num_nodes() - num_corrupted_nodes
-        self.honest_nodes = [config.get_honest_node_type()() for _ in range(0, num_honest_nodes)]
-        self.corrupted_nodes = [config.get_corrupted_node_type()() for _ in range(0, num_corrupted_nodes)]
+        num_corrupted_nodes = int(config.num_nodes * config.ratio_corrupted)
+        num_honest_nodes = config.num_nodes - num_corrupted_nodes
+        self.honest_nodes = [config.honest_node_type(config) for _ in range(0, num_honest_nodes)]
+        self.corrupted_nodes = [config.corrupted_node_type(config) for _ in range(0, num_corrupted_nodes)]
         self.nodes = self.honest_nodes + self.corrupted_nodes
         for node in self.nodes:
             self.coordinator.add_node(node)
-        self.network = config.get_network_controller_type()()
-        self.adversary = config.get_adversary_controller_type()()
-        self.trust_length = config.get_trust_length()
-        self.measure = config.get_measurement_type()(self.corrupted_nodes, self.honest_nodes, self.network, self.adversary, self.trust_length)
-        self.max_delay = config.get_max_delay()
+        self.network = config.network_controller_type(config)
+        self.adversary = config.adversary_controller_type(self.corrupted_nodes, config)
+        self.measure = config.measurement_type(self.corrupted_nodes, self.honest_nodes, self.network, self.adversary, config)
 
     def run(self):
-        round_counter = 0
-        pending_message_tuples = []
-        # received_message_tuples = []
-        while not self.measure.should_stop(round_counter):
-            # increase round counter
-            round_counter += 1
-            print('Simulator: current round', round_counter)
-            # get adversarial instructions from adversary controller
-            adversarial_instructions = self.adversary.round_instruction(self.corrupted_nodes, pending_message_tuples, round_counter, self.trust_length)
+        round = 0
+        honest_messages_to_send = {node.id: [] for node in self.honest_nodes}  # type: Dict[NodeId, List[MessageTuple]]
+        corrupted_messages_to_send = {node.id: [] for node in self.corrupted_nodes}  # type: Dict[NodeId, List[MessageTuple]]
 
-            # filter message to deliver
-            filtered = self.network.round_filter(pending_message_tuples, self.max_delay, round_counter, self.corrupted_nodes)
-            received_message_tuples = [m for m, p in zip(pending_message_tuples, filtered) if p]
-            pending_message_tuples = [message_tuple
-                                      for message_tuple in pending_message_tuples
-                                      if message_tuple not in received_message_tuples
-                                      ]
-            for node in self.nodes:
-                ctx = Context(round_counter, node, self.coordinator, received_message_tuples, adversarial_instructions)
+        while not self.measure.should_stop(round):
+            round += 1
+
+            for node in self.honest_nodes:
+                received_messages = []
+                messages_to_send = []
+                filtered = self.network.round_filter(honest_messages_to_send[node.id], round)
+                for message, send_now in zip(honest_messages_to_send[node.id], filtered):
+                    if send_now:
+                        received_messages.append(message)
+                    else:
+                        messages_to_send.append(message)
+
+                ctx = Context(round, node, self.coordinator, received_messages)
                 node.round_action(ctx)
-                pending_message_tuples += ctx.get_messages_to_send()
-            self.measure.report_every(self.honest_nodes, self.corrupted_nodes, round_counter)
-        self.measure.report()
+                messages_to_send += ctx.messages_to_send
+                honest_messages_to_send[node.id] = messages_to_send
+
+            self.adversary.round_instruction(honest_messages_to_send, corrupted_messages_to_send, round)
+            for node in self.corrupted_nodes:
+                ctx = Context(round, node, self.coordinator, corrupted_messages_to_send[node.id])
+                node.round_action(ctx)
+                corrupted_messages_to_send[node.id] = ctx.messages_to_send
+
+            self.measure.report_round(round)
+        self.measure.report_final()

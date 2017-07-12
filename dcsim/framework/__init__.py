@@ -1,5 +1,4 @@
 from .AdversaryControllerBase import AdversaryControllerBase
-from .Configuration import Configuration
 from .ConfigurationBase import ConfigurationBase
 from .Context import Context
 from .Coordinator import Coordinator
