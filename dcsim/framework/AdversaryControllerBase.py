@@ -14,7 +14,7 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def round_instruction(self,
-                          honest_messages_to_send: Dict['NodeId', List['MessageTuple']],
-                          corrupted_messages_to_send: Dict['NodeId', List['MessageTuple']],
+                          new_messages: List['MessageTuple'],
+                          old_messages: List['MessageTuple'],
                           current_round: int):
         pass

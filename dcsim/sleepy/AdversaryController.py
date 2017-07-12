@@ -77,18 +77,17 @@ class AdversaryController(AdversaryControllerBase):
         self._tx = TransactionPool()
 
     def round_instruction(self,
-                          honest_messages_to_send: Dict[NodeId, List[MessageTuple]],
-                          corrupted_messages_to_send: Dict[NodeId, List[MessageTuple]],
+                          new_messages: List[MessageTuple],
+                          old_messages: List[MessageTuple],
                           current_round: int):
-        for message_list in itertools.chain(honest_messages_to_send.values(), corrupted_messages_to_send.values()):
-            for message_tuple in message_list:
-                message = message_tuple.message
-                if message["type"] == 0:
-                    if not self._tx.contain_key(message["value"]):
-                        self._tx.insert(message["value"])
-                else:
-                    if valid(message["value"], current_round):
-                        self._root.insert(message["value"])
+        for message_tuple in old_messages:
+            message = message_tuple.message
+            if message["type"] == 0:
+                if not self._tx.contain_key(message["value"]):
+                    self._tx.insert(message["value"])
+            else:
+                if valid(message["value"], current_round):
+                    self._root.insert(message["value"])
 
         for badNode in self._corrupted_nodes:
             if check(badNode.id, current_round):
