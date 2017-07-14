@@ -1,11 +1,10 @@
 import hashlib
-import itertools
-from dcsim.framework import *
-from .HonestNode import TBlock, D_p, SuperRoot
 from typing import *
+from dcsim.framework import *
+from .HonestNode import TBlock, D_p, SuperRoot, Timestamp, Tx
+from .CorruptedNode import CorruptedNode
 if TYPE_CHECKING:
     from .Configuration import Configuration
-    from .CorruptedNode import CorruptedNode
 
 
 def check(id: int, timestamp: int):
@@ -15,27 +14,27 @@ def check(id: int, timestamp: int):
 
 
 class TransactionPool:
-    def __init__(self):
-        self._keys = {}
+    def __init__(self) -> None:
+        self._keys = set()  # type: Set[Tx]
 
-    def contain_key(self, tx: str):
-        return tx in self._keys.keys()
+    def contain_key(self, tx: 'Tx'):
+        return tx in self._keys
 
-    def insert(self, tx: str):
-        self._keys[tx] = 1
+    def insert(self, tx: 'Tx'):
+        self._keys.add(tx)
 
     def get_all(self):
-        return [key for key in self._keys.keys()]
+        return list(self._keys)
 
-    def erase(self, tx: str):
-        del self._keys[tx]
+    def erase(self, tx: 'Tx'):
+        self._keys.remove(tx)
 
     def clear(self):
         self._keys.clear()
 
 
 class BlockTree():
-    def __init__(self, key):
+    def __init__(self, key) -> None:
         self._depth = 0
         self._blockPool = {SuperRoot.hashval: SuperRoot}
 
@@ -51,10 +50,10 @@ class BlockTree():
         while tmp.hashval != SuperRoot.hashval:
             seq.append(tmp)
             #print("AdversaryController - BlockTree.insert: searching %s %s" % (tmp.hashval, tmp.pbhv))
-            tmp = self._blockPool.get(tmp.pbhv, "404")
-            if tmp == "404":
+            tmp = self._blockPool.get(tmp.pbhv, None)
+            if tmp is None:
                 break
-        if tmp == "404":
+        if tmp is None:
             self._blockPool[cur.hashval] = cur
         else:
             self._blockPool[cur.hashval] = cur
@@ -70,15 +69,15 @@ def valid(block: TBlock, timestamp: int):
 
 
 class AdversaryController(AdversaryControllerBase):
-    def __init__(self, corrupted_nodes: Iterable['NodeBase'], config: Type['Configuration']):
+    def __init__(self, corrupted_nodes: Tuple['CorruptedNode', ...], config: 'Configuration') -> None:
         super().__init__(corrupted_nodes, config)
         self._root = BlockTree(SuperRoot)
         self._chain = [SuperRoot]
         self._tx = TransactionPool()
 
     def round_instruction(self,
-                          new_messages: List[MessageTuple],
-                          old_messages: List[MessageTuple],
+                          new_messages: Tuple['MessageTuple', ...],
+                          old_messages: Tuple['MessageTuple', ...],
                           current_round: int):
         for message_tuple in old_messages:
             message = message_tuple.message
@@ -92,11 +91,11 @@ class AdversaryController(AdversaryControllerBase):
         for badNode in self._corrupted_nodes:
             if check(badNode.id, current_round):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
-                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), current_round, badNode.id)
+                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, current_round), badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
                 if len(self._chain) - 2 > self._root._depth + self._config.confirm_time:
-                    badNode.add_send(self._chain)
+                    cast(CorruptedNode, badNode).add_send(self._chain)
                     self._chain = [SuperRoot]
                     print("Corrupt chain pushed")
         print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))

@@ -9,11 +9,11 @@ if TYPE_CHECKING:
 
 class MeasurementBase(metaclass=abc.ABCMeta):
     def __init__(self,
-                 corrupted_nodes: Iterable[Type['NodeBase']],
-                 honest_nodes: Iterable[Type['NodeBase']],
-                 network: Type['NetworkControllerBase'],
-                 adversary: Type['AdversaryControllerBase'],
-                 config: Type['ConfigurationBase']) -> None:
+                 corrupted_nodes: Tuple['NodeBase', ...],
+                 honest_nodes: Tuple['NodeBase', ...],
+                 network: 'NetworkControllerBase',
+                 adversary: 'AdversaryControllerBase',
+                 config: 'ConfigurationBase') -> None:
         self._corrupted_nodes = corrupted_nodes
         self._honest_nodes = honest_nodes
         self._network = network

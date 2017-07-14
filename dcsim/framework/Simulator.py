@@ -7,7 +7,7 @@ from .NodeId import NodeId
 
 
 class Simulator:
-    def __init__(self, config: Type['ConfigurationBase']) -> None:
+    def __init__(self, config: ConfigurationBase) -> None:
         num_corrupted_nodes = int(config.num_nodes * config.ratio_corrupted)
         num_honest_nodes = config.num_nodes - num_corrupted_nodes
         self._honest_nodes = tuple(config.honest_node_type(config) for _ in range(0, num_honest_nodes))

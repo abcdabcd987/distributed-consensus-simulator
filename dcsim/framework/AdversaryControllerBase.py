@@ -8,13 +8,13 @@ if TYPE_CHECKING:
 
 
 class AdversaryControllerBase(metaclass=abc.ABCMeta):
-    def __init__(self, corrupted_nodes: Iterable['NodeBase'], config: Type['ConfigurationBase']):
+    def __init__(self, corrupted_nodes: Tuple['NodeBase', ...], config: 'ConfigurationBase') -> None:
         self._corrupted_nodes = corrupted_nodes
         self._config = config
 
     @abc.abstractmethod
     def round_instruction(self,
-                          new_messages: List['MessageTuple'],
-                          old_messages: List['MessageTuple'],
+                          new_messages: Tuple['MessageTuple', ...],
+                          old_messages: Tuple['MessageTuple', ...],
                           current_round: int):
         pass

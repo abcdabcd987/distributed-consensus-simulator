@@ -2,19 +2,18 @@ import abc
 import sys
 import random
 from typing import *
+from .NodeId import NodeId
 if TYPE_CHECKING:
     from .ConfigurationBase import ConfigurationBase
     from .Context import Context
-    from .NodeId import NodeId
 
 
 class NodeBase(metaclass=abc.ABCMeta):
-    def __init__(self, config: Type['ConfigurationBase']):
+    def __init__(self, config: 'ConfigurationBase') -> None:
         self._config = config
-        self._id = random.randint(1, sys.maxsize)
-        self._nodes = None
+        self._id = cast(NodeId, random.randint(1, sys.maxsize))
 
-    def set_node_list(self, node_ids: List['NodeId']):
+    def set_node_list(self, node_ids: Tuple['NodeId', ...]) -> None:
         self._nodes = node_ids
 
     @abc.abstractmethod

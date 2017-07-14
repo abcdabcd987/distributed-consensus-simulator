@@ -1,21 +1,19 @@
 import hashlib
-# import rsa
-import random
+import pickle
 from typing import *
 from dcsim.framework import *
 
 D_p = "0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 
-Tx = str
-Hashval = str
-Timestamp = int
-NodeId = int
+Tx = NewType('Tx', bytes)
+Hashval = NewType('Hashval', bytes)
+Timestamp = NewType('Timestamp', int)
 
 
 class TxPool:
 
-    def __init__(self):
-        self.txs = []
+    def __init__(self) -> None:
+        self.txs = []  # type: List[Tx]
 
     def add_tx(self, tx: Tx):
         self.txs.append(tx)
@@ -27,7 +25,7 @@ class TxPool:
                 return True
         return False
 
-    def find_tx(self, tx) -> Optional['Tx']:
+    def find_tx(self, tx) -> Optional[Tx]:
         for item in self.txs:
             if tx == item:
                 return tx
@@ -41,14 +39,14 @@ class TxPool:
 
 
 class TBlock:
-    def __init__(self, pbhv: Hashval, txs: List[Type['Tx']], timestamp: int, pid: int) -> None:
+    def __init__(self, pbhv: Hashval, txs: List[Tx], timestamp: Timestamp, pid: NodeId) -> None:
         # comes from TxPool
-        self.txs = txs  # type: List[Tx]
+        self.txs = txs
         # father's hash
-        self.pbhv = pbhv  # type: Hashval
-        self.timestamp = timestamp  # type: Timestamp
-        self.pid = pid  # type: NodeId
-        self.children = []
+        self.pbhv = pbhv
+        self.timestamp = timestamp
+        self.pid = pid
+        self.children = []  # type: List[TBlock]
 
     @property
     def id(self) -> int:
@@ -59,13 +57,12 @@ class TBlock:
         return self.timestamp
 
     @property
-    def hashval(self) -> Hashval:  # get its own hash
-        hashstr = self.str
-        return hashlib.sha256(hashstr.encode("utf-8")).hexdigest()
+    def hashval(self) -> Hashval:
+        return cast(Hashval, hashlib.sha256(self.serialize).hexdigest())
 
     @property
-    def str(self) -> str:   # get its string
-        return self.pbhv + "".join(self.txs) + str(self.timestamp) + str(self.pid)
+    def serialize(self) -> bytes:
+        return pickle.dumps((self.pbhv, self.txs, self.timestamp, self.pid))
 
 
 class TNode:
@@ -123,7 +120,7 @@ class TNode:
         return res
 
 
-SuperRoot = TBlock("0", [], 0, 0)
+SuperRoot = TBlock(cast(Hashval, b"0"), [], cast(Timestamp, 0), cast(NodeId, 0))
 
 
 class BlockChain:
@@ -170,13 +167,13 @@ class BlockChain:
 
 class OrphanBlockPool:
 
-    def __init__(self):
-        self.block = []
+    def __init__(self) -> None:
+        self.block = []  # type: List[TBlock]
 
-    def add_block(self, ablock):
+    def add_block(self, ablock: TBlock):
         self.block.append(ablock)
 
-    def pop_children(self, hv) -> Optional[List['TBlock']]:
+    def pop_children(self, hv: Hashval) -> Optional[List[TBlock]]:
         temp_block = []
         for i in self.block:
             if i.pbhv == hv:
@@ -186,7 +183,7 @@ class OrphanBlockPool:
             return None
         return temp_block
 
-    def find(self, hashval: Hashval) -> Optional[List['TBlock']]:
+    def find(self, hashval: Hashval) -> Optional[List[TBlock]]:
         temp_block = []
         for i in self.block:
             if i.hashval == hashval:
@@ -217,7 +214,7 @@ Message = Any
 
 
 class HonestNode(NodeBase):
-    def __init__(self, config: Type['ConfigurationBase']):
+    def __init__(self, config: ConfigurationBase) -> None:
         super().__init__(config)
         self._nodeId = self._id
         self._txpool = TxPool()
@@ -253,7 +250,7 @@ class HonestNode(NodeBase):
 
     def round_action(self, ctx: Context) -> None:
         # check received blocks
-        message_tuples: List[MessageTuple] = ctx.received_messages
+        message_tuples = ctx.received_messages
         blocks: List[TBlock] = []       # store valid blocks
 
         for message_tuple in message_tuples:
@@ -271,12 +268,11 @@ class HonestNode(NodeBase):
                 else:
                     continue
             elif message["type"] == 1:   # its a block
-                print("HonestNode.round_action: NodeId %d dealing with " % self._nodeId + message["value"].hashval)
-                if ctx.verify(message["signature"], message["value"].str, sender) \
+                print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
+                if ctx.verify(message["signature"], message["value"].serialize, sender) \
                         and check_solution(message["value"])\
                         and message["value"].timestamp <= ctx._round:
-                    print("HonestNode.round_action: NodeId %d accepted message" %
-                          self._nodeId + message["value"].hashval)
+                    print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
                     blocks.append(message["value"])
                 else:
                     continue
@@ -288,7 +284,7 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
-            my_sig = ctx.sign(block.str)
+            my_sig = ctx.sign(block.serialize)
             ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
@@ -306,10 +302,10 @@ class HonestNode(NodeBase):
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx._round
-        my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
+        my_block: TBlock = TBlock(pbhv, txs, cast(Timestamp, t), self._nodeId)
         if check_solution(my_block):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
-            my_sig = ctx.sign(my_block.str)
+            my_sig = ctx.sign(my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
             self._txpool.clear_all()
         return None
