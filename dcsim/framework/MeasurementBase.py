@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 class MeasurementBase(metaclass=abc.ABCMeta):
     def __init__(self,
-                 corrupted_nodes: List[Type['NodeBase']],
-                 honest_nodes: List[Type['NodeBase']],
+                 corrupted_nodes: Iterable[Type['NodeBase']],
+                 honest_nodes: Iterable[Type['NodeBase']],
                  network: Type['NetworkControllerBase'],
                  adversary: Type['AdversaryControllerBase'],
                  config: Type['ConfigurationBase']) -> None:

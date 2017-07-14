@@ -6,7 +6,7 @@ class Measurement(MeasurementBase):
     def should_stop(self, round) -> bool:
         return self.stop or round >= self.max_round
 
-    def __init__(self, corrupted_nodes: List[Type[NodeBase]], honest_nodes: List[Type[NodeBase]],
+    def __init__(self, corrupted_nodes: Iterable[Type[NodeBase]], honest_nodes: Iterable[Type[NodeBase]],
                  network: Type[NetworkControllerBase], adversary: Type[AdversaryControllerBase],
                  config: Type['ConfigurationBase']) -> None:
         super().__init__(corrupted_nodes, honest_nodes, network, adversary, config)

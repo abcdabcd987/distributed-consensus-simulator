@@ -1,6 +1,6 @@
+import hashlib
 from typing import *
 
-from .Coordinator import Coordinator
 from .MessageTuple import MessageTuple
 from .NodeId import NodeId
 from .NodeBase import NodeBase
@@ -8,13 +8,15 @@ from .NodeBase import NodeBase
 
 class Context:
     def __init__(self,
+                 nodes: Iterable[NodeId],
+                 secret_keys: Dict[NodeId, bytes],
                  round: int,
                  node: Type['NodeBase'],
-                 coordinator: 'Coordinator',
                  received_messages: List[MessageTuple]) -> None:
+        self._nodes = nodes
+        self._secret_keys = secret_keys
         self._round = round
         self._node = node
-        self._coordinator = coordinator
         self._received_messages = received_messages
         self._message_tuples_to_send = []
 
@@ -24,8 +26,8 @@ class Context:
         self._message_tuples_to_send.append(message_tuple)
 
     def broadcast(self, message: Any) -> None:
-        for receiver_node in self._coordinator.nodes:
-            self.send(receiver_node.id, message)
+        for node_id in self._nodes:
+            self.send(node_id, message)
 
     @property
     def received_messages(self) -> List['MessageTuple']:
@@ -35,8 +37,14 @@ class Context:
     def messages_to_send(self) -> List['MessageTuple']:
         return self._message_tuples_to_send
 
-    def sign(self, message: str, sender: NodeId) -> str:
-        return self._coordinator.sign(message, sender)
+    def _sign(self, message: str, sender_id: NodeId) -> str:
+        m = hashlib.sha1()
+        m.update(self._secret_keys[sender_id])
+        m.update(message.encode('utf-8'))
+        return m.hexdigest()
 
-    def verify(self, signature: str, message: str, sender: NodeId) -> bool:
-        return self._coordinator.verify(signature, message, sender)
+    def sign(self, message: str) -> str:
+        return self._sign(message, self._node.id)
+
+    def verify(self, signature: str, message: str, sender_id: NodeId) -> bool:
+        return self._sign(message, sender_id) == signature

@@ -1,6 +1,6 @@
+import os
 from typing import *
 from .ConfigurationBase import ConfigurationBase
-from .Coordinator import Coordinator
 from .Context import Context
 from .MessageTuple import MessageTuple
 from .NodeId import NodeId
@@ -8,19 +8,24 @@ from .NodeId import NodeId
 
 class Simulator:
     def __init__(self, config: Type['ConfigurationBase']) -> None:
-        self._coordinator = Coordinator(configuration=config)
-        self._config = config
-
         num_corrupted_nodes = int(config.num_nodes * config.ratio_corrupted)
         num_honest_nodes = config.num_nodes - num_corrupted_nodes
-        self._honest_nodes = [config.honest_node_type(config) for _ in range(0, num_honest_nodes)]
-        self._corrupted_nodes = [config.corrupted_node_type(config) for _ in range(0, num_corrupted_nodes)]
+        self._honest_nodes = tuple(config.honest_node_type(config) for _ in range(0, num_honest_nodes))
+        self._corrupted_nodes = tuple(config.corrupted_node_type(config) for _ in range(0, num_corrupted_nodes))
         self._nodes = self._honest_nodes + self._corrupted_nodes
+        self._node_ids = tuple(node.id for node in self._nodes)
+        self._secret_keys = {id: Simulator._generate_secret_key() for id in self._node_ids}
         for node in self._nodes:
-            self._coordinator.add_node(node)
+            node.set_node_list(self._node_ids)
+
+        self._config = config
         self._network = config.network_controller_type(config)
         self._adversary = config.adversary_controller_type(self._corrupted_nodes, config)
         self._measure = config.measurement_type(self._corrupted_nodes, self._honest_nodes, self._network, self._adversary, config)
+
+    @staticmethod
+    def _generate_secret_key():
+        return os.urandom(16)
 
     def run(self):
         # pending_messages : messages that hasn't been delivered before this round
@@ -55,7 +60,7 @@ class Simulator:
                         delayed_messages.append(message)
 
                 # let the node action and collect new messages
-                ctx = Context(round, node, self._coordinator, received_messages)
+                ctx = Context(self._node_ids, self._secret_keys, round, node, received_messages)
                 node.round_action(ctx)
                 new_messages += ctx.messages_to_send
 
@@ -65,7 +70,7 @@ class Simulator:
 
             # run corrupted nodes
             for node in self._corrupted_nodes:
-                ctx = Context(round, node, self._coordinator, messages_dict[node.id])
+                ctx = Context(self._node_ids, self._secret_keys, round, node, messages_dict[node.id])
                 node.round_action(ctx)
                 new_messages += ctx.messages_to_send
 

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class AdversaryControllerBase(metaclass=abc.ABCMeta):
-    def __init__(self, corrupted_nodes: List['NodeBase'], config: Type['ConfigurationBase']):
+    def __init__(self, corrupted_nodes: Iterable['NodeBase'], config: Type['ConfigurationBase']):
         self._corrupted_nodes = corrupted_nodes
         self._config = config
 

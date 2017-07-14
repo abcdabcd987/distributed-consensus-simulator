@@ -1,6 +1,5 @@
 from typing import *
 from dcsim.framework import *
-import random
 
 
 class CorruptedNode(NodeBase):
@@ -14,4 +13,4 @@ class CorruptedNode(NodeBase):
     def round_action(self, ctx: Context) -> None:
         while len(self._cache) > 0:
             message = self._cache.pop()
-            ctx.broadcast({"type": 1, "value": message, "signature": ctx.sign(message.str, self._id)})
+            ctx.broadcast({"type": 1, "value": message, "signature": ctx.sign(message.str)})

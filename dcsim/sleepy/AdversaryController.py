@@ -70,7 +70,7 @@ def valid(block: TBlock, timestamp: int):
 
 
 class AdversaryController(AdversaryControllerBase):
-    def __init__(self, corrupted_nodes: List['NodeBase'], config: Type['Configuration']):
+    def __init__(self, corrupted_nodes: Iterable['NodeBase'], config: Type['Configuration']):
         super().__init__(corrupted_nodes, config)
         self._root = BlockTree(SuperRoot)
         self._chain = [SuperRoot]

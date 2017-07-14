@@ -262,7 +262,7 @@ class HonestNode(NodeBase):
                 if ctx.verify(message["signature"], message["value"], sender) \
                         and check_tx(message["value"]):
                     if not self._txpool.find_tx(message["value"]):
-                        my_sig = ctx.sign(message["value"], self.id)
+                        my_sig = ctx.sign(message["value"])
                         ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
                         self._txpool.add_tx(message["value"])
                     else:
@@ -286,7 +286,7 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
-            my_sig = ctx.sign(block.str, self.id)
+            my_sig = ctx.sign(block.str)
             ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
@@ -307,7 +307,7 @@ class HonestNode(NodeBase):
         my_block: TBlock = TBlock(pbhv, txs, t, self._nodeId)
         if check_solution(my_block):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
-            my_sig = ctx.sign(my_block.str, self.id)
+            my_sig = ctx.sign(my_block.str)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
             self._txpool.clear_all()
         return None
