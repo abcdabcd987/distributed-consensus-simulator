@@ -53,7 +53,7 @@ class TBlock:
     @property
     def id(self) -> int:
         return self.pid
-    
+
     @property
     def round(self) -> int:
         return self.timestamp
@@ -141,7 +141,7 @@ class BlockChain:
             return self.head.search(hash_val)
 
     def add_child(self, t_node: 'TNode', block: 'TBlock'):
-        new_node = TNode(t_node.depth+1, block, t_node)
+        new_node = TNode(t_node.depth + 1, block, t_node)
         t_node.add_child(new_node)
         if new_node.depth > self.tail.depth:
             temp_node = new_node
@@ -212,6 +212,7 @@ def check_solution(tblock: TBlock):
     else:
         return False
 
+
 Message = Any
 
 
@@ -274,7 +275,8 @@ class HonestNode(NodeBase):
                 if ctx.verify(message["signature"], message["value"].str, sender) \
                         and check_solution(message["value"])\
                         and message["value"].timestamp <= ctx._round:
-                    print("HonestNode.round_action: NodeId %d accepted message" % self._nodeId + message["value"].hashval)
+                    print("HonestNode.round_action: NodeId %d accepted message" %
+                          self._nodeId + message["value"].hashval)
                     blocks.append(message["value"])
                 else:
                     continue

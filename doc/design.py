@@ -19,8 +19,8 @@ Backgound / Assumptions
 
 
 class Node:
-    @abc.abstractmethod 
-    def round_action(self, ctx): 
+    @abc.abstractmethod
+    def round_action(self, ctx):
         pass
 
     @property
@@ -58,22 +58,22 @@ class Measurement:
 class Configuration:
     @property
     @abc.abstractmethod
-    def HonestNodeType(self): 
+    def HonestNodeType(self):
         pass
 
     @property
     @abc.abstractmethod
-    def CorruptedNodeType(self): 
+    def CorruptedNodeType(self):
         pass
 
     @property
     @abc.abstractmethod
-    def NetworkControllerType(self): 
+    def NetworkControllerType(self):
         pass
 
     @property
     @abc.abstractmethod
-    def AdversaryControllerType(self): 
+    def AdversaryControllerType(self):
         pass
 
     @property

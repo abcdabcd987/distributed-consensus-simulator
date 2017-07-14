@@ -21,7 +21,8 @@ class Simulator:
         self._config = config
         self._network = config.network_controller_type(config)
         self._adversary = config.adversary_controller_type(self._corrupted_nodes, config)
-        self._measure = config.measurement_type(self._corrupted_nodes, self._honest_nodes, self._network, self._adversary, config)
+        self._measure = config.measurement_type(
+            self._corrupted_nodes, self._honest_nodes, self._network, self._adversary, config)
 
     @staticmethod
     def _generate_secret_key():

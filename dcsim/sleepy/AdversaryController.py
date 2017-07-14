@@ -8,9 +8,9 @@ if TYPE_CHECKING:
     from .CorruptedNode import CorruptedNode
 
 
-def check(id:int, timestamp:int):
+def check(id: int, timestamp: int):
     sha = hashlib.sha256()
-    sha.update(("%d%d"% (id, timestamp)).encode("utf-8"))
+    sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
     return sha.hexdigest() < D_p
 
 
@@ -37,7 +37,7 @@ class TransactionPool:
 class BlockTree():
     def __init__(self, key):
         self._depth = 0
-        self._blockPool = {SuperRoot.hashval:SuperRoot}
+        self._blockPool = {SuperRoot.hashval: SuperRoot}
 
     @property
     def depth(self) -> int:
