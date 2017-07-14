@@ -1,7 +1,7 @@
 import hashlib
 import random
 from dcsim.framework import *
-from .HonestNode import TBlock, D_p, SuperRoot
+from .HonestNode import *
 from typing import *
 if TYPE_CHECKING:
     from .CorruptedNode import CorruptedNode
@@ -11,26 +11,6 @@ def check(id:int, timestamp:int):
     sha = hashlib.sha256()
     sha.update(("%d%d"% (id, timestamp)).encode("utf-8"))
     return sha.hexdigest() < D_p
-
-
-class TransactionPool:
-    def __init__(self):
-        self._keys = {}
-
-    def contain_key(self, tx: str):
-        return tx in self._keys.keys()
-
-    def insert(self, tx: str):
-        self._keys[tx] = 1
-
-    def get_all(self):
-        return [key for key in self._keys.keys()]
-
-    def erase(self, tx: str):
-        del self._keys[tx]
-
-    def clear(self):
-        self._keys.clear()
 
 
 class BlockTree():

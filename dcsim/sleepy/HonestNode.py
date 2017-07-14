@@ -67,17 +67,15 @@
         * main_chain(self) -> List[block]
             extract the main chain and form a list where every block just follows its father in the list
 
-    * TxPool class
+    * TransactionPool class
         Store transactions that will be added into block
-        * find_tx(self, tx) -> bool : placeholder
+        * contain_key(self, tx) -> bool : placeholder
             check if a specific transaction is already in it
-        * add_tx(self, tx)
+        * insert(self, tx)
             add a transaction into pool
-        * remove_tx(self, tx) : placeholder
+        * erase(self, tx) : placeholder
             remove a specific transaction
-        * pop_one(self) : placeholder
-            pop the transaction with highest priority
-        * pop_all(self) :
+        * clear(self) :
             pop out all transaction
 
     * OrphanBlockPool class
@@ -109,39 +107,30 @@ Hashval = str
 Timestamp = int
 NodeId = int
 
-# tx pool 存收到但没有放进去的交易信息
-class TxPool:
-
+class TransactionPool:
     def __init__(self):
-        self.txs = []
+        self._keys = {}
 
-    def add_tx(self, tx: Tx):
-        self.txs.append(tx)
+    def contain_key(self, tx: str):
+        return tx in self._keys.keys()
 
-    def remove_tx(self, tx) -> bool:
-        for item in self.txs:
-            if tx == item:
-                self.txs.remove(tx)
-                return True
-        return False
+    def insert(self, tx: str):
+        self._keys[tx] = 1
 
-    def find_tx(self, tx) -> Optional['Tx']:
-        for item in self.txs:
-            if tx == item:
-                return tx
-        return None
+    def get_all(self):
+        return [key for key in self._keys.keys()]
 
-    def get_all(self):  # get data
-        return self.txs
+    def erase(self, tx: str):
+        del self._keys[tx]
 
-    def clear_all(self):
-        del self.txs[:]
+    def clear(self):
+        self._keys.clear()
 
 
 class TBlock:
 
     def __init__(self, pbhv: Hashval, txs: List[Type['Tx']], timestamp: int, pid: int) -> object:
-        # comes from TxPool
+        # comes from TransactionPool
         self.txs = txs  # type: List[Tx]
         # father's hash
         self.pbhv = pbhv  # type: Hashval
@@ -319,7 +308,7 @@ class HonestNode(NodeBase):
     def __init__(self):
         random.seed()
         self._nodeId = random.randint(1, 2**32)
-        self._txpool = TxPool()
+        self._txpool = TransactionPool()
         self._orphanpool = OrphanBlockPool()
         self._block_chain = BlockChain()
 
@@ -354,10 +343,11 @@ class HonestNode(NodeBase):
                     new_node = self._block_chain.add_child(curnode, b2a)
                     self.recursive_add_block_from_orphan_pool(new_node)
 
-    def round_action(self, ctx: Context) -> None:
+    def update(self, ctx):
         # check received blocks
         message_tuples: List[MessageTuple] = ctx.received_messages
-        blocks: List[TBlock] = []       # store valid blocks
+        self.blocks: List[TBlock] = []       # store valid blocks
+        self.message_tuples: List[MessageTuple] = []
 
         for message_tuple in message_tuples:
             message = message_tuple.message
@@ -365,10 +355,9 @@ class HonestNode(NodeBase):
             if message["type"] == 0:   # its a transaction
                 if ctx.verify(message["signature"], message["value"], sender) \
                         and check_tx(message["value"]):
-                    if not self._txpool.find_tx(message["value"]):
-                        my_sig = ctx.sign(message["value"], self.id)
-                        ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
-                        self._txpool.add_tx(message["value"])
+                    if not self._txpool.contain_key(message["value"]):
+                        self.message_tuples.append(message_tuple)
+                        self._txpool.insert(message["value"])
                     else:
                         continue
                 else:
@@ -378,20 +367,18 @@ class HonestNode(NodeBase):
                 if ctx.verify(message["signature"], message["value"].str, sender) \
                         and check_solution(message["value"])\
                         and message["value"].timestamp <= ctx.round:
-                    print("HonestNode.round_action: NodeId %d accepted message" % self._nodeId + message["value"].hashval)
-                    blocks.append(message["value"])
+                    print("HonestNode.round_action: NodeId %d accepted message " % self._nodeId + message["value"].hashval)
+                    self.blocks.append(message["value"])
                 else:
                     continue
 
-        for block in blocks:
+        for block in self.blocks:
             # check if this block has been received
             if self._block_chain.find(block.hashval) is not None:
                 continue
             elif self._orphanpool.find(block.hashval):
                 continue
 
-            my_sig = ctx.sign(block.str, self.id)
-            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
@@ -401,10 +388,17 @@ class HonestNode(NodeBase):
             else:
                 if cur_node == self._block_chain.get_top():
                     for tx in block.txs:
-                        self._txpool.remove_tx(tx)
+                        self._txpool.erase(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
-
+    
+    def action(self, ctx):
+        for message in self.message_tuples:
+            my_sig = ctx.sign(message["value"], self.id)
+            ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
+        for block in self.blocks:
+            my_sig = ctx.sign(block.str, self.id)
+            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx.round
@@ -413,5 +407,9 @@ class HonestNode(NodeBase):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = ctx.sign(my_block.str, self.id)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
-            self._txpool.clear_all()
+            self._txpool.clear()
+
+    def round_action(self, ctx: Context) -> None:
+        self.update(ctx)
+        self.action(ctx)
         return None
