@@ -1,7 +1,7 @@
 from typing import *
 from dcsim.framework import *
 if TYPE_CHECKING:
-    from .HonestNode import TBlock
+    from .common import TBlock
 
 
 class CorruptedNode(NodeBase):

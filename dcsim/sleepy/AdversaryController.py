@@ -1,7 +1,7 @@
 import hashlib
 from typing import *
 from dcsim.framework import *
-from .HonestNode import TBlock, D_p, SuperRoot, Timestamp, Tx
+from .common import TBlock, D_p, SuperRoot, Timestamp, Tx
 from .CorruptedNode import CorruptedNode
 if TYPE_CHECKING:
     from .Configuration import Configuration
