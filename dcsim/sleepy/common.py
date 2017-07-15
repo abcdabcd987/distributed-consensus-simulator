@@ -214,3 +214,10 @@ def verify_block(ctx: Context, message: Any, sender: NodeId):
 def verify_tx(ctx: Context, message: Any, sender: NodeId):
     return verify_sign(message["signature"], message["value"], ctx.get_public_key(sender)) \
             and check_tx(message["value"])
+
+def init_BlockTree(x: Any):
+    pass
+
+
+def update_BlockTree(x: Any):
+    pass

@@ -38,10 +38,6 @@ class BlockTree():
             self._depth = max(self._depth, len(seq))
 
 
-def valid(block: Block, timestamp: int):
-    return check_sol(block.id, block.round) and block.round <= timestamp
-
-
 class AdversaryController(AdversaryControllerBase):
     def __init__(self, corrupted_nodes: Tuple['CorruptedNode', ...], config: 'Configuration') -> None:
         super().__init__(corrupted_nodes, config)
