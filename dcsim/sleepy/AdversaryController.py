@@ -1,7 +1,7 @@
 import hashlib
 from typing import *
 from dcsim.framework import *
-from .common import TBlock, D_p, SuperRoot, Timestamp, Tx
+from .common import *
 from .CorruptedNode import CorruptedNode
 if TYPE_CHECKING:
     from .Configuration import Configuration
@@ -11,26 +11,6 @@ def check(id: int, timestamp: int):
     sha = hashlib.sha256()
     sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
     return sha.hexdigest() < D_p
-
-
-class TransactionPool:
-    def __init__(self) -> None:
-        self._keys = set()  # type: Set[Tx]
-
-    def contain_key(self, tx: 'Tx'):
-        return tx in self._keys
-
-    def insert(self, tx: 'Tx'):
-        self._keys.add(tx)
-
-    def get_all(self):
-        return list(self._keys)
-
-    def erase(self, tx: 'Tx'):
-        self._keys.remove(tx)
-
-    def clear(self):
-        self._keys.clear()
 
 
 class BlockTree():

@@ -9,34 +9,24 @@ Tx = NewType('Tx', bytes)
 Hashval = NewType('Hashval', bytes)
 Timestamp = NewType('Timestamp', int)
 
-
-class TxPool:
-
+class TransactionPool:
     def __init__(self) -> None:
-        self.txs = []  # type: List[Tx]
+        self._keys = set()  # type: Set[Tx]
 
-    def add_tx(self, tx: Tx):
-        self.txs.append(tx)
+    def contain_key(self, tx: 'Tx'):
+        return tx in self._keys
 
-    def remove_tx(self, tx) -> bool:
-        for item in self.txs:
-            if tx == item:
-                self.txs.remove(tx)
-                return True
-        return False
+    def insert(self, tx: 'Tx'):
+        self._keys.add(tx)
 
-    def find_tx(self, tx) -> Optional[Tx]:
-        for item in self.txs:
-            if tx == item:
-                return tx
-        return None
+    def get_all(self):
+        return list(self._keys)
 
-    def get_all(self):  # get data
-        return self.txs
+    def erase(self, tx: 'Tx'):
+        self._keys.remove(tx)
 
-    def clear_all(self):
-        del self.txs[:]
-
+    def clear(self):
+        self._keys.clear()
 
 class TBlock:
     def __init__(self, pbhv: Hashval, txs: List[Tx], timestamp: Timestamp, pid: NodeId) -> None:

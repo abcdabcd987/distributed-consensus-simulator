@@ -7,7 +7,7 @@ class HonestNode(NodeBase):
     def __init__(self, config: ConfigurationBase) -> None:
         super().__init__(config)
         self._nodeId = self._id
-        self._txpool = TxPool()
+        self._txpool = TransactionPool()
         self._orphanpool = OrphanBlockPool()
         self._block_chain = BlockChain()
 
@@ -49,10 +49,10 @@ class HonestNode(NodeBase):
             if message["type"] == 0:   # its a transaction
                 if ctx.verify(message["signature"], message["value"], sender) \
                         and check_tx(message["value"]):
-                    if not self._txpool.find_tx(message["value"]):
+                    if not self._txpool.contain_key(message["value"]):
                         my_sig = ctx.sign(message["value"])
                         ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
-                        self._txpool.add_tx(message["value"])
+                        self._txpool.insert(message["value"])
                     else:
                         continue
                 else:
@@ -85,7 +85,7 @@ class HonestNode(NodeBase):
             else:
                 if cur_node == self._block_chain.get_top():
                     for tx in block.txs:
-                        self._txpool.remove_tx(tx)
+                        self._txpool.erase(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
 
@@ -97,5 +97,5 @@ class HonestNode(NodeBase):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = ctx.sign(my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
-            self._txpool.clear_all()
+            self._txpool.clear()
         return None
