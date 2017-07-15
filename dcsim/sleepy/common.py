@@ -9,6 +9,7 @@ Tx = NewType('Tx', bytes)
 Hashval = NewType('Hashval', bytes)
 Timestamp = NewType('Timestamp', int)
 
+
 class TransactionPool:
     def __init__(self) -> None:
         self._keys = set()  # type: Set[Tx]

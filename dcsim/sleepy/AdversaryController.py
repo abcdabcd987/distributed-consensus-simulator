@@ -75,7 +75,6 @@ class AdversaryController(AdversaryControllerBase):
 
     def round_instruction(self,
                           ctx: Context,
-                          new_messages: Tuple['MessageTuple', ...],
                           old_messages: Tuple['MessageTuple', ...],
                           current_round: int):
         self.update(ctx, old_messages)

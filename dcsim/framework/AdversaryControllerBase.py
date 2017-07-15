@@ -15,7 +15,6 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def round_instruction(self,
                           ctx: 'Context',
-                          new_messages: Tuple['MessageTuple', ...],
                           old_messages: Tuple['MessageTuple', ...],
                           current_round: int):
         pass
