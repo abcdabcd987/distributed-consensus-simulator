@@ -9,6 +9,12 @@ if TYPE_CHECKING:
 
 
 def check(id: int, timestamp: int):
+    """
+    check whether a node is awake
+    :param id: the id of the node
+    :param timestamp: the timestap of this round
+    :return: a boolean variable that decides whether a ode is awake
+    """
     sha = hashlib.sha256()
     sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
     return sha.hexdigest() < D_p
@@ -16,15 +22,31 @@ def check(id: int, timestamp: int):
 
 class TransactionPool:
     def __init__(self) -> None:
+        """
+        Initialze the transactionpool
+        """
         self._keys = set()  # type: Set[Tx]
 
     def contain_key(self, tx: 'Tx'):
+        """
+        return whether a given transaction is in the pool
+        :param tx: the given transaction
+        :return: whether a given transaction is in the pool
+        """
         return tx in self._keys
 
     def insert(self, tx: 'Tx'):
+        """
+        insert the transaction to the transactionpool
+        :param tx: the inserted transaction
+        """
         self._keys.add(tx)
 
     def get_all(self):
+        """
+
+        :return:
+        """
         return list(self._keys)
 
     def erase(self, tx: 'Tx'):

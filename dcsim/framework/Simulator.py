@@ -36,7 +36,7 @@ class Simulator:
 
     def run(self):
         """
-        run the simulation
+        run the simulation, until the measure decides whether it should stop
         """
         round = 0
         while not self._measure.should_stop(round):
