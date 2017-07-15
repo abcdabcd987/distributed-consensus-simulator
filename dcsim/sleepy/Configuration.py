@@ -21,4 +21,4 @@ class Configuration(ConfigurationBase):
     num_nodes = 10
     ratio_corrupted = 0.3
     max_delay = 3
-    confirm_time = 3
+    confirm_time = 5

@@ -53,21 +53,29 @@ class Measurement(MeasurementBase):
 
         for node in self._honest_nodes:
             chain_quality = []
+            chain_T = []
             cnt = 0
             chain = cast(HonestNode, node).main_chain
             max_len = max(0, len(chain) - self._config.confirm_time)
-            for i in range(1, max_len):
-                if chain[i].pid in corrupted_set:
-                    cnt += 1
-                    chain_quality.append("corrupted")
+            for i in range(1, len(chain)):
+                if (i <= max_len):
+                    if chain[i].pid in corrupted_set:
+                        cnt += 1
+                        chain_quality.append("corrupted")
+                    else:
+                        chain_quality.append("honest")
                 else:
-                    chain_quality.append("honest")
+                    if chain[i].pid in corrupted_set:
+                        chain_T.append("corrupted")
+                    else:
+                        chain_T.append("honest")
+
             cnt = min(cnt, max_len)
             if max_len <= 1:
                 print("Chain Quality: 1.000000")
             else:
                 print("Chain Quality: %f" % (1 - cnt / (max_len - 1)))
-            print(list(chain_quality))
+            print(list(chain_quality), list(chain_T))
 
         print("- - - - -")
 
