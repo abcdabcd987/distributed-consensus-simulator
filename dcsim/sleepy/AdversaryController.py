@@ -44,28 +44,48 @@ class TransactionPool:
 
     def get_all(self):
         """
-
-        :return:
+        get all the transaction to a list
+        :return: A list contains all the transactions
         """
         return list(self._keys)
 
     def erase(self, tx: 'Tx'):
+        """
+        delete a given trasaction
+        :param tx:
+        """
         self._keys.remove(tx)
 
     def clear(self):
+        """
+        clear all the transactions in the pool
+        """
         self._keys.clear()
 
 
 class BlockTree():
     def __init__(self, key) -> None:
+        """
+        initialze the blocktree, determins the root of the tree
+        :param key: useless
+        """
         self._depth = 0
         self._blockPool = {SuperRoot.hashval: SuperRoot}
 
     @property
     def depth(self) -> int:
+        """
+        return the depth of the blocktree
+        :return: the depth of the blocktree
+        """
         return self._depth
 
     def insert(self, cur: TBlock):
+        """
+        insert a given block to the blocktree
+        :param cur: the inserted block
+        :return: none
+        """
         if cur.hashval in self._blockPool.keys():
             return
         tmp = cur
@@ -88,11 +108,22 @@ class BlockTree():
 
 
 def valid(block: TBlock, timestamp: int):
+    """
+        decide whether a block is valid
+    :param block: the given block
+    :param timestamp: the current timestamp
+    :return: whether the block is valid
+    """
     return check(block.id, block.round) and block.round <= timestamp
 
 
 class AdversaryController(AdversaryControllerBase):
     def __init__(self, corrupted_nodes: Tuple['CorruptedNode', ...], config: 'Configuration') -> None:
+        """
+        Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
+        :param corrupted_nodes: A tuple contains the corrupted nodes
+        :param config: Configuration of the protocol
+        """
         super().__init__(corrupted_nodes, config)
         self._root = BlockTree(SuperRoot)
         self._chain = [SuperRoot]
@@ -100,6 +131,10 @@ class AdversaryController(AdversaryControllerBase):
         self._pending_messages = defaultdict(list)  # type: DefaultDict[int, List['MessageTuple']]
 
     def give_instruction(self, round: int) -> None:
+        """
+        adversary controller gives the instructions to the nodes
+        :param round: the round that these instructions are in
+        """
         for badNode in self._corrupted_nodes:
             if check(badNode.id, round):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
@@ -113,6 +148,11 @@ class AdversaryController(AdversaryControllerBase):
         print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
 
     def _handle_new_messages(self, round:int, new_messages: List['MessageTuple']):
+        """
+        handle the new messages, insert message to the block tree or transaction
+        :param round: the current round
+        :param new_messages: the new messages
+        """
         for message_tuple in new_messages:
             message = message_tuple.message
             if message["type"] == 0:
@@ -123,12 +163,29 @@ class AdversaryController(AdversaryControllerBase):
                     self._root.insert(message["value"])
 
     def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
+        """
+        add new messages from the honest nodes
+        :param round: the round that the messages are in
+        :param sender_id: the id of the sender
+        :param messages_to_send: A list that contains the new messages
+        """
         self._pending_messages[round + self._config.max_delay] += messages_to_send
         self._handle_new_messages(round, messages_to_send)
 
     def add_corrupted_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
+        """
+        add new messages from the corrupted nodes
+        :param round: the round that the messages are in
+        :param sender_id: the id of the sender
+        :param messages_to_send: A list that contains the new messages
+        """
         self._pending_messages[round + 1] += messages_to_send
         self._handle_new_messages(round, messages_to_send)
 
     def get_delivered_messages(self, round: int) -> List['MessageTuple']:
+        """
+        Get the delivered messages from all the nodes, returns a list contains all the messagetuples
+        :param round: the round that these messages are in
+        :return: a list contains all the messagetuples
+        """
         return self._pending_messages.pop(round, [])

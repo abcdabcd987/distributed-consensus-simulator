@@ -5,6 +5,10 @@ from .common import *
 
 class HonestNode(NodeBase):
     def __init__(self, config: ConfigurationBase) -> None:
+        """
+        Initilize the hoestnode
+        :param config: the configuration of the node
+        """
         super().__init__(config)
         self._nodeId = self._id
         self._txpool = TxPool()
@@ -13,10 +17,19 @@ class HonestNode(NodeBase):
 
     @property
     def main_chain(self):
+        """
+        return the blockchain's mainchain
+        :return: the blockchain's mainchain
+        """
         return self._block_chain.main_chain
 
     # remove all the children of block from the orphan pool
     def recursive_remove_block_from_orphan_pool(self, block: TBlock):
+        """
+        remove the given block from the orphan pool
+        :param block: the block to be removed
+        :return: void
+        """
         blocks_to_remove = self._orphanpool.pop_children(block.hashval)
         if blocks_to_remove is None:
             return
@@ -26,6 +39,11 @@ class HonestNode(NodeBase):
 
     # add all the orphan that could be connected on to the chain
     def recursive_add_block_from_orphan_pool(self, curnode: TNode):
+        """
+        all the given block to the orphan pool
+        :param curnode: the node to be added
+        :return: void
+        """
         blocks_to_add = self._orphanpool.pop_children(curnode.block.hashval)
         if blocks_to_add is None:
             return
@@ -40,6 +58,11 @@ class HonestNode(NodeBase):
 
     def round_action(self, ctx: Context) -> None:
         # check received blocks
+        """
+        the round action of the honest node
+        :param ctx: use the ctx to do inputs and outputs in a node
+        :return: none
+        """
         message_tuples = ctx.received_messages
         blocks: List[TBlock] = []       # store valid blocks
 

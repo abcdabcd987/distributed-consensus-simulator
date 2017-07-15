@@ -35,7 +35,7 @@ class MeasurementBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def report_final(self) -> None:
         """
-        report the end
+        report the all the conditions and the result in the end
         """
         pass
 

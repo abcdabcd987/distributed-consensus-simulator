@@ -16,6 +16,13 @@ class Measurement(MeasurementBase):
                  honest_nodes: Tuple['HonestNode', ...],
                  adversary: 'AdversaryController',
                  config: 'Configuration') -> None:
+        """
+        Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration
+        :param corrupted_nodes: the corrupted nodes
+        :param honest_nodes: the honest nodes
+        :param adversary: the adversary controller is used
+        :param config: the configuration is used
+        """
         super().__init__(corrupted_nodes, honest_nodes, adversary, config)
         self._log_for_honest = {}  # type: Dict[NodeBase, Any]
         for node in self._honest_nodes:
@@ -24,6 +31,10 @@ class Measurement(MeasurementBase):
         self.max_round = 50
 
     def report_round(self, round: int) -> None:
+        """
+        return the condition of each nodes ar this round
+        :param round: the index of the round
+        """
         print("----------------------------------------------------------------")
         print("@ Round %d" % round)
         found = -1
@@ -44,6 +55,9 @@ class Measurement(MeasurementBase):
         print("----------------------------------------------------------------")
 
     def report_final(self) -> None:
+        """
+        report the all the conditions and the result in the end
+        """
         print('''Trivial Consistency Attack:
 Honest Nodes: {num_honest}
 Corrupted Nodes: {num_corrupt}
