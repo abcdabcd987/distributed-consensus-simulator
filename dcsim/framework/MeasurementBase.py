@@ -12,6 +12,13 @@ class MeasurementBase(metaclass=abc.ABCMeta):
                  honest_nodes: Tuple['NodeBase', ...],
                  adversary: 'AdversaryControllerBase',
                  config: 'ConfigurationBase') -> None:
+        """
+        Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration
+        :param corrupted_nodes: the corrupted nodes
+        :param honest_nodes: the honest nodes
+        :param adversary: the adversary controller is used
+        :param config: the configuration is used
+        """
         self._corrupted_nodes = corrupted_nodes
         self._honest_nodes = honest_nodes
         self._adversary = adversary
@@ -19,12 +26,23 @@ class MeasurementBase(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def should_stop(self, round: int) -> bool:
+        """
+        return whether the simulation should stop
+        :param round: the round the simulation is at
+        """
         pass
 
     @abc.abstractmethod
     def report_final(self) -> None:
+        """
+        report the end
+        """
         pass
 
     @abc.abstractmethod
     def report_round(self, round: int) -> None:
+        """
+        return the condition of each nodes ar this round
+        :param round: the index of the round
+        """
         pass

@@ -8,6 +8,10 @@ from .NodeId import NodeId
 
 class Simulator:
     def __init__(self, config: ConfigurationBase) -> None:
+        """
+        initialze the simulator, including the number of corrupted/honest nodes, the information of each nodes, the configuration, the measurement
+        :param config: the configuration of thel protocol
+        """
         num_corrupted_nodes = int(config.num_nodes * config.ratio_corrupted)
         num_honest_nodes = config.num_nodes - num_corrupted_nodes
         self._honest_nodes = tuple(config.honest_node_type(config) for _ in range(0, num_honest_nodes))
@@ -24,9 +28,16 @@ class Simulator:
 
     @staticmethod
     def _generate_secret_key():
+        """
+        generate the secret key
+        :return:
+        """
         return os.urandom(16)
 
     def run(self):
+        """
+        run the simulation
+        """
         round = 0
         while not self._measure.should_stop(round):
             round += 1
