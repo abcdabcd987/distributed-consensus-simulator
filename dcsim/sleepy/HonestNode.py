@@ -38,29 +38,30 @@ class HonestNode(NodeBase):
                     new_node = self._block_chain.add_child(curnode, b2a)
                     self.recursive_add_block_from_orphan_pool(new_node)
 
-    def round_action(self, ctx: Context) -> None:
+    def update(self, ctx: Context):
         # check received blocks
         message_tuples = ctx.received_messages
-        blocks: List[Block] = []       # store valid blocks
+        blocks: List[Block] = []  # store valid blocks
+        self.pending_message = []
+        self.pending_blocks = []
 
         for message_tuple in message_tuples:
             message = message_tuple.message
             sender = message_tuple.sender
-            if message["type"] == 0:   # its a transaction
+            if message["type"] == 0:  # its a transaction
                 if ctx.verify(message["signature"], message["value"], sender) \
                         and check_tx(message["value"]):
                     if not self._txpool.contain_key(message["value"]):
-                        my_sig = ctx.sign(message["value"])
-                        ctx.broadcast({"type": 0, "valuTNe": message["value"], "signature": my_sig})
+                        self.pending_message.append(message["value"])
                         self._txpool.insert(message["value"])
                     else:
                         continue
                 else:
                     continue
-            elif message["type"] == 1:   # its a block
+            elif message["type"] == 1:  # its a block
                 print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
                 if ctx.verify(message["signature"], message["value"].serialize, sender) \
-                        and check_solution(message["value"])\
+                        and check_solution(message["value"]) \
                         and message["value"].timestamp <= ctx._round:
                     print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
                     blocks.append(message["value"])
@@ -73,9 +74,7 @@ class HonestNode(NodeBase):
                 continue
             elif self._orphanpool.find(block.hashval):
                 continue
-
-            my_sig = ctx.sign(block.serialize)
-            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
+            self.pending_blocks.append(block)
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
@@ -89,6 +88,13 @@ class HonestNode(NodeBase):
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
 
+    def action(self, ctx: Context):
+        for message in self.pending_message:
+            my_sig = ctx.sign(message["value"])
+            ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
+        for block in self.pending_blocks:
+            my_sig = ctx.sign(block.serialize)
+            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx._round
@@ -98,4 +104,8 @@ class HonestNode(NodeBase):
             my_sig = ctx.sign(my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
             self._txpool.clear()
+
+    def round_action(self, ctx: Context) -> None:
+        self.update(ctx)
+        self.action(ctx)
         return None
