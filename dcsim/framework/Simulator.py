@@ -67,8 +67,8 @@ class Simulator:
 
             # adversary can gives instructions to corrupted nodes according to pending messages
             # and also honest nodes' messages in this round.
-            ctx = Context(self._node_ids, self._secret_keys, round, None, received_messages)
-            self._adversary.round_instruction(ctx, pending_messages, round)
+            ctx = Context(self._node_ids, self._secret_keys, round, None, pending_messages)
+            self._adversary.round_instruction(ctx)
 
             # run corrupted nodes
             for node in self._corrupted_nodes:

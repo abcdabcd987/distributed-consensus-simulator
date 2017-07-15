@@ -49,8 +49,8 @@ class AdversaryController(AdversaryControllerBase):
         self._chain = [SuperRoot]
         self._tx = TransactionPool()
 
-    def update(self, ctx: Context, old_messages: Tuple['MessageTuple', ...]):
-        for message_tuple in old_messages:
+    def update(self, ctx: Context):
+        for message_tuple in ctx._received_messages:
             message = message_tuple.message
             sender = message_tuple.sender
             if message["type"] == 0:
@@ -60,11 +60,11 @@ class AdversaryController(AdversaryControllerBase):
                 if verify_block(ctx, message, sender):
                     self._root.insert(message["value"])
 
-    def action(self, current_round: int):
+    def action(self, ctx: Context):
         for badNode in self._corrupted_nodes:
-            if check_sol(badNode.id, current_round):
+            if check_sol(badNode.id, ctx._round):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
-                block = Block(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, current_round), badNode.id)
+                block = Block(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, ctx._round), badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
                 if len(self._chain) - 2 > self._root._depth + self._config.confirm_time:
@@ -73,9 +73,6 @@ class AdversaryController(AdversaryControllerBase):
                     print("Corrupt chain pushed")
         print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
 
-    def round_instruction(self,
-                          ctx: Context,
-                          old_messages: Tuple['MessageTuple', ...],
-                          current_round: int):
-        self.update(ctx, old_messages)
-        self.action(current_round)
+    def round_instruction(self, ctx: Context):
+        self.update(ctx)
+        self.action(ctx)
