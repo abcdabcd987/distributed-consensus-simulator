@@ -58,11 +58,11 @@ class HonestNode(NodeBase):
                 else:
                     continue
             elif message["type"] == 1:   # its a block
-                print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
+                # print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
                 if ctx.verify(message["signature"], message["value"].serialize, sender) \
                         and check_solution(message["value"])\
                         and message["value"].timestamp <= ctx._round:
-                    print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
+                    # print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
                     blocks.append(message["value"])
                 else:
                     continue

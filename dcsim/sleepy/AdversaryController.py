@@ -38,10 +38,16 @@ class BlockTree():
     def __init__(self, key) -> None:
         self._depth = 0
         self._blockPool = {SuperRoot.hashval: SuperRoot}
+        # Add main_chain for adversary
+        self._main_chain = [SuperRoot]
 
     @property
     def depth(self) -> int:
         return self._depth
+
+    @property
+    def main_chain(self):
+        return self._main_chain
 
     def insert(self, cur: TBlock):
         if cur.hashval in self._blockPool.keys():
@@ -50,7 +56,7 @@ class BlockTree():
         seq = []
         while tmp.hashval != SuperRoot.hashval:
             seq.append(tmp)
-            #print("AdversaryController - BlockTree.insert: searching %s %s" % (tmp.hashval, tmp.pbhv))
+            # print("AdversaryController - BlockTree.insert: searching %s %s" % (tmp.hashval, tmp.pbhv))
             tmp = self._blockPool.get(tmp.pbhv, None)
             if tmp is None:
                 break
@@ -62,7 +68,14 @@ class BlockTree():
                 if node not in tmp.children:
                     tmp.children.append(node)
                 tmp = node
-            self._depth = max(self._depth, len(seq))
+            # self._depth = max(self._depth, len(seq))
+            # reset main_chain
+            if len(seq) > self._depth:
+                self._main_chain = [SuperRoot]
+                seq.reverse()
+                for node in seq:
+                    self._main_chain.append(node)
+                self._depth = len(seq)
 
 
 def valid(block: TBlock, timestamp: int):

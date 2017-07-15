@@ -28,3 +28,7 @@ class MeasurementBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def report_round(self, round: int) -> None:
         pass
+
+    @abc.abstractmethod
+    def report_selfish(self, round: int) -> None:
+        pass
