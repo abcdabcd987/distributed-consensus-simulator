@@ -186,15 +186,7 @@ class OrphanBlockPool:
 def check_tx(tx: Tx):
     return True if tx is not None else False
 
-
-def check_solution(tblock: Block):
-    spid = '%s' % tblock.pid
-    st = '%s' % tblock.timestamp
-    sha256 = hashlib.sha256()
-    k = spid + st
-    sha256.update(k.encode('utf-8'))
-    v = sha256.hexdigest()
-    if v < D_p:
-        return True
-    else:
-        return False
+def check_sol(id: int, timestamp: int):
+    sha = hashlib.sha256()
+    sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
+    return sha.hexdigest() < D_p

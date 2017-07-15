@@ -61,7 +61,7 @@ class HonestNode(NodeBase):
             elif message["type"] == 1:  # its a block
                 print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
                 if ctx.verify(message["signature"], message["value"].serialize, sender) \
-                        and check_solution(message["value"]) \
+                        and check_sol(message["value"].pid, message["value"].round) \
                         and message["value"].timestamp <= ctx._round:
                     print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
                     blocks.append(message["value"])
@@ -99,7 +99,7 @@ class HonestNode(NodeBase):
         txs = self._txpool.get_all()
         t = ctx._round
         my_block: Block = Block(pbhv, txs, cast(Timestamp, t), self._nodeId)
-        if check_solution(my_block):
+        if check_sol(self._nodeId, t):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = ctx.sign(my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})

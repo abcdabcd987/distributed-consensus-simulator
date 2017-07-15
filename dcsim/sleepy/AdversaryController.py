@@ -7,12 +7,6 @@ if TYPE_CHECKING:
     from .Configuration import Configuration
 
 
-def check(id: int, timestamp: int):
-    sha = hashlib.sha256()
-    sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
-    return sha.hexdigest() < D_p
-
-
 class BlockTree():
     def __init__(self, key) -> None:
         self._depth = 0
@@ -45,7 +39,7 @@ class BlockTree():
 
 
 def valid(block: Block, timestamp: int):
-    return check(block.id, block.round) and block.round <= timestamp
+    return check_sol(block.id, block.round) and block.round <= timestamp
 
 
 class AdversaryController(AdversaryControllerBase):
@@ -69,7 +63,7 @@ class AdversaryController(AdversaryControllerBase):
                     self._root.insert(message["value"])
 
         for badNode in self._corrupted_nodes:
-            if check(badNode.id, current_round):
+            if check_sol(badNode.id, current_round):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
                 block = Block(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, current_round), badNode.id)
                 self._tx.clear()
