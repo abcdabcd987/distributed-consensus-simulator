@@ -22,7 +22,7 @@ class BlockTree():
     def depth(self) -> int:
         return self._depth
 
-    def insert(self, cur: TBlock):
+    def insert(self, cur: Block):
         if cur.hashval in self._blockPool.keys():
             return
         tmp = cur
@@ -44,7 +44,7 @@ class BlockTree():
             self._depth = max(self._depth, len(seq))
 
 
-def valid(block: TBlock, timestamp: int):
+def valid(block: Block, timestamp: int):
     return check(block.id, block.round) and block.round <= timestamp
 
 
@@ -71,7 +71,7 @@ class AdversaryController(AdversaryControllerBase):
         for badNode in self._corrupted_nodes:
             if check(badNode.id, current_round):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
-                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, current_round), badNode.id)
+                block = Block(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, current_round), badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
                 if len(self._chain) - 2 > self._root._depth + self._config.confirm_time:

@@ -16,7 +16,7 @@ class HonestNode(NodeBase):
         return self._block_chain.main_chain
 
     # remove all the children of block from the orphan pool
-    def recursive_remove_block_from_orphan_pool(self, block: TBlock):
+    def recursive_remove_block_from_orphan_pool(self, block: Block):
         blocks_to_remove = self._orphanpool.pop_children(block.hashval)
         if blocks_to_remove is None:
             return
@@ -25,7 +25,7 @@ class HonestNode(NodeBase):
                 self.recursive_remove_block_from_orphan_pool(b2r)
 
     # add all the orphan that could be connected on to the chain
-    def recursive_add_block_from_orphan_pool(self, curnode: TNode):
+    def recursive_add_block_from_orphan_pool(self, curnode: BlockNode):
         blocks_to_add = self._orphanpool.pop_children(curnode.block.hashval)
         if blocks_to_add is None:
             return
@@ -41,7 +41,7 @@ class HonestNode(NodeBase):
     def round_action(self, ctx: Context) -> None:
         # check received blocks
         message_tuples = ctx.received_messages
-        blocks: List[TBlock] = []       # store valid blocks
+        blocks: List[Block] = []       # store valid blocks
 
         for message_tuple in message_tuples:
             message = message_tuple.message
@@ -51,7 +51,7 @@ class HonestNode(NodeBase):
                         and check_tx(message["value"]):
                     if not self._txpool.contain_key(message["value"]):
                         my_sig = ctx.sign(message["value"])
-                        ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
+                        ctx.broadcast({"type": 0, "valuTNe": message["value"], "signature": my_sig})
                         self._txpool.insert(message["value"])
                     else:
                         continue
@@ -92,7 +92,7 @@ class HonestNode(NodeBase):
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx._round
-        my_block: TBlock = TBlock(pbhv, txs, cast(Timestamp, t), self._nodeId)
+        my_block: Block = Block(pbhv, txs, cast(Timestamp, t), self._nodeId)
         if check_solution(my_block):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = ctx.sign(my_block.serialize)
