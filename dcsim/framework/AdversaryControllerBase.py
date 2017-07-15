@@ -13,8 +13,17 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
         self._config = config
 
     @abc.abstractmethod
-    def round_instruction(self,
-                          new_messages: Tuple['MessageTuple', ...],
-                          old_messages: Tuple['MessageTuple', ...],
-                          current_round: int):
+    def get_delivered_messages(self, round: int) -> List['MessageTuple']:
+        pass
+
+    @abc.abstractmethod
+    def give_instruction(self, round: int) -> None:
+        pass
+
+    @abc.abstractmethod
+    def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
+        pass
+
+    @abc.abstractmethod
+    def add_corrupted_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
         pass

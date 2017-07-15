@@ -5,7 +5,6 @@ if TYPE_CHECKING:
     from .AdversaryController import AdversaryController
     from .Configuration import Configuration
     from .CorruptedNode import CorruptedNode
-    from .NetworkController import NetworkController
 
 
 class Measurement(MeasurementBase):
@@ -15,10 +14,9 @@ class Measurement(MeasurementBase):
     def __init__(self,
                  corrupted_nodes: Tuple['CorruptedNode', ...],
                  honest_nodes: Tuple['HonestNode', ...],
-                 network: 'NetworkController',
                  adversary: 'AdversaryController',
                  config: 'Configuration') -> None:
-        super().__init__(corrupted_nodes, honest_nodes, network, adversary, config)
+        super().__init__(corrupted_nodes, honest_nodes, adversary, config)
         self._log_for_honest = {}  # type: Dict[NodeBase, Any]
         for node in self._honest_nodes:
             self._log_for_honest[node] = []

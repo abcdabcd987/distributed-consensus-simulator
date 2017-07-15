@@ -3,7 +3,6 @@ from typing import *
 if TYPE_CHECKING:
     from .AdversaryControllerBase import AdversaryControllerBase
     from .ConfigurationBase import ConfigurationBase
-    from .NetworkControllerBase import NetworkControllerBase
     from .NodeBase import NodeBase
 
 
@@ -11,12 +10,10 @@ class MeasurementBase(metaclass=abc.ABCMeta):
     def __init__(self,
                  corrupted_nodes: Tuple['NodeBase', ...],
                  honest_nodes: Tuple['NodeBase', ...],
-                 network: 'NetworkControllerBase',
                  adversary: 'AdversaryControllerBase',
                  config: 'ConfigurationBase') -> None:
         self._corrupted_nodes = corrupted_nodes
         self._honest_nodes = honest_nodes
-        self._network = network
         self._adversary = adversary
         self._config = config
 

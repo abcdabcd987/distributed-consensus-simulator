@@ -1,4 +1,5 @@
 import hashlib
+from collections import defaultdict
 from typing import *
 from dcsim.framework import *
 from .common import TBlock, D_p, SuperRoot, Timestamp, Tx
@@ -74,24 +75,13 @@ class AdversaryController(AdversaryControllerBase):
         self._root = BlockTree(SuperRoot)
         self._chain = [SuperRoot]
         self._tx = TransactionPool()
+        self._pending_messages = defaultdict(list)  # type: DefaultDict[int, List['MessageTuple']]
 
-    def round_instruction(self,
-                          new_messages: Tuple['MessageTuple', ...],
-                          old_messages: Tuple['MessageTuple', ...],
-                          current_round: int):
-        for message_tuple in old_messages:
-            message = message_tuple.message
-            if message["type"] == 0:
-                if not self._tx.contain_key(message["value"]):
-                    self._tx.insert(message["value"])
-            else:
-                if valid(message["value"], current_round):
-                    self._root.insert(message["value"])
-
+    def give_instruction(self, round: int) -> None:
         for badNode in self._corrupted_nodes:
-            if check(badNode.id, current_round):
+            if check(badNode.id, round):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
-                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, current_round), badNode.id)
+                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
                 if len(self._chain) - 2 > self._root._depth + self._config.confirm_time:
@@ -99,3 +89,24 @@ class AdversaryController(AdversaryControllerBase):
                     self._chain = [SuperRoot]
                     print("Corrupt chain pushed")
         print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
+
+    def _handle_new_messages(self, round:int, new_messages: List['MessageTuple']):
+        for message_tuple in new_messages:
+            message = message_tuple.message
+            if message["type"] == 0:
+                if not self._tx.contain_key(message["value"]):
+                    self._tx.insert(message["value"])
+            else:
+                if valid(message["value"], round):
+                    self._root.insert(message["value"])
+
+    def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
+        self._pending_messages[round + self._config.max_delay] += messages_to_send
+        self._handle_new_messages(round, messages_to_send)
+
+    def add_corrupted_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
+        self._pending_messages[round + 1] += messages_to_send
+        self._handle_new_messages(round, messages_to_send)
+
+    def get_delivered_messages(self, round: int) -> List['MessageTuple']:
+        return self._pending_messages.pop(round, [])
