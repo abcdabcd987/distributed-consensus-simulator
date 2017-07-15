@@ -186,7 +186,30 @@ class OrphanBlockPool:
 def check_tx(tx: Tx):
     return True if tx is not None else False
 
+
 def check_sol(id: int, timestamp: int):
     sha = hashlib.sha256()
     sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
     return sha.hexdigest() < D_p
+
+
+def sign(message: bytes, secret_key: bytes) -> str:
+    m = hashlib.sha1()
+    m.update(secret_key)
+    m.update(message)
+    return m.hexdigest()
+
+
+def verify_sign(signature: str, message: bytes, public_key: bytes) -> bool:
+    return True
+
+
+def verify_block(ctx: Context, message: Any, sender: NodeId):
+    return verify_sign(message["signature"], message["value"].serialize, ctx.get_public_key(sender)) \
+                        and check_sol(message["value"].pid, message["value"].round) \
+                        and message["value"].timestamp <= ctx._round
+
+
+def verify_tx(ctx: Context, message: Any, sender: NodeId):
+    return verify_sign(message["signature"], message["value"], ctx.get_public_key(sender)) \
+            and check_tx(message["value"])

@@ -1,4 +1,5 @@
 from typing import *
+from .common import *
 from dcsim.framework import *
 if TYPE_CHECKING:
     from .common import TBlock
@@ -15,4 +16,4 @@ class CorruptedNode(NodeBase):
     def round_action(self, ctx: Context) -> None:
         while len(self._cache) > 0:
             message = self._cache.pop()
-            ctx.broadcast({"type": 1, "value": message, "signature": ctx.sign(message.serialize)})
+            ctx.broadcast({"type": 1, "value": message, "signature": sign(message.serialize, ctx.get_secret_key())})

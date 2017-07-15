@@ -29,6 +29,12 @@ class Context:
         for node_id in self._nodes:
             self.send(node_id, message)
 
+    def get_secret_key(self):
+        return self._secret_keys[self._node.id]
+
+    def get_public_key(self, node_id: NodeId):
+        return self._secret_keys[node_id]
+
     @property
     def received_messages(self) -> Tuple['MessageTuple', ...]:
         return self._received_messages
@@ -36,15 +42,3 @@ class Context:
     @property
     def messages_to_send(self) -> List['MessageTuple']:
         return self._message_tuples_to_send
-
-    def _sign(self, message: bytes, sender_id: NodeId) -> str:
-        m = hashlib.sha1()
-        m.update(self._secret_keys[sender_id])
-        m.update(message)
-        return m.hexdigest()
-
-    def sign(self, message: bytes) -> str:
-        return self._sign(message, self._node.id)
-
-    def verify(self, signature: str, message: bytes, sender_id: NodeId) -> bool:
-        return self._sign(message, sender_id) == signature

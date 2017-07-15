@@ -10,6 +10,8 @@ class HonestNode(NodeBase):
         self._txpool = TransactionPool()
         self._orphanpool = OrphanBlockPool()
         self._block_chain = BlockChain()
+        self.pending_tx_msgs: List[Any] = []
+        self.pending_block_msgs: List[Any] = []
 
     @property
     def main_chain(self):
@@ -41,18 +43,17 @@ class HonestNode(NodeBase):
     def update(self, ctx: Context):
         # check received blocks
         message_tuples = ctx.received_messages
-        blocks: List[Block] = []  # store valid blocks
-        self.pending_message = []
-        self.pending_blocks = []
+        block_msgs: List[Any] = []  # store valid blocks
+        self.pending_tx_msgs: List[Any] = []
+        self.pending_block_msgs: List[Any] = []
 
         for message_tuple in message_tuples:
             message = message_tuple.message
             sender = message_tuple.sender
             if message["type"] == 0:  # its a transaction
-                if ctx.verify(message["signature"], message["value"], sender) \
-                        and check_tx(message["value"]):
+                if verify_tx(ctx, message, sender):
                     if not self._txpool.contain_key(message["value"]):
-                        self.pending_message.append(message["value"])
+                        self.pending_tx_msgs.append(message)
                         self._txpool.insert(message["value"])
                     else:
                         continue
@@ -60,21 +61,20 @@ class HonestNode(NodeBase):
                     continue
             elif message["type"] == 1:  # its a block
                 print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
-                if ctx.verify(message["signature"], message["value"].serialize, sender) \
-                        and check_sol(message["value"].pid, message["value"].round) \
-                        and message["value"].timestamp <= ctx._round:
+                if verify_block(ctx, message, sender):
                     print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
-                    blocks.append(message["value"])
+                    block_msgs.append(message)
                 else:
                     continue
 
-        for block in blocks:
+        for block_msg in block_msgs:
             # check if this block has been received
+            block = block_msg["value"]
             if self._block_chain.find(block.hashval) is not None:
                 continue
             elif self._orphanpool.find(block.hashval):
                 continue
-            self.pending_blocks.append(block)
+            self.pending_block_msgs.append(block_msg)
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
@@ -89,19 +89,17 @@ class HonestNode(NodeBase):
                 self.recursive_add_block_from_orphan_pool(new_node)
 
     def action(self, ctx: Context):
-        for message in self.pending_message:
-            my_sig = ctx.sign(message["value"])
-            ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
-        for block in self.pending_blocks:
-            my_sig = ctx.sign(block.serialize)
-            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
+        for msg in self.pending_tx_msgs:
+            ctx.broadcast({"type": 0, "value": msg["value"], "signature": msg["signature"]})
+        for msg in self.pending_block_msgs:
+            ctx.broadcast({"type": 1, "value": msg["value"], "signature": msg["signature"]})
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx._round
         my_block: Block = Block(pbhv, txs, cast(Timestamp, t), self._nodeId)
         if check_sol(self._nodeId, t):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
-            my_sig = ctx.sign(my_block.serialize)
+            my_sig = sign(my_block.serialize, ctx.get_secret_key())
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
             self._txpool.clear()
 
