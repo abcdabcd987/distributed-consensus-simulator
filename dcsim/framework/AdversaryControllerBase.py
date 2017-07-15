@@ -3,7 +3,7 @@ from typing import *
 if TYPE_CHECKING:
     from .ConfigurationBase import ConfigurationBase
     from .NodeBase import NodeBase
-    from .NodeId import NodeId
+    from .Context import Context
     from .MessageTuple import MessageTuple
 
 
@@ -14,6 +14,7 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def round_instruction(self,
+                          ctx: 'Context',
                           new_messages: Tuple['MessageTuple', ...],
                           old_messages: Tuple['MessageTuple', ...],
                           current_round: int):

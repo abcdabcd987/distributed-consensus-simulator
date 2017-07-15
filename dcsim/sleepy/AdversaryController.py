@@ -50,16 +50,18 @@ class AdversaryController(AdversaryControllerBase):
         self._tx = TransactionPool()
 
     def round_instruction(self,
+                          ctx: Context,
                           new_messages: Tuple['MessageTuple', ...],
                           old_messages: Tuple['MessageTuple', ...],
                           current_round: int):
         for message_tuple in old_messages:
             message = message_tuple.message
+            sender = message_tuple.sender
             if message["type"] == 0:
-                if not self._tx.contain_key(message["value"]):
+                if verify_tx(ctx, message, sender):
                     self._tx.insert(message["value"])
-            else:
-                if valid(message["value"], current_round):
+            elif message["type"] == 1:
+                if verify_block(ctx, message, sender):
                     self._root.insert(message["value"])
 
         for badNode in self._corrupted_nodes:
