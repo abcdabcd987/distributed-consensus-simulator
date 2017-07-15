@@ -67,6 +67,10 @@ class HonestNode(NodeBase):
                 else:
                     continue
 
+        # print("Main chain for node %d" % self._nodeId)
+        # print(self.main_chain)
+        # print("- - - - - - ")
+
         for block in blocks:
             # check if this block has been received
             if self._block_chain.find(block.hashval) is not None:
