@@ -1,6 +1,8 @@
 import hashlib
 import pickle
 from typing import *
+from typing import Optional, List, NewType
+
 from dcsim.framework import *
 
 D_p = "0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"

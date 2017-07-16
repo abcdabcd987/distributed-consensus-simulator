@@ -1,4 +1,5 @@
 import hashlib
+from _ast import Tuple, Dict
 from typing import *
 
 from .MessageTuple import MessageTuple

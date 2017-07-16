@@ -1,6 +1,6 @@
 from typing import *
 from dcsim.framework import *
-from .common import *
+from .utils import *
 
 
 class HonestNode(NodeBase):

@@ -1,7 +1,8 @@
 from dcsim.framework import *
+from dcsim.sleepy.Experiment import Experiment
 from .Configuration import Configuration
 
 
 config = Configuration()
-simulator = Simulator(config)
+simulator = Experiment(config)
 simulator.run()

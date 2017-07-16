@@ -1,8 +1,10 @@
 import hashlib
 from collections import defaultdict
 from typing import *
+from typing import TYPE_CHECKING, List, cast, Tuple
+
 from dcsim.framework import *
-from .common import TBlock, D_p, SuperRoot, Timestamp, Tx
+from .utils import TBlock, D_p, SuperRoot, Timestamp, Tx
 from .CorruptedNode import CorruptedNode
 if TYPE_CHECKING:
     from .Configuration import Configuration

@@ -12,6 +12,6 @@ class Configuration(ConfigurationBase):
     adversary_controller_type = AdversaryController
     measurement_type = Measurement
     num_nodes = 10
-    ratio_corrupted = 0.8
+    ratio_corrupted = 0.1
     max_delay = 5
-    confirm_time = 2
+    confirm_time = 6
