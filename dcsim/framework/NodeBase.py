@@ -20,6 +20,14 @@ class NodeBase(metaclass=abc.ABCMeta):
     def round_action(self, ctx: 'Context') -> None:
         pass
 
+    @abc.abstractmethod
+    def round0_sender_action(self, ctx: 'Context') -> None:
+        pass
+
+    @abc.abstractmethod
+    def set_round0_senders(self, sender_id: Tuple['NodeId', ...]) -> None:
+        pass
+
     @property
     def id(self) -> 'NodeId':
         return self._id

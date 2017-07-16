@@ -70,8 +70,9 @@ def valid(block: TBlock, timestamp: int):
 
 
 class AdversaryController(AdversaryControllerBase):
-    def __init__(self, corrupted_nodes: Tuple['CorruptedNode', ...], config: 'Configuration') -> None:
-        super().__init__(corrupted_nodes, config)
+    def __init__(self, honest_node_ids: Tuple['NodeId', ...],
+                 corrupted_nodes: Tuple['CorruptedNode', ...], config: 'Configuration') -> None:
+        super().__init__(honest_node_ids, corrupted_nodes, config)
         self._root = BlockTree(SuperRoot)
         self._chain = [SuperRoot]
         self._tx = TransactionPool()

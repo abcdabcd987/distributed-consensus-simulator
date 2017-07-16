@@ -36,3 +36,8 @@ class ConfigurationBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def ratio_corrupted(self) -> float:
         pass
+
+    @property
+    @abc.abstractmethod
+    def num_round0_sender(self) -> int:
+        pass

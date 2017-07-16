@@ -1,4 +1,5 @@
 import os
+import random
 from typing import *
 from .ConfigurationBase import ConfigurationBase
 from .Context import Context
@@ -19,7 +20,8 @@ class Simulator:
             node.set_node_list(self._node_ids)
 
         self._config = config
-        self._adversary = config.adversary_controller_type(self._corrupted_nodes, config)
+        honest_node_ids = tuple(node.id for node in self._honest_nodes)
+        self._adversary = config.adversary_controller_type(honest_node_ids, self._corrupted_nodes, config)
         self._measure = config.measurement_type(self._corrupted_nodes, self._honest_nodes, self._adversary, config)
 
     @staticmethod
@@ -28,6 +30,23 @@ class Simulator:
 
     def run(self):
         round = 0
+
+        round0_senders = random.sample(self._nodes, self._config.num_round0_sender)
+        for node in self._nodes:
+            node.set_round0_senders(round0_senders)
+        for node in round0_senders:
+            if node in self._honest_nodes:
+                ctx = Context(self._node_ids, self._secret_keys, round, node, tuple())
+                node.round0_sender_action(ctx)
+                self._adversary.add_honest_node_messages(round, node.id, ctx.messages_to_send)
+        self._adversary.give_round0_instruction(round0_senders)
+        for node in round0_senders:
+            if node in self._corrupted_nodes:
+                ctx = Context(self._node_ids, self._secret_keys, round, node, tuple())
+                node.round0_sender_action(ctx)
+                self._adversary.add_corrupted_node_messages(round, node.id, ctx.messages_to_send)
+        self._measure.report_round(round)
+
         while not self._measure.should_stop(round):
             round += 1
 
