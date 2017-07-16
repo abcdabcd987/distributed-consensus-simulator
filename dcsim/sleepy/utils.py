@@ -112,7 +112,8 @@ class TBlock:
         """
         return pickle.dumps((self.pbhv, self.txs, self.timestamp, self.pid))
 
-
+    def __repr__(self):
+        return repr((self.txs, self.hashval, self.pbhv, self.timestamp, self.pid, self.children))
 class TNode:
     def __init__(self, depth, block, father):  # father's(block's) hash
         """

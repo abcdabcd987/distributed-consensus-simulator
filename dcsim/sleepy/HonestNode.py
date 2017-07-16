@@ -85,7 +85,7 @@ class HonestNode(NodeBase):
                 else:
                     continue
             elif message["type"] == 1:   # its a block
-                print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval, "from ", message["value"].pid)
+                print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"])
                 if ctx.verify(message["signature"], message["value"].serialize, sender) \
                         and check_solution(message["value"], self._probability)\
                         and message["value"].timestamp <= ctx._round:
@@ -123,6 +123,7 @@ class HonestNode(NodeBase):
         t = ctx._round
         my_block: TBlock = TBlock(pbhv, txs, cast(Timestamp, t), self._nodeId)
         if check_solution(my_block, self._probability):
+            print("HonestNode.round_action: NodeId", self._nodeId, "chosen as the leader")
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = ctx.sign(my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})

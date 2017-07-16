@@ -1,6 +1,6 @@
 from typing import *
 from dcsim.framework import *
-from .AdversaryController import AdversaryController
+from .ConsistencyAttack import ConsistencyAttack
 from .CorruptedNode import CorruptedNode
 from .HonestNode import HonestNode
 from .Measurement import Measurement

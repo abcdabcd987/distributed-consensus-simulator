@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Tuple
 from dcsim.framework import *
 from .HonestNode import HonestNode
 if TYPE_CHECKING:
-    from .AdversaryController import AdversaryController
+    from .ConsistencyAttack import ConsistencyAttack
     from .Configuration import Configuration
     from .CorruptedNode import CorruptedNode
 
@@ -17,7 +17,7 @@ class Measurement(MeasurementBase):
     def __init__(self,
                  corrupted_nodes: Tuple['CorruptedNode', ...],
                  honest_nodes: Tuple['HonestNode', ...],
-                 adversary: 'AdversaryController',
+                 adversary: 'ConsistencyAttack',
                  config: 'Configuration') -> None:
         """
         Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration

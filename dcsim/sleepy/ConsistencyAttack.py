@@ -120,7 +120,7 @@ def valid(block: TBlock, timestamp: int, probability):
     return check(block.id, block.round, probability) and block.round <= timestamp
 
 
-class AdversaryController(AdversaryControllerBase):
+class ConsistencyAttack(AdversaryControllerBase):
     def __init__(self, corrupted_nodes: Tuple['CorruptedNode', ...], config: 'Configuration') -> None:
         """
         Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
@@ -144,7 +144,8 @@ class AdversaryController(AdversaryControllerBase):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), badNode.id)
                 self._tx.clear()
-                self._chain.append(block)
+                if self._chain[-1].timestamp < block.timestamp:
+                    self._chain.append(block)
                 if len(self._chain) - 2 > self._root.depth:
                     print("Attacking honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
                     cast(CorruptedNode, badNode).add_send(self._chain)
