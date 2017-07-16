@@ -1,4 +1,6 @@
 from typing import *
+from typing import TYPE_CHECKING, NamedTuple, Any
+
 if TYPE_CHECKING:
     from .NodeId import NodeId
 

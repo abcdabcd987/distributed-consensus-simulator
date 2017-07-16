@@ -1,5 +1,7 @@
 import abc
 from typing import *
+from typing import TYPE_CHECKING, Type
+
 if TYPE_CHECKING:
     from .AdversaryControllerBase import AdversaryControllerBase
     from .MeasurementBase import MeasurementBase
@@ -7,6 +9,7 @@ if TYPE_CHECKING:
 
 
 class ConfigurationBase(metaclass=abc.ABCMeta):
+
     @property
     @abc.abstractmethod
     def honest_node_type(self) -> Type['NodeBase']:

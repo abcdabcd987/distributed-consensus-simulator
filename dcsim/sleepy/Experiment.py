@@ -5,10 +5,11 @@ from typing import *
 from dcsim.framework import ConfigurationBase
 from dcsim.framework import Context
 from dcsim.framework import ExperimentBase
+from dcsim.sleepy import Configuration
 
 
 class Experiment(ExperimentBase):
-    def __init__(self, config: ConfigurationBase) -> None:
+    def __init__(self, config: Configuration) -> None:
         """
         initialze the simulator, including the number of corrupted/honest nodes, the information of each nodes, the configuration, the measurement
         :param config: the configuration of thel protocol

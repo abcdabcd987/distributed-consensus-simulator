@@ -4,13 +4,13 @@ from typing import *
 from typing import TYPE_CHECKING, List, cast, Tuple
 
 from dcsim.framework import *
-from .utils import TBlock, D_p, SuperRoot, Timestamp, Tx
+from .utils import TBlock, SuperRoot, Timestamp, Tx
 from .CorruptedNode import CorruptedNode
 if TYPE_CHECKING:
     from .Configuration import Configuration
 
 
-def check(id: int, timestamp: int):
+def check(id: int, timestamp: int, probability):
     """
     check whether a node is awake
     :param id: the id of the node
@@ -19,7 +19,7 @@ def check(id: int, timestamp: int):
     """
     sha = hashlib.sha256()
     sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
-    return sha.hexdigest() < D_p
+    return int(sha.hexdigest(), 16) < 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff * probability
 
 
 class TransactionPool:
@@ -109,14 +109,14 @@ class BlockTree():
             self._depth = max(self._depth, len(seq))
 
 
-def valid(block: TBlock, timestamp: int):
+def valid(block: TBlock, timestamp: int, probability):
     """
         decide whether a block is valid
     :param block: the given block
     :param timestamp: the current timestamp
     :return: whether the block is valid
     """
-    return check(block.id, block.round) and block.round <= timestamp
+    return check(block.id, block.round, probability) and block.round <= timestamp
 
 
 class AdversaryController(AdversaryControllerBase):
@@ -131,6 +131,7 @@ class AdversaryController(AdversaryControllerBase):
         self._chain = [SuperRoot]
         self._tx = TransactionPool()
         self._pending_messages = defaultdict(list)  # type: DefaultDict[int, List['MessageTuple']]
+        self._probabiltiy = config.probability
 
     def give_instruction(self, round: int) -> None:
         """
@@ -138,12 +139,13 @@ class AdversaryController(AdversaryControllerBase):
         :param round: the round that these instructions are in
         """
         for badNode in self._corrupted_nodes:
-            if check(badNode.id, round):
+            if check(badNode.id, round, self._probabiltiy):
                 print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), badNode.id)
                 self._tx.clear()
                 self._chain.append(block)
-                if len(self._chain) - 2 > self._root._depth + self._config.confirm_time:
+                if len(self._chain) - 2 > self._root.depth:
+                    print("Attacking honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
                     cast(CorruptedNode, badNode).add_send(self._chain)
                     self._chain = [SuperRoot]
                     print("Corrupt chain pushed")
@@ -161,7 +163,7 @@ class AdversaryController(AdversaryControllerBase):
                 if not self._tx.contain_key(message["value"]):
                     self._tx.insert(message["value"])
             else:
-                if valid(message["value"], round):
+                if valid(message["value"], round, self._probabiltiy):
                     self._root.insert(message["value"])
 
     def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:

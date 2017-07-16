@@ -1,10 +1,13 @@
+from ctypes import cast
 from typing import *
 from dcsim.framework import *
 from .utils import *
+if TYPE_CHECKING:
+    from dcsim.sleepy.Configuration import Configuration
 
 
 class HonestNode(NodeBase):
-    def __init__(self, config: ConfigurationBase) -> None:
+    def __init__(self, config: 'Configuration') -> None:
         """
         Initilize the hoestnode
         :param config: the configuration of the node
@@ -14,6 +17,7 @@ class HonestNode(NodeBase):
         self._txpool = TxPool()
         self._orphanpool = OrphanBlockPool()
         self._block_chain = BlockChain()
+        self._probability = config.probability
 
     @property
     def main_chain(self):
@@ -83,7 +87,7 @@ class HonestNode(NodeBase):
             elif message["type"] == 1:   # its a block
                 print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
                 if ctx.verify(message["signature"], message["value"].serialize, sender) \
-                        and check_solution(message["value"])\
+                        and check_solution(message["value"], self._probability)\
                         and message["value"].timestamp <= ctx._round:
                     print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
                     blocks.append(message["value"])
@@ -116,7 +120,7 @@ class HonestNode(NodeBase):
         txs = self._txpool.get_all()
         t = ctx._round
         my_block: TBlock = TBlock(pbhv, txs, cast(Timestamp, t), self._nodeId)
-        if check_solution(my_block):
+        if check_solution(my_block, self._probability):
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = ctx.sign(my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})

@@ -1,4 +1,7 @@
+from ctypes import cast
 from typing import *
+from typing import TYPE_CHECKING, Tuple
+
 from dcsim.framework import *
 from .HonestNode import HonestNode
 if TYPE_CHECKING:
@@ -28,7 +31,7 @@ class Measurement(MeasurementBase):
         for node in self._honest_nodes:
             self._log_for_honest[node] = []
         self.stop = False
-        self.max_round = 50
+        self.max_round = config.max_round
 
     def report_round(self, round: int) -> None:
         """

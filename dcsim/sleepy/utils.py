@@ -1,11 +1,9 @@
 import hashlib
 import pickle
 from typing import *
-from typing import Optional, List, NewType
+from typing import Optional, List, NewType, cast
 
 from dcsim.framework import *
-
-D_p = "0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 
 Tx = NewType('Tx', bytes)
 Hashval = NewType('Hashval', bytes)
@@ -316,7 +314,7 @@ def check_tx(tx: Tx):
     return True if tx is not None else False
 
 
-def check_solution(tblock: TBlock):
+def check_solution(tblock: TBlock, probability):
     """
     check whether the block satisfies the restriction
     :param tblock: the block to be checked
@@ -327,8 +325,5 @@ def check_solution(tblock: TBlock):
     sha256 = hashlib.sha256()
     k = spid + st
     sha256.update(k.encode('utf-8'))
-    v = sha256.hexdigest()
-    if v < D_p:
-        return True
-    else:
-        return False
+    v = int(sha256.hexdigest(), 16)
+    return v < 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff * probability
