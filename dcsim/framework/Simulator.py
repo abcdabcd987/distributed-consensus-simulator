@@ -21,6 +21,7 @@ class Simulator:
         self._config = config
         self._adversary = config.adversary_controller_type(self._corrupted_nodes, config)
         self._measure = config.measurement_type(self._corrupted_nodes, self._honest_nodes, self._adversary, config)
+        self._authentication_service = config.authentication_service_type()
 
     @staticmethod
     def _generate_secret_key():
@@ -42,7 +43,7 @@ class Simulator:
             # run honest nodes
             for node in self._honest_nodes:
                 # let the node action and collect new messages
-                ctx = Context(self._node_ids, self._secret_keys, round, node, receiver_messages[node.id])
+                ctx = Context(self._authentication_service, self._node_ids, round, node, receiver_messages[node.id])
                 node.round_action(ctx)
                 self._adversary.add_honest_node_messages(round, node.id, ctx.messages_to_send)
 
@@ -52,7 +53,7 @@ class Simulator:
 
             # run corrupted nodes
             for node in self._corrupted_nodes:
-                ctx = Context(self._node_ids, self._secret_keys, round, node, receiver_messages[node.id])
+                ctx = Context(self._authentication_service, self._node_ids, round, node, receiver_messages[node.id])
                 node.round_action(ctx)
                 self._adversary.add_corrupted_node_messages(round, node.id, ctx.messages_to_send)
 

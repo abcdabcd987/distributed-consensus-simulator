@@ -4,17 +4,18 @@ from typing import *
 from .MessageTuple import MessageTuple
 from .NodeId import NodeId
 from .NodeBase import NodeBase
+from .AuthenticationServiceBase import AuthenticationServiceBase
 
 
 class Context:
     def __init__(self,
+                 authentication_service: AuthenticationServiceBase,
                  nodes: Tuple[NodeId, ...],
-                 secret_keys: Dict[NodeId, bytes],
                  round: int,
                  node: NodeBase,
                  received_messages: Tuple[MessageTuple, ...]) -> None:
         self._nodes = nodes
-        self._secret_keys = secret_keys
+        self._authentication_service = authentication_service
         self._round = round
         self._node = node
         self._received_messages = received_messages
@@ -37,14 +38,8 @@ class Context:
     def messages_to_send(self) -> List['MessageTuple']:
         return self._message_tuples_to_send
 
-    def _sign(self, message: bytes, sender_id: NodeId) -> str:
-        m = hashlib.sha1()
-        m.update(self._secret_keys[sender_id])
-        m.update(message)
-        return m.hexdigest()
-
     def sign(self, message: bytes) -> str:
-        return self._sign(message, self._node.id)
+        return self._authentication_service.sign(sender=self._node.id, message=message)
 
     def verify(self, signature: str, message: bytes, sender_id: NodeId) -> bool:
-        return self._sign(message, sender_id) == signature
+        return self._authentication_service.verify(signature=signature, sender=sender_id, message=message)

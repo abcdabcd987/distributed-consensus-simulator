@@ -4,6 +4,7 @@ from .AdversaryController import AdversaryController
 from .CorruptedNode import CorruptedNode
 from .HonestNode import HonestNode
 from .Measurement import Measurement
+from dcsim.trust_modules.HashBasedAuthenticationService import HashBasedAuthenticationService
 
 
 class Configuration(ConfigurationBase):
@@ -15,3 +16,4 @@ class Configuration(ConfigurationBase):
     ratio_corrupted = 0.8
     max_delay = 5
     confirm_time = 2
+    authentication_service_type = HashBasedAuthenticationService

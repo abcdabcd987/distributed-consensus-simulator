@@ -1,5 +1,8 @@
 import abc
 from typing import *
+
+from dcsim.framework.AuthenticationServiceBase import AuthenticationServiceBase
+
 if TYPE_CHECKING:
     from .AdversaryControllerBase import AdversaryControllerBase
     from .MeasurementBase import MeasurementBase
@@ -35,4 +38,9 @@ class ConfigurationBase(metaclass=abc.ABCMeta):
     @property
     @abc.abstractmethod
     def ratio_corrupted(self) -> float:
+        pass
+    
+    @property
+    @abc.abstractmethod
+    def authentication_service_type(self) -> Type['AuthenticationServiceBase']:
         pass
