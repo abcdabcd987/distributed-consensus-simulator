@@ -10,6 +10,7 @@ Hashval = NewType('Hashval', bytes)
 Timestamp = NewType('Timestamp', int)
 
 
+
 class TxPool:
 
     def __init__(self) -> None:
@@ -325,5 +326,6 @@ def check_solution(tblock: TBlock, probability):
     sha256 = hashlib.sha256()
     k = spid + st
     sha256.update(k.encode('utf-8'))
-    v = int(sha256.hexdigest(), 16)
-    return v < 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff * probability
+    v = float(int(sha256.hexdigest(), 16))
+    d_p = 2.0**256 * probability
+    return v < d_p

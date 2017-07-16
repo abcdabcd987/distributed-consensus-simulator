@@ -85,7 +85,7 @@ class HonestNode(NodeBase):
                 else:
                     continue
             elif message["type"] == 1:   # its a block
-                print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval)
+                print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"].hashval, "from ", message["value"].pid)
                 if ctx.verify(message["signature"], message["value"].serialize, sender) \
                         and check_solution(message["value"], self._probability)\
                         and message["value"].timestamp <= ctx._round:
@@ -101,20 +101,22 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
-            my_sig = ctx.sign(block.serialize)
-            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
             # timestamp check failed
             elif cur_node.block.timestamp >= block.timestamp:
                 self.recursive_remove_block_from_orphan_pool(block)
+                continue
             else:
                 if cur_node == self._block_chain.get_top():
                     for tx in block.txs:
                         self._txpool.remove_tx(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
+            my_sig = ctx.sign(block.serialize)
+            ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
+
 
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()

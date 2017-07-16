@@ -19,7 +19,8 @@ def check(id: int, timestamp: int, probability):
     """
     sha = hashlib.sha256()
     sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
-    return int(sha.hexdigest(), 16) < 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff * probability
+    d_p = 2.0 ** 256 * probability
+    return int(sha.hexdigest(), 16) < d_p
 
 
 class TransactionPool:
