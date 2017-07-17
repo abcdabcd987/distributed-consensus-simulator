@@ -1,6 +1,7 @@
 from typing import *
 from dcsim.framework import *
 from .utils import *
+import logging
 if TYPE_CHECKING:
     from dcsim.sleepy.Configuration import Configuration
 
@@ -94,7 +95,7 @@ class HonestNode(NodeBase):
                 else:
                     continue
             elif message["type"] == 1:   # its a block
-                print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"])
+                logging.debug("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"])
                 verified = self._trusted_third_party.call('FSign', 'verify',
                                                           signature=message['signature'],
                                                           message=message['value'].serialize,
@@ -102,7 +103,7 @@ class HonestNode(NodeBase):
                 if verified \
                         and check_solution(message["value"], self._probability)\
                         and message["value"].timestamp <= ctx.round:
-                    print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
+                    logging.debug("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
                     blocks.append(message["value"])
                 else:
                     continue
@@ -139,7 +140,7 @@ class HonestNode(NodeBase):
         t = ctx._round
         my_block: TBlock = TBlock(pbhv, txs, cast(Timestamp, t), self._nodeId)
         if check_solution(my_block, self._probability):
-            print("HonestNode.round_action: NodeId", self._nodeId, "chosen as the leader")
+            logging.debug("HonestNode.round_action: NodeId", self._nodeId, "chosen as the leader")
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = self._trusted_third_party.call('FSign', 'sign', message=my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})

@@ -3,6 +3,8 @@ from collections import defaultdict
 from typing import *
 from typing import TYPE_CHECKING, List, cast, Tuple
 
+import logging
+
 from dcsim.framework import *
 from .utils import TBlock, SuperRoot, Timestamp, Tx
 if TYPE_CHECKING:
@@ -140,13 +142,13 @@ class ConsistencyAttack(AdversaryControllerBase):
     def round_action(self, round: int) -> None:
         for bad_node_id in self._corrupted_nodes:
             if check(bad_node_id, round, self._probabiltiy):
-                print('AdversaryController.round_action: NodeId', bad_node_id, 'chosen as the leader')
+                logging.debug('AdversaryController.round_action: NodeId', bad_node_id, 'chosen as the leader')
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), bad_node_id)
                 self._tx.clear()
                 if self._chain[-1].timestamp < block.timestamp:
                     self._chain.append(block)
                 if len(self._chain) - 2 > self._root.depth:
-                    print("Attacking honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
+                    logging.debug("Attacking honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
                     chain_to_broadcast = self._chain
                     self._chain = [SuperRoot]
 
@@ -159,8 +161,8 @@ class ConsistencyAttack(AdversaryControllerBase):
                                 packed = {"type": 1, "value": block, "signature": sig}
                                 t = MessageTuple(sender=corrupted_node, receiver=honest_node, round=round, message=packed)
                                 pending_messages.append(t)
-                    print("Corrupt chain pushed")
-        print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
+                    logging.debug("Corrupt chain pushed")
+        logging.debug("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
 
     def _handle_new_messages(self, round:int, new_messages: List['MessageTuple']):
         """

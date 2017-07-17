@@ -1,4 +1,7 @@
 from typing import *
+
+import logging
+
 from dcsim.framework import *
 from .HonestNode import HonestNode
 if TYPE_CHECKING:
@@ -31,30 +34,29 @@ class Measurement(MeasurementBase):
         return the condition of each nodes ar this round
         :param round: the index of the round
         """
-        print("----------------------------------------------------------------")
-        print("@ Round %d" % round)
+        logging.info("----------------------------------------------------------------")
+        logging.info("@ Round %d" % round)
         found = -1
         for node in self._honest_nodes:
             chain = cast(HonestNode, node).main_chain
             for i in range(max(0, min(len(chain), len(self._log_for_honest[node])) - self._config.confirm_time)):
-                print("Measurement.report_round: checking chain of NodeId %d index %d" % (node.id, i))
+                logging.debug("Measurement.report_round: checking chain of NodeId %d index %d" % (node.id, i))
                 if chain[i].hashval != self._log_for_honest[node][i].hashval:
                     found = node.id
                     break
-            print("The chain of node %d is:" % node.id)
+            logging.debug("The chain of node %d is:" % node.id)
             for block in chain:
-                print(block.hashval)
+                logging.debug(block.hashval)
             self._log_for_honest[node] = chain
         if found != -1:
-            print("Inconsistency detected on node %d!" % found)
+            logging.info("Inconsistency detected on node %d!" % found)
             self.stop = True
-        print("----------------------------------------------------------------")
 
     def report_final(self):
         """
         report the all the conditions and the result in the end
         """
-        print('''Trivial Consistency Attack:
+        logging.info('''Trivial Consistency Attack:
 Honest Nodes: {num_honest}
 Corrupted Nodes: {num_corrupt}
 Corrupted Ratio: {ratio}'''.format(
@@ -62,8 +64,8 @@ Corrupted Ratio: {ratio}'''.format(
             num_corrupt=self._config.num_corrupted_nodes,
             ratio=self._config.num_corrupted_nodes / (self._config.num_corrupted_nodes + self._config.num_honest_nodes)))
         if not self.stop:
-            print('Attack failed after {} rounds.'.format(self.max_round))
+            logging.info('Attack failed after {} rounds.'.format(self.max_round))
             return False
         else:
-            print('Attack succeeded!')
+            logging.info('Attack succeeded!')
             return True
