@@ -1,4 +1,3 @@
-from ctypes import cast
 from typing import *
 from dcsim.framework import *
 from .utils import *
@@ -34,8 +33,8 @@ class HonestNode(NodeBase):
     # remove all the children of block from the orphan pool
     def recursive_remove_block_from_orphan_pool(self, block: TBlock):
         """
-        remove the given block from the orphan pool
-        :param block: the block to be removed
+        recursively remove the subtree(the root has already been removed) of the given block from the orphan pool
+        :param block: the root of the subtree needed to be removed
         :return: void
         """
         blocks_to_remove = self._orphanpool.pop_children(block.hashval)
@@ -48,8 +47,8 @@ class HonestNode(NodeBase):
     # add all the orphan that could be connected on to the chain
     def recursive_add_block_from_orphan_pool(self, curnode: TNode):
         """
-        all the given block to the orphan pool
-        :param curnode: the node to be added
+        recursively add the subtree(root has already been added and removed) of curnode to blockchain, and remove them from orphan pool
+        :param curnode: the root of the subtree needed to be added from the orphan pool
         :return: void
         """
         blocks_to_add = self._orphanpool.pop_children(curnode.block.hashval)
@@ -57,7 +56,8 @@ class HonestNode(NodeBase):
             return
         else:
             for b2a in blocks_to_add:
-                # timestamp check failed
+                # timestamp of root check failed
+                # the whole subtree is invalid and can't be added to blockchain
                 if curnode.block.timestamp >= b2a.timestamp:
                     self.recursive_remove_block_from_orphan_pool(b2a)
                 else:
@@ -65,14 +65,15 @@ class HonestNode(NodeBase):
                     self.recursive_add_block_from_orphan_pool(new_node)
 
     def round_action(self, ctx: Context) -> None:
-        # check received blocks
         """
         the round action of the honest node
-        :param ctx: use the ctx to do inputs and outputs in a node
+        :param ctx: use the ctx to do inputs and outputs for a node
         :return: none
         """
+
+        # check received blocks
         message_tuples = ctx.received_messages
-        blocks: List[TBlock] = []       # store valid blocks
+        blocks: List[TBlock] = []       # store received blocks
 
         for message_tuple in message_tuples:
             message = message_tuple.message
@@ -83,6 +84,7 @@ class HonestNode(NodeBase):
                                                           message=message['value'],
                                                           sender_id=sender)
                 if verified and check_tx(message["value"]):
+                    #received a tx not in the txpool, forward the tx with its onw sig and store tx in txpool
                     if not self._txpool.find_tx(message["value"]):
                         my_sig = self._trusted_third_party.call('FSign', 'sign', message=message["value"])
                         ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
@@ -112,23 +114,26 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
+            #cur_node : father of block
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
-            # timestamp check failed
+            # timestamp check failed, no need to forward
             elif cur_node.block.timestamp >= block.timestamp:
                 self.recursive_remove_block_from_orphan_pool(block)
                 continue
             else:
+                #block added to the tail of mainchain
                 if cur_node == self._block_chain.get_top():
                     for tx in block.txs:
                         self._txpool.remove_tx(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
+            #forward valid block
             my_sig = self._trusted_third_party.call('FSign', 'sign', message=block.serialize)
             ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
 
-
+        #mine new block
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx._round
