@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from .AdversaryControllerBase import AdversaryControllerBase
     from .MeasurementBase import MeasurementBase
     from .NodeBase import NodeBase
+    from .AuthenticationServiceBase import AuthenticationServiceBase
 
 
 class ConfigurationBase(metaclass=abc.ABCMeta):
@@ -57,3 +58,12 @@ class ConfigurationBase(metaclass=abc.ABCMeta):
         return the ratio of the corrupted nodes in all nodes
         """
         pass
+
+    @property
+    @abc.abstractmethod
+    def authentication_service_type(self) -> Type['AuthenticationServiceBase']:
+        """
+        :return: the type of authentication service
+        """
+        pass
+    

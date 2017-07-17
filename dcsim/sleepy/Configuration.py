@@ -18,7 +18,8 @@ class Configuration(ConfigurationBase):
                  max_delay,
                  confirm_time,
                  probability,
-                 max_round):
+                 max_round,
+                 authentication_service_type):
         self._honest_node_type = honest_node_type
         self._corrupted_node_type = corrupt_node_type
         self._adversary_controller_type = adversary_controller_type
@@ -29,6 +30,7 @@ class Configuration(ConfigurationBase):
         self._confirm_time = confirm_time
         self._probability = probability
         self._max_round = max_round
+        self._authentication_service_type = authentication_service_type
 
     @property
     def honest_node_type(self):
@@ -70,3 +72,6 @@ class Configuration(ConfigurationBase):
     def max_round(self):
         return self._max_round
 
+    @property
+    def authentication_service_type(self):
+        return self._authentication_service_type
