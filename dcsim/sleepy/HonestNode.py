@@ -19,6 +19,10 @@ class HonestNode(NodeBase):
         self._block_chain = BlockChain()
         self._probability = config.probability
 
+    def set_trusted_third_party(self, trusted_third_party: 'TrustedThirdPartyCaller'):
+        super(HonestNode, self).set_trusted_third_party(trusted_third_party)
+        self._trusted_third_party.call('FSign', 'register')
+
     @property
     def main_chain(self):
         """
@@ -74,10 +78,13 @@ class HonestNode(NodeBase):
             message = message_tuple.message
             sender = message_tuple.sender
             if message["type"] == 0:   # its a transaction
-                if ctx.verify(message["signature"], message["value"], sender) \
-                        and check_tx(message["value"]):
+                verified = self._trusted_third_party.call('FSign', 'verify',
+                                                          signature=message['signature'],
+                                                          message=message['value'],
+                                                          sender_id=sender)
+                if verified and check_tx(message["value"]):
                     if not self._txpool.find_tx(message["value"]):
-                        my_sig = ctx.sign(message["value"])
+                        my_sig = self._trusted_third_party.call('FSign', 'sign', message=message["value"])
                         ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
                         self._txpool.add_tx(message["value"])
                     else:
@@ -86,9 +93,13 @@ class HonestNode(NodeBase):
                     continue
             elif message["type"] == 1:   # its a block
                 print("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"])
-                if ctx.verify(message["signature"], message["value"].serialize, sender) \
+                verified = self._trusted_third_party.call('FSign', 'verify',
+                                                          signature=message['signature'],
+                                                          message=message['value'].serialize,
+                                                          sender_id=sender)
+                if verified \
                         and check_solution(message["value"], self._probability)\
-                        and message["value"].timestamp <= ctx._round:
+                        and message["value"].timestamp <= ctx.round:
                     print("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
                     blocks.append(message["value"])
                 else:
@@ -114,7 +125,7 @@ class HonestNode(NodeBase):
                         self._txpool.remove_tx(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
-            my_sig = ctx.sign(block.serialize)
+            my_sig = self._trusted_third_party.call('FSign', 'sign', message=block.serialize)
             ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
 
 
@@ -125,7 +136,7 @@ class HonestNode(NodeBase):
         if check_solution(my_block, self._probability):
             print("HonestNode.round_action: NodeId", self._nodeId, "chosen as the leader")
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
-            my_sig = ctx.sign(my_block.serialize)
+            my_sig = self._trusted_third_party.call('FSign', 'sign', message=my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
             self._txpool.clear_all()
         return None

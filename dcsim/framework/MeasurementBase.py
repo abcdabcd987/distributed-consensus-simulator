@@ -4,24 +4,24 @@ if TYPE_CHECKING:
     from .AdversaryControllerBase import AdversaryControllerBase
     from .ConfigurationBase import ConfigurationBase
     from .NodeBase import NodeBase
+    from .TrustedThirdPartyBase import TrustedThirdPartyBase
 
 
 class MeasurementBase(metaclass=abc.ABCMeta):
     def __init__(self,
-                 corrupted_nodes: Tuple['NodeBase', ...],
-                 honest_nodes: Tuple['NodeBase', ...],
+                 honest_nodes: List['NodeBase'],
                  adversary: 'AdversaryControllerBase',
+                 trusted_third_parties: 'TrustedThirdPartyBase',
                  config: 'ConfigurationBase') -> None:
         """
         Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration
-        :param corrupted_nodes: the corrupted nodes
         :param honest_nodes: the honest nodes
         :param adversary: the adversary controller is used
         :param config: the configuration is used
         """
-        self._corrupted_nodes = corrupted_nodes
         self._honest_nodes = honest_nodes
         self._adversary = adversary
+        self._trusted_third_parties = trusted_third_parties
         self._config = config
 
     @abc.abstractmethod

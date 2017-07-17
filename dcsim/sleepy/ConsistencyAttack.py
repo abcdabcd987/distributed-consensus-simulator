@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, List, cast, Tuple
 
 from dcsim.framework import *
 from .utils import TBlock, SuperRoot, Timestamp, Tx
-from .CorruptedNode import CorruptedNode
 if TYPE_CHECKING:
     from .Configuration import Configuration
 
@@ -121,35 +120,45 @@ def valid(block: TBlock, timestamp: int, probability):
 
 
 class ConsistencyAttack(AdversaryControllerBase):
-    def __init__(self, corrupted_nodes: Tuple['CorruptedNode', ...], config: 'Configuration') -> None:
+    def __init__(self, config: 'Configuration') -> None:
         """
         Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
         :param corrupted_nodes: A tuple contains the corrupted nodes
         :param config: Configuration of the protocol
         """
-        super().__init__(corrupted_nodes, config)
+        super().__init__(config)
         self._root = BlockTree(SuperRoot)
         self._chain = [SuperRoot]
         self._tx = TransactionPool()
         self._pending_messages = defaultdict(list)  # type: DefaultDict[int, List['MessageTuple']]
         self._probabiltiy = config.probability
 
-    def give_instruction(self, round: int) -> None:
-        """
-        adversary controller gives the instructions to the nodes
-        :param round: the round that these instructions are in
-        """
-        for badNode in self._corrupted_nodes:
-            if check(badNode.id, round, self._probabiltiy):
-                print('AdversaryController.round_instruction: NodeId', badNode.id, 'chosen as the leader')
-                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), badNode.id)
+    def set_trusted_third_party(self, node_id: 'NodeId', trusted_third_party: 'TrustedThirdPartyCaller'):
+        super().set_trusted_third_party(node_id, trusted_third_party)
+        self._trusted_third_parties[node_id].call('FSign', 'register')
+
+    def round_action(self, round: int) -> None:
+        for bad_node_id in self._corrupted_nodes:
+            if check(bad_node_id, round, self._probabiltiy):
+                print('AdversaryController.round_action: NodeId', bad_node_id, 'chosen as the leader')
+                block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), bad_node_id)
                 self._tx.clear()
                 if self._chain[-1].timestamp < block.timestamp:
                     self._chain.append(block)
                 if len(self._chain) - 2 > self._root.depth:
                     print("Attacking honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
-                    cast(CorruptedNode, badNode).add_send(self._chain)
+                    chain_to_broadcast = self._chain
                     self._chain = [SuperRoot]
+
+                    pending_messages = self._pending_messages[round + 1]
+                    for corrupted_node in self._corrupted_nodes:
+                        ttp = self._trusted_third_parties[corrupted_node]
+                        for honest_node in self._honest_nodes:
+                            for block in chain_to_broadcast:
+                                sig = ttp.call('FSign', 'sign', message=block.serialize)
+                                packed = {"type": 1, "value": block, "signature": sig}
+                                t = MessageTuple(sender=corrupted_node, receiver=honest_node, round=round, message=packed)
+                                pending_messages.append(t)
                     print("Corrupt chain pushed")
         print("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
 
@@ -176,16 +185,6 @@ class ConsistencyAttack(AdversaryControllerBase):
         :param messages_to_send: A list that contains the new messages
         """
         self._pending_messages[round + self._config.max_delay] += messages_to_send
-        self._handle_new_messages(round, messages_to_send)
-
-    def add_corrupted_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
-        """
-        add new messages from the corrupted nodes
-        :param round: the round that the messages are in
-        :param sender_id: the id of the sender
-        :param messages_to_send: A list that contains the new messages
-        """
-        self._pending_messages[round + 1] += messages_to_send
         self._handle_new_messages(round, messages_to_send)
 
     def get_delivered_messages(self, round: int) -> List['MessageTuple']:

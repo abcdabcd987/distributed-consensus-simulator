@@ -6,6 +6,7 @@ from .NodeId import NodeId
 if TYPE_CHECKING:
     from .ConfigurationBase import ConfigurationBase
     from .Context import Context
+    from .TrustedThirdPartyCaller import TrustedThirdPartyCaller
 
 
 class NodeBase(metaclass=abc.ABCMeta):
@@ -15,7 +16,14 @@ class NodeBase(metaclass=abc.ABCMeta):
         :param config: the configuration of this node
         """
         self._config = config
-        self._id = cast(NodeId, random.randint(1, sys.maxsize))
+        self._id = NodeBase.generate_node_id()
+
+    def set_trusted_third_party(self, trusted_third_party: 'TrustedThirdPartyCaller'):
+        self._trusted_third_party = trusted_third_party
+
+    @staticmethod
+    def generate_node_id() -> 'NodeId':
+        return cast(NodeId, random.randint(1, sys.maxsize))
 
     def set_node_list(self, node_ids: Tuple['NodeId', ...]) -> None:
         """

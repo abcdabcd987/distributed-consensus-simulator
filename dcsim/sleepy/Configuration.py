@@ -1,7 +1,6 @@
 from typing import *
 from dcsim.framework import *
 from .ConsistencyAttack import ConsistencyAttack
-from .CorruptedNode import CorruptedNode
 from .HonestNode import HonestNode
 from .Measurement import Measurement
 
@@ -10,21 +9,19 @@ class Configuration(ConfigurationBase):
 
     def __init__(self,
                  honest_node_type,
-                 corrupt_node_type,
                  adversary_controller_type,
                  measurement_type,
-                 num_nodes,
-                 ratio_corrupted,
+                 num_honest_nodes,
+                 num_corrupted_nodes,
                  max_delay,
                  confirm_time,
                  probability,
                  max_round):
         self._honest_node_type = honest_node_type
-        self._corrupted_node_type = corrupt_node_type
         self._adversary_controller_type = adversary_controller_type
         self._measurement_type = measurement_type
-        self._num_nodes = num_nodes
-        self._ratio_corrupted = ratio_corrupted
+        self._num_honest_nodes = num_honest_nodes
+        self._num_corrupted_nodes = num_corrupted_nodes
         self._max_delay = max_delay
         self._confirm_time = confirm_time
         self._probability = probability
@@ -35,10 +32,6 @@ class Configuration(ConfigurationBase):
         return self._honest_node_type
 
     @property
-    def corrupted_node_type(self):
-        return self._corrupted_node_type
-
-    @property
     def adversary_controller_type(self):
         return self._adversary_controller_type
 
@@ -47,12 +40,12 @@ class Configuration(ConfigurationBase):
         return self._measurement_type
 
     @property
-    def num_nodes(self):
-        return self._num_nodes
+    def num_honest_nodes(self):
+        return self._num_honest_nodes
 
     @property
-    def ratio_corrupted(self):
-        return self._ratio_corrupted
+    def num_corrupted_nodes(self):
+        return self._num_corrupted_nodes
 
     @property
     def max_delay(self):
