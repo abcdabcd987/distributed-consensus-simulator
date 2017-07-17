@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .AuthenticationServiceBase import AuthenticationServiceBase
 
 
-class ConfigurationBase(metaclass=abc.ABCMeta):
+class RunnerBase(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod

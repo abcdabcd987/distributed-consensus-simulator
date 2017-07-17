@@ -1,14 +1,14 @@
 import os
 import abc
 from typing import *
-from .ConfigurationBase import ConfigurationBase
+from .RunnerBase import RunnerBase
 from .Context import Context
 from .MessageTuple import MessageTuple
 from .NodeId import NodeId
 
 
 class ExperimentBase:
-    def __init__(self, config: ConfigurationBase) -> None:
+    def __init__(self, config: RunnerBase) -> None:
         """
         initialze the simulator, including the number of corrupted/honest nodes, the information of each nodes, the configuration, the measurement
         :param config: the configuration of thel protocol

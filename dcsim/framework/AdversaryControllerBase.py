@@ -1,14 +1,14 @@
 import abc
 from typing import *
 if TYPE_CHECKING:
-    from .ConfigurationBase import ConfigurationBase
+    from .RunnerBase import RunnerBase
     from .NodeBase import NodeBase
     from .NodeId import NodeId
     from .MessageTuple import MessageTuple
 
 
 class AdversaryControllerBase(metaclass=abc.ABCMeta):
-    def __init__(self, corrupted_nodes: Tuple['NodeBase', ...], config: 'ConfigurationBase') -> None:
+    def __init__(self, corrupted_nodes: Tuple['NodeBase', ...], config: 'RunnerBase') -> None:
         """
         Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
         :param corrupted_nodes: A tuple contains the corrupted nodes

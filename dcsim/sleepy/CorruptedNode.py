@@ -5,7 +5,7 @@ if TYPE_CHECKING:
 
 
 class CorruptedNode(NodeBase):
-    def __init__(self, config: ConfigurationBase) -> None:
+    def __init__(self, config: RunnerBase) -> None:
         """
         intitialze the CorruptedNode, including the configuration
         :param config: the configuration of the node

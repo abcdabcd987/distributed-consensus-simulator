@@ -2,7 +2,7 @@ import os
 import abc
 from typing import *
 
-from dcsim.framework import ConfigurationBase
+from dcsim.framework import RunnerBase
 from dcsim.framework import Context
 from dcsim.framework import ExperimentBase
 from dcsim.framework import AuthenticationServiceBase
@@ -10,7 +10,7 @@ from dcsim.sleepy import Configuration
 
 
 
-class Experiment(ExperimentBase):
+class Runner(ExperimentBase):
     def __init__(self, config: Configuration) -> None:
         """
         initialze the simulator, including the number of corrupted/honest nodes, the information of each nodes, the configuration, the measurement
@@ -69,4 +69,4 @@ class Experiment(ExperimentBase):
             self._measure.report_round(round)
 
         # call the Measurement to give the final report
-        self._measure.report_final()
+        return self._measure.report_final()

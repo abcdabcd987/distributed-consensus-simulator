@@ -1,5 +1,5 @@
 from .AdversaryControllerBase import AdversaryControllerBase
-from .ConfigurationBase import ConfigurationBase
+from .RunnerBase import RunnerBase
 from .Context import Context
 from .MeasurementBase import MeasurementBase
 from .MessageTuple import MessageTuple
