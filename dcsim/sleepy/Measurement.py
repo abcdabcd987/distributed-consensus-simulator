@@ -57,18 +57,20 @@ class Measurement(MeasurementBase):
             self.stop = True
         print("----------------------------------------------------------------")
 
-    def report_final(self) -> None:
+    def report_final(self):
         """
         report the all the conditions and the result in the end
         """
-        print('''Trivial Consistency Attack:
-Honest Nodes: {num_honest}
-Corrupted Nodes: {num_corrupt}
-Corrupted Ratio: {ratio}'''.format(
+        print('''Trivial Consistency Attack: 
+        Honest Nodes: {num_honest} 
+        Corrupted Nodes: {num_corrupt} 
+        Corrupted Ratio: {ratio}'''.format(
             num_honest=len(self._honest_nodes),
             num_corrupt=len(self._corrupted_nodes),
             ratio=len(self._corrupted_nodes) / (len(self._honest_nodes) + len(self._corrupted_nodes))))
         if not self.stop:
             print('Attack failed after {} rounds.'.format(self.max_round))
+            return False
         else:
             print('Attack succeeded!')
+            return True

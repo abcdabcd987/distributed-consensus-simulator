@@ -4,12 +4,12 @@ import random
 from typing import *
 from .NodeId import NodeId
 if TYPE_CHECKING:
-    from .ConfigurationBase import ConfigurationBase
+    from .RunnerBase import RunnerBase
     from .Context import Context
 
 
 class NodeBase(metaclass=abc.ABCMeta):
-    def __init__(self, config: 'ConfigurationBase') -> None:
+    def __init__(self, config: 'RunnerBase') -> None:
         """
         intitialze the NodeBase, including the configuration and the nodeid
         :param config: the configuration of this node

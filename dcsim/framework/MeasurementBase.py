@@ -2,7 +2,7 @@ import abc
 from typing import *
 if TYPE_CHECKING:
     from .AdversaryControllerBase import AdversaryControllerBase
-    from .ConfigurationBase import ConfigurationBase
+    from .RunnerBase import RunnerBase
     from .NodeBase import NodeBase
 
 
@@ -11,7 +11,7 @@ class MeasurementBase(metaclass=abc.ABCMeta):
                  corrupted_nodes: Tuple['NodeBase', ...],
                  honest_nodes: Tuple['NodeBase', ...],
                  adversary: 'AdversaryControllerBase',
-                 config: 'ConfigurationBase') -> None:
+                 config: 'RunnerBase') -> None:
         """
         Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration
         :param corrupted_nodes: the corrupted nodes

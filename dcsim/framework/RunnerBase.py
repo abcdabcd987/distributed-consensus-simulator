@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from .NodeBase import NodeBase
 
 
-class ConfigurationBase(metaclass=abc.ABCMeta):
+class RunnerBase(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod

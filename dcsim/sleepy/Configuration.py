@@ -6,7 +6,7 @@ from .HonestNode import HonestNode
 from .Measurement import Measurement
 
 
-class Configuration(ConfigurationBase):
+class Configuration(RunnerBase):
 
     def __init__(self,
                  honest_node_type,
