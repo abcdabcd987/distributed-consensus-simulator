@@ -9,7 +9,10 @@ from dcsim.framework import AuthenticationServiceBase
 from dcsim.sleepy import Configuration
 
 
+<<<<<<< HEAD:dcsim/sleepy/Runner.py
 
+=======
+>>>>>>> 4849f6d6d1051ef332f7431b9cd42b1ca118f6f3:dcsim/sleepy/Runner.py
 class Runner(ExperimentBase):
     def __init__(self, config: Configuration) -> None:
         """

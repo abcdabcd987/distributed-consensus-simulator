@@ -6,9 +6,12 @@ from dcsim.sleepy.CorruptedNode import  CorruptedNode
 from dcsim.sleepy.Measurement import Measurement
 from dcsim.sleepy.Runner import Runner
 from .Configuration import Configuration
+<<<<<<< HEAD
 from dcsim.authentication_service.hash import HashBasedAuthenticationService
 from dcsim.authentication_service.rsa import RsaBasedAuthenticationService
 from dcsim.authentication_service.none import NoAuthenticationService
+=======
+>>>>>>> 4849f6d6d1051ef332f7431b9cd42b1ca118f6f3
 import matplotlib.pyplot as plt
 def evaluate(config):
     results = []
@@ -18,11 +21,16 @@ def evaluate(config):
     probability_of_success = 1.0 * results.count(True) / len(results)
     print("Probability of Success: {}".format(probability_of_success))
     return probability_of_success
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4849f6d6d1051ef332f7431b9cd42b1ca118f6f3
 configs = []
 corrupt_ratios = [0.5, 0.6, 0.7, 0.8, 0.9]
 success_probabilities = []
 for prob in corrupt_ratios:
     config = Configuration(honest_node_type= HonestNode,
+<<<<<<< HEAD
                            corrupt_node_type=CorruptedNode,
                            adversary_controller_type=ConsistencyAttack,
                            measurement_type=Measurement,
@@ -36,3 +44,18 @@ for prob in corrupt_ratios:
     success_probabilities.append(evaluate(config))
 plt.plot(corrupt_ratios, success_probabilities)
 plt.show()
+=======
+                                   corrupt_node_type=CorruptedNode,
+                                   adversary_controller_type=ConsistencyAttack,
+                                   measurement_type=Measurement,
+                                   num_nodes=10,
+                                   ratio_corrupted=prob,
+                                   max_delay=2,
+                                   confirm_time=6,
+                                   probability=0.1,
+                                   max_round=50)
+    success_probabilities.append(evaluate(config))
+
+plt.plot(corrupt_ratios, success_probabilities)
+plt.show()
+>>>>>>> 4849f6d6d1051ef332f7431b9cd42b1ca118f6f3
