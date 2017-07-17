@@ -5,9 +5,9 @@ from dcsim.sleepy.ConsistencyAttack import ConsistencyAttack
 from dcsim.sleepy.Measurement import Measurement
 from .Configuration import Configuration
 from dcsim.utils import *
-# from dcsim.authentication_service.hash import HashBasedAuthenticationService
-# from dcsim.authentication_service.rsa import RsaBasedAuthenticationService
-# from dcsim.authentication_service.none import NoAuthenticationService
+
+FSign = FSignHash
+# FSign = FSignRSA
 
 def evaluate(config):
     results = []
