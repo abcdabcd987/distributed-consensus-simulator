@@ -12,6 +12,10 @@ Timestamp = NewType('Timestamp', int)
 
 
 class TxPool:
+    '''
+    store all received txs
+    at the end of each round, all txs in the txpool form a new block, and clear it
+    '''
 
     def __init__(self) -> None:
         """
@@ -71,10 +75,9 @@ class TBlock:
         :param pbhv: the hash of the previous block
         :param txs: the transactions contained in this block
         :param timestamp: the timestap of this block
-        :param pid: the pid of this block
+        :param pid: the sender id of this block
         """
         self.txs = txs
-        # father's hash
         self.pbhv = pbhv
         self.timestamp = timestamp
         self.pid = pid
@@ -114,13 +117,15 @@ class TBlock:
 
     def __repr__(self):
         return repr((self.txs, self.hashval, self.pbhv, self.timestamp, self.pid, self.children))
+
 class TNode:
+    #Wrap TBlock with its previous block and blockchain's depth
     def __init__(self, depth, block, father):  # father's(block's) hash
         """
-        Initialize the TNode, including he depth in the blocktree, the pointer to the block, the previous block
-        :param depth:
-        :param block:
-        :param father:
+        Initialize the TNode
+        :param depth: the depth of the this TNode
+        :param block: corresponding TBlock
+        :param father: previous TNode
         """
         self.depth = depth  # type: int
         self.block = block  # type: TBlock
@@ -130,8 +135,10 @@ class TNode:
 
         self.index = []  # type: List[int]
         self.children = []  # type: List[TNode]
+        #num of children
         self.num = 0  # type: int
 
+        #previous block hash value
         if father is None:
             self.block.pbhv = "0"
         else:
@@ -139,16 +146,16 @@ class TNode:
 
     def get_children(self):
         """
-        get the children of this block
-        :return: the chlldren of this block
+        get the children of this TNode
+        :return: the chlldren of this TNode
         """
         return self.children
 
     def get_child_index(self, child_node: 'TNode') -> int:
         """
-        return the index of the children
+        return the index of the child_node
         :param child_node:
-        :return: the index of the children
+        :return: the index of child_node
         """
         for i in range(len(self.index)):
             if child_node.hash == self.children[self.index[i]].hash:
@@ -156,7 +163,8 @@ class TNode:
         return -1
 
     def add_child(self, new_node: 'TNode') -> bool:
-        # if full, max is 16
+        # if full, discard new_node
+        # max is 16
         """
         all the children to this node
         :param new_node: the children node to be added
@@ -174,7 +182,7 @@ class TNode:
 
     def transfer_chain(self, i: int, j: int):
         """
-        swap the chainnode
+        swap the order of two children
         :param i: one node to be swap
         :param j: another node to be swap
         """
@@ -184,9 +192,9 @@ class TNode:
 
     def search(self, p_hash: Hashval) -> Optional['TNode']:
         """
-        find a node in its children
-        :param p_hash: the hash of the node to be searched
-        :return: the node found
+        find a node in its subtree with hashval p_hash
+        :param p_hash: the hash of the TNode to be searched
+        :return: the TNode found
         """
         res = None      # type: Union[TNode, None]
         for child in self.children:
@@ -201,23 +209,24 @@ class TNode:
 
 SuperRoot = TBlock(cast(Hashval, b"0"), [], cast(Timestamp, 0), cast(NodeId, 0))
 
-
 class BlockChain:
-
+    #actually it's a blocktree
     def __init__(self) -> None:
         # pbhv = "0", txs = [], timestamp = 0, nid = 0
         """
         initialize the blockchain
         """
         self.genesis = TNode(0, SuperRoot, None)    # type: TNode
+        #head of mainchain
         self.head = self.genesis    # type: TNode
+        #tail of mainchain
         self.tail = self.genesis    # type: TNode
 
     def find(self, hash_val: Hashval) -> Optional['TNode']:
         """
-        find a node whose hash equal to the given value
+        find a TNode whose hash equal to hash_val
         :param hash_val: the hash value given
-        :return: a node whose hash equal to the given value
+        :return: a TNode with given hash_val
         """
         if self.head.hash == hash_val:
             return self.head
@@ -226,13 +235,15 @@ class BlockChain:
 
     def add_child(self, t_node: 'TNode', block: 'TBlock'):
         """
-        add a child to after the given node
+        add a child to after the given TNode
         :param t_node: the node who want the this child
         :param block: the child to be added
-        :return: the new node
+        :return: the new TNode
         """
         new_node = TNode(t_node.depth + 1, block, t_node)
         t_node.add_child(new_node)
+        #change of mainchain
+        #TNode of mainchian is index[0] child of its previous TNode
         if new_node.depth > self.tail.depth:
             temp_node = new_node
             while temp_node is not self.head:
@@ -246,8 +257,8 @@ class BlockChain:
     @property
     def main_chain(self) -> List['TBlock']:
         """
-        return the main chain of these blocks
-        :return: the main chain
+        return TBlocks of mainchain
+        :return: TBlocks of mainchain
         """
         temp_list = []              # type: List[TBlock]
         temp_node = self.genesis    # type: TNode
@@ -259,11 +270,14 @@ class BlockChain:
         return temp_list
 
     def get_top(self) -> TNode:
+        #get last TNode of mainchain
         return self.tail
 
 
 class OrphanBlockPool:
-
+    '''
+    store the blocks that has been received but wait for the receipt of its previous block
+    '''
     def __init__(self) -> None:
         """
         initialize the orphan block pool
@@ -272,16 +286,16 @@ class OrphanBlockPool:
 
     def add_block(self, ablock: TBlock):
         """
-        add a block to the pool
-        :param ablock:
+        add a block to orphan pool
+        :param ablock: block to be added
         """
         self.block.append(ablock)
 
     def pop_children(self, hv: Hashval) -> Optional[List[TBlock]]:
         """
-        removed the child whose hashvalue equal to the given hashvalue
+        remove the blocks whose father's hashval is hv from orphan pool
         :param hv: the given hash value
-        :return: the removed block
+        :return: the removed blocks
         """
         temp_block = []
         for i in self.block:
@@ -296,7 +310,7 @@ class OrphanBlockPool:
         """
         find the child whose hashvalue equal to the given hashvalue
         :param hashval: the given hash value
-        :return: the child whose hashvalue equal to the given hashvalue
+        :return: the children whose hashvalue equal to the given hashvalue
         """
         temp_block = []
         for i in self.block:
@@ -318,7 +332,7 @@ def check_tx(tx: Tx):
 
 def check_solution(tblock: TBlock, probability):
     """
-    check whether the block satisfies the restriction
+    check whether the tblock is the leader
     :param tblock: the block to be checked
     :return: whether the block satisfies the restriction
     """
