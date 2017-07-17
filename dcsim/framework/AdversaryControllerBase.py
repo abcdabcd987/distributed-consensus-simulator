@@ -3,6 +3,7 @@ from .NodeBase import NodeBase
 from typing import *
 if TYPE_CHECKING:
     from .ConfigurationBase import ConfigurationBase
+    from .NodeBase import NodeBase
     from .NodeId import NodeId
     from .MessageTuple import MessageTuple
     from .TrustedThirdPartyCaller import TrustedThirdPartyCaller

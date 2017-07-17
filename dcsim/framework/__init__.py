@@ -5,6 +5,6 @@ from .MeasurementBase import MeasurementBase
 from .MessageTuple import MessageTuple
 from .NodeBase import NodeBase
 from .NodeId import NodeId
-from .ExperimentBase import ExperimentBase
+from .Runner import Runner
 from .TrustedThirdPartyBase import TrustedThirdPartyBase
 from .TrustedThirdPartyCaller import TrustedThirdPartyCaller

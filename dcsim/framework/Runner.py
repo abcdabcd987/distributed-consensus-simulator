@@ -1,4 +1,3 @@
-import abc
 from collections import defaultdict
 from typing import *
 from .ConfigurationBase import ConfigurationBase
@@ -8,7 +7,7 @@ from .NodeId import NodeId
 from .TrustedThirdPartyCaller import TrustedThirdPartyCaller
 
 
-class ExperimentBase:
+class Runner:
     def __init__(self, config: ConfigurationBase) -> None:
         self._config = config
         self._ttps = []
@@ -64,4 +63,4 @@ class ExperimentBase:
             self._measure.report_round(round)
 
         # call the Measurement to give the final report
-        self._measure.report_final()
+        return self._measure.report_final()

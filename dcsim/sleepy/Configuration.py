@@ -62,4 +62,3 @@ class Configuration(ConfigurationBase):
     @property
     def max_round(self):
         return self._max_round
-

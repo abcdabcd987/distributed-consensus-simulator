@@ -1,6 +1,5 @@
 import abc
 from typing import *
-from typing import TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
     from .AdversaryControllerBase import AdversaryControllerBase
