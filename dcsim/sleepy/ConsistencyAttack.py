@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 def check(id: int, timestamp: int, probability):
     """
     check whether a node is awake
+
     :param id: the id of the node
     :param timestamp: the timestap of this round
     :return: a boolean variable that decides whether a ode is awake
@@ -34,6 +35,7 @@ class TransactionPool:
     def contain_key(self, tx: 'Tx'):
         """
         return whether a given transaction is in the pool
+
         :param tx: the given transaction
         :return: whether a given transaction is in the pool
         """
@@ -42,6 +44,7 @@ class TransactionPool:
     def insert(self, tx: 'Tx'):
         """
         insert the transaction to the transactionpool
+
         :param tx: the inserted transaction
         """
         self._keys.add(tx)
@@ -49,6 +52,7 @@ class TransactionPool:
     def get_all(self):
         """
         get all the transaction to a list
+
         :return: A list contains all the transactions
         """
         return list(self._keys)
@@ -56,6 +60,7 @@ class TransactionPool:
     def erase(self, tx: 'Tx'):
         """
         delete a given trasaction
+
         :param tx:
         """
         self._keys.remove(tx)
@@ -71,6 +76,7 @@ class BlockTree():
     def __init__(self, key) -> None:
         """
         initialze the blocktree, determins the root of the tree
+
         :param key: useless
         """
         self._depth = 0
@@ -81,6 +87,7 @@ class BlockTree():
     def depth(self) -> int:
         """
         return the depth of the blocktree
+
         :return: the depth of the blocktree
         """
         return self._depth
@@ -92,6 +99,7 @@ class BlockTree():
     def insert(self, cur: TBlock):
         """
         insert a given block to the blocktree
+
         :param cur: the inserted block
         :return: none
         """
@@ -124,7 +132,8 @@ class BlockTree():
 
 def valid(block: TBlock, timestamp: int, probability):
     """
-        decide whether a block is valid
+    decide whether a block is valid
+
     :param block: the given block
     :param timestamp: the current timestamp
     :return: whether the block is valid
@@ -136,6 +145,7 @@ class ConsistencyAttack(AdversaryControllerBase):
     def __init__(self, config: 'Configuration') -> None:
         """
         Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
+
         :param corrupted_nodes: A tuple contains the corrupted nodes
         :param config: Configuration of the protocol
         """
@@ -178,6 +188,7 @@ class ConsistencyAttack(AdversaryControllerBase):
     def _handle_new_messages(self, round:int, new_messages: List['MessageTuple']):
         """
         handle the new messages, insert message to the block tree or transaction
+
         :param round: the current round
         :param new_messages: the new messages
         """
@@ -193,6 +204,7 @@ class ConsistencyAttack(AdversaryControllerBase):
     def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
         """
         add new messages from the honest nodes
+
         :param round: the round that the messages are in
         :param sender_id: the id of the sender
         :param messages_to_send: A list that contains the new messages
@@ -203,6 +215,7 @@ class ConsistencyAttack(AdversaryControllerBase):
     def get_delivered_messages(self, round: int) -> List['MessageTuple']:
         """
         Get the delivered messages from all the nodes, returns a list contains all the messagetuples
+
         :param round: the round that these messages are in
         :return: a list contains all the messagetuples
         """

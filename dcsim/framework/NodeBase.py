@@ -13,6 +13,7 @@ class NodeBase(metaclass=abc.ABCMeta):
     def __init__(self, config: 'ConfigurationBase') -> None:
         """
         intitialze the NodeBase, including the configuration and the nodeid
+
         :param config: the configuration of this node
         """
         self._config = config
@@ -28,6 +29,7 @@ class NodeBase(metaclass=abc.ABCMeta):
     def set_node_list(self, node_ids: Tuple['NodeId', ...]) -> None:
         """
         set the node list using a tuple contains all the nodes
+
         :param node_ids:
         """
         self._nodes = node_ids
@@ -36,6 +38,7 @@ class NodeBase(metaclass=abc.ABCMeta):
     def round_action(self, ctx: 'Context') -> None:
         """
         the round action of the
+
         :param ctx:
         """
         pass

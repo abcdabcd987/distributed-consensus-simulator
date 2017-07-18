@@ -10,6 +10,7 @@ class HonestNode(NodeBase):
     def __init__(self, config: 'Configuration') -> None:
         """
         Initilize the hoestnode
+
         :param config: the configuration of the node
         """
         super().__init__(config)
@@ -27,6 +28,7 @@ class HonestNode(NodeBase):
     def main_chain(self):
         """
         return the blockchain's mainchain
+
         :return: the blockchain's mainchain
         """
         return self._block_chain.main_chain
@@ -35,6 +37,7 @@ class HonestNode(NodeBase):
     def recursive_remove_block_from_orphan_pool(self, block: TBlock):
         """
         recursively remove the subtree(the root has already been removed) of the given block from the orphan pool
+
         :param block: the root of the subtree needed to be removed
         :return: void
         """
@@ -49,6 +52,7 @@ class HonestNode(NodeBase):
     def recursive_add_block_from_orphan_pool(self, curnode: TNode):
         """
         recursively add the subtree(root has already been added and removed) of curnode to blockchain, and remove them from orphan pool
+
         :param curnode: the root of the subtree needed to be added from the orphan pool
         :return: void
         """
@@ -68,6 +72,7 @@ class HonestNode(NodeBase):
     def round_action(self, ctx: Context) -> None:
         """
         the round action of the honest node
+
         :param ctx: use the ctx to do inputs and outputs for a node
         :return: none
         """

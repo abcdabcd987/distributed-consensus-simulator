@@ -17,6 +17,7 @@ class ConsistencyMeasurement(MeasurementBase):
                  trusted_third_parties: 'TrustedThirdPartyBase', config: 'Configuration') -> None:
         """
         Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration
+
         :param corrupted_nodes: the corrupted nodes
         :param honest_nodes: the honest nodes
         :param adversary: the adversary controller is used
@@ -32,6 +33,7 @@ class ConsistencyMeasurement(MeasurementBase):
     def report_round(self, round: int) -> None:
         """
         return the condition of each nodes ar this round
+
         :param round: the index of the round
         """
         logging.info("----------------------------------------------------------------")

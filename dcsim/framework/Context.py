@@ -6,6 +6,8 @@ from .NodeBase import NodeBase
 
 
 class Context:
+    """class docstring"""
+
     def __init__(self,
                  nodes: Tuple[NodeId, ...],
                  round: int,
@@ -13,6 +15,7 @@ class Context:
                  received_messages: Tuple[MessageTuple, ...]) -> None:
         """
         initialize the Context class
+
         :param nodes: the nodes that will be broadcast to
         :param round: the round that the context is in
         :param node: the node of the sender
@@ -31,6 +34,7 @@ class Context:
     def send(self, receiver: NodeId, message: Any) -> None:
         """
         sends a message to a given node
+
         :param receiver: the ndoe that receives the message
         :param message: the messags that to be sent
         """
@@ -41,6 +45,7 @@ class Context:
     def broadcast(self, message: Any) -> None:
         """
         broadcasts a message to all nodes
+
         :param message: the message to be broadcast
         """
         for node_id in self._nodes:
@@ -50,6 +55,7 @@ class Context:
     def received_messages(self) -> Tuple['MessageTuple', ...]:
         """
         reture the received messages
+
         :return: a tuple contains all the received messages
         """
         return self._received_messages
@@ -58,6 +64,7 @@ class Context:
     def messages_to_send(self) -> List['MessageTuple']:
         """
         return the messages to be sent
+
         :return: A list contains all the messages to be sent
         """
         return self._message_tuples_to_send

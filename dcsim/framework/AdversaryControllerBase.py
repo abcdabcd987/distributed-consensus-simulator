@@ -13,6 +13,7 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
     def __init__(self, config: 'ConfigurationBase') -> None:
         """
         Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
+
         :param config: Configuration of the protocol
         """
         self._config = config
@@ -33,6 +34,7 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
     def get_delivered_messages(self, round: int) -> List['MessageTuple']:
         """
         Get the delivered messages from all the nodes, returns a list contains all the messagetuples
+
         :param round: the round that these messages are in
         """
         pass
@@ -45,6 +47,7 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
     def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
         """
         add new messages from the honest nodes
+
         :param round: the round that the messages are in
         :param sender_id: the id of the sender
         :param messages_to_send: A list that contains the new messages

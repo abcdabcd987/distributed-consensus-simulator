@@ -12,6 +12,7 @@ class FSignHash(TrustedThirdPartyBase):
         signature = SHA256(node's secret key || message)
     where || is concatenation operator of bytes
     """
+
     def __init__(self, name):
         super().__init__(name)
         self._secret_keys = {}
@@ -36,6 +37,7 @@ class FSignHash(TrustedThirdPartyBase):
     def _sign(self, message: bytes, sender_id: NodeId) -> str:
         """
         returns the footprint (signature) of message signed by a given sender node.
+
         :param message: the messages to be signed
         :param sender_id: the id of the sender node
         :return: the footprint (signature) of message signed by a given sender node.
