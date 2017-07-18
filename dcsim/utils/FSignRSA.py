@@ -31,7 +31,7 @@ class FSignRSA(TrustedThirdPartyBase):
     def _callable_functions(self) -> List[Callable]:
         return [self.register,
                 self.sign,
-                self.verify,]
+                self.verify, ]
 
     def round_action(self, round: int) -> None:
         pass

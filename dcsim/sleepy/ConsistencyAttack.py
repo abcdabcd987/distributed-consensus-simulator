@@ -169,7 +169,8 @@ class ConsistencyAttack(AdversaryControllerBase):
                 if self._chain[-1].timestamp < block.timestamp:
                     self._chain.append(block)
                 if len(self._chain) - 2 > self._root.depth:
-                    logging.debug("Attacking honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
+                    logging.debug("Attacking honest length %d, corrupt chain length %d" %
+                                  (self._root.depth, len(self._chain) - 1))
                     chain_to_broadcast = self._chain
                     self._chain = [SuperRoot]
 
@@ -180,12 +181,13 @@ class ConsistencyAttack(AdversaryControllerBase):
                             for block in chain_to_broadcast:
                                 sig = ttp.call('FSign', 'sign', message=block.serialize)
                                 packed = {"type": 1, "value": block, "signature": sig}
-                                t = MessageTuple(sender=corrupted_node, receiver=honest_node, round=round, message=packed)
+                                t = MessageTuple(sender=corrupted_node, receiver=honest_node,
+                                                 round=round, message=packed)
                                 pending_messages.append(t)
                     logging.debug("Corrupt chain pushed")
         logging.debug("Current honest length %d, corrupt chain length %d" % (self._root.depth, len(self._chain) - 1))
 
-    def _handle_new_messages(self, round:int, new_messages: List['MessageTuple']):
+    def _handle_new_messages(self, round: int, new_messages: List['MessageTuple']):
         """
         handle the new messages, insert message to the block tree or transaction
 

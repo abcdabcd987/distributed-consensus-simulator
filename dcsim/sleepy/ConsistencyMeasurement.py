@@ -65,7 +65,7 @@ class ConsistencyMeasurement(MeasurementBase):
             num_honest=self._config.num_honest_nodes,
             num_corrupt=self._config.num_corrupted_nodes,
             ratio=self._config.num_corrupted_nodes / (
-            self._config.num_corrupted_nodes + self._config.num_honest_nodes)))
+                self._config.num_corrupted_nodes + self._config.num_honest_nodes)))
         if not self.stop:
             logging.info('Attack failed after {} rounds.'.format(self.max_round))
             return False

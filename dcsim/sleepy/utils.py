@@ -10,7 +10,6 @@ Hashval = NewType('Hashval', bytes)
 Timestamp = NewType('Timestamp', int)
 
 
-
 class TxPool:
     '''
     store all received txs
@@ -127,8 +126,9 @@ class TBlock:
     def __repr__(self):
         return repr((self.txs, self.hashval, self.pbhv, self.timestamp, self.pid, self.children))
 
+
 class TNode:
-    #Wrap TBlock with its previous block and blockchain's depth
+    # Wrap TBlock with its previous block and blockchain's depth
     def __init__(self, depth, block, father):  # father's(block's) hash
         """
         Initialize the TNode
@@ -145,10 +145,10 @@ class TNode:
 
         self.index = []  # type: List[int]
         self.children = []  # type: List[TNode]
-        #num of children
+        # num of children
         self.num = 0  # type: int
 
-        #previous block hash value
+        # previous block hash value
         if father is None:
             self.block.pbhv = "0"
         else:
@@ -224,17 +224,18 @@ class TNode:
 
 SuperRoot = TBlock(cast(Hashval, b"0"), [], cast(Timestamp, 0), cast(NodeId, 0))
 
+
 class BlockChain:
-    #actually it's a blocktree
+    # actually it's a blocktree
     def __init__(self) -> None:
         # pbhv = "0", txs = [], timestamp = 0, nid = 0
         """
         initialize the blockchain
         """
         self.genesis = TNode(0, SuperRoot, None)    # type: TNode
-        #head of mainchain
+        # head of mainchain
         self.head = self.genesis    # type: TNode
-        #tail of mainchain
+        # tail of mainchain
         self.tail = self.genesis    # type: TNode
 
     def find(self, hash_val: Hashval) -> Optional['TNode']:
@@ -259,8 +260,8 @@ class BlockChain:
         """
         new_node = TNode(t_node.depth + 1, block, t_node)
         t_node.add_child(new_node)
-        #change of mainchain
-        #TNode of mainchian is index[0] child of its previous TNode
+        # change of mainchain
+        # TNode of mainchian is index[0] child of its previous TNode
         if new_node.depth > self.tail.depth:
             temp_node = new_node
             while temp_node is not self.head:
@@ -288,7 +289,7 @@ class BlockChain:
         return temp_list
 
     def get_top(self) -> TNode:
-        #get last TNode of mainchain
+        # get last TNode of mainchain
         return self.tail
 
 

@@ -12,4 +12,3 @@ class TrustedThirdPartyCaller:
     def call(self, party_name: str, function_name: str, *args, **kwargs) -> Any:
         ttp = self._trusted_third_parties[party_name]
         return ttp.call(self._node, function_name, args, kwargs)
-

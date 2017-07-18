@@ -90,7 +90,7 @@ class HonestNode(NodeBase):
                                                           message=message['value'],
                                                           sender_id=sender)
                 if verified and check_tx(message["value"]):
-                    #received a tx not in the txpool, forward the tx with its onw sig and store tx in txpool
+                    # received a tx not in the txpool, forward the tx with its onw sig and store tx in txpool
                     if not self._txpool.find_tx(message["value"]):
                         my_sig = self._trusted_third_party.call('FSign', 'sign', message=message["value"])
                         ctx.broadcast({"type": 0, "value": message["value"], "signature": my_sig})
@@ -108,7 +108,8 @@ class HonestNode(NodeBase):
                 if verified \
                         and check_solution(message["value"], self._probability)\
                         and message["value"].timestamp <= ctx.round:
-                    logging.debug("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
+                    logging.debug("HonestNode.round_action: NodeId", self._nodeId,
+                                  "accepted message", message["value"].hashval)
 
                     blocks.append(message["value"])
                 else:
@@ -125,7 +126,7 @@ class HonestNode(NodeBase):
             elif self._orphanpool.find(block.hashval):
                 continue
 
-            #cur_node : father of block
+            # cur_node : father of block
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
                 self._orphanpool.add_block(block)
@@ -134,17 +135,17 @@ class HonestNode(NodeBase):
                 self.recursive_remove_block_from_orphan_pool(block)
                 continue
             else:
-                #block added to the tail of mainchain
+                # block added to the tail of mainchain
                 if cur_node == self._block_chain.get_top():
                     for tx in block.txs:
                         self._txpool.remove_tx(tx)
                 new_node = self._block_chain.add_child(cur_node, block)
                 self.recursive_add_block_from_orphan_pool(new_node)
-            #forward valid block
+            # forward valid block
             my_sig = self._trusted_third_party.call('FSign', 'sign', message=block.serialize)
             ctx.broadcast({"type": 1, "value": block, "signature": my_sig})
 
-        #mine new block
+        # mine new block
         pbhv = self._block_chain.get_top().block.hashval
         txs = self._txpool.get_all()
         t = ctx._round

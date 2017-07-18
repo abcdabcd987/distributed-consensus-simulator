@@ -62,6 +62,7 @@ class ChainQualityMeasurement(MeasurementBase):
                 chain_quality_value = (1 - cnt / (max_len - 1))
             logging.info("Chain Quality: %f" % chain_quality_value)
             logging.debug(list(chain_quality), list(chain_T))
+
     def report_final(self):
         logging.info("Calculating Chain Quality...")
         corrupted_set = set([c for c in self._adversary._corrupted_nodes])

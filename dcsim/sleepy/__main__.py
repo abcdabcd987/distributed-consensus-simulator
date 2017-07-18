@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.WARNING)
 FSign = FSignHash
 # FSign = FSignRSA
 
+
 def evaluateConsistency(config):
     results = []
     for idx in range(20):
@@ -24,6 +25,7 @@ def evaluateConsistency(config):
     print("Probability of Success: {}".format(probability_of_success))
     return probability_of_success
 
+
 def evaluateChainQuality(config):
     results = []
     for idx in range(20):
@@ -35,7 +37,6 @@ def evaluateChainQuality(config):
     average_chain_quality = sum(results) / len(results)
     print("Average Chain Quality: {}".format(average_chain_quality))
     return average_chain_quality
-
 
 
 def runConsistencyExperiment():
@@ -62,6 +63,7 @@ def runConsistencyExperiment():
     plt.xlabel('Ratio of Corrupted Nodes')
     plt.show()
 
+
 def runSelfishMiningExperiment():
     corrupt_ratios = [0.0, 0.1, 0.15, 0.2]
     average_chain_quality = []
@@ -86,5 +88,6 @@ def runSelfishMiningExperiment():
     plt.xlabel('Ratio of Corrupted Nodes')
     plt.show()
 
-#runConsistencyExperiment()
+
+# runConsistencyExperiment()
 runSelfishMiningExperiment()
