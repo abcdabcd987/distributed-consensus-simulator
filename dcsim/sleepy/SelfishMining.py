@@ -4,6 +4,7 @@ from typing import *
 from dcsim.framework import *
 from dcsim.sleepy.ConsistencyAttack import BlockTree, TransactionPool, check, valid
 from dcsim.sleepy.utils import SuperRoot, TBlock, Timestamp
+import logging
 
 if TYPE_CHECKING:
     from .Configuration import Configuration
@@ -31,7 +32,7 @@ class SelfishMining(AdversaryControllerBase):
         return self._root.main_chain
 
     def round_action(self, round: int):
-        print("Adversary Information:")
+        logging.debug("Adversary Information:")
 
         len_changed = False
 
@@ -56,7 +57,7 @@ class SelfishMining(AdversaryControllerBase):
 
         for bad_node_id in self._corrupted_nodes:
             if check(bad_node_id, round, self._probabiltiy):
-                print('AdversaryController.round_instruction: NodeId', bad_node_id, 'chosen as the leader')
+                logging.debug('AdversaryController.round_instruction: NodeId', bad_node_id, 'chosen as the leader')
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), bad_node_id)
                 self._tx.clear()
 
@@ -65,20 +66,20 @@ class SelfishMining(AdversaryControllerBase):
                     self._tmp_blocks.append(block)
                     self._chain.append(block)
 
-        print("Root Depth %d" % self._root.depth)
-        print("Chain Length %d" % (len(self._chain) - 1))
-        print("Honest Mined? %r" % self._round_honest_mined)
-        print("# Bad Nodes in Queue: %d" % len(self._bad_nodes))
-        print("# Pending Blocks in Private Chain: %d" % len(self._tmp_blocks))
+        logging.debug("Root Depth %d" % self._root.depth)
+        logging.debug("Chain Length %d" % (len(self._chain) - 1))
+        logging.debug("Honest Mined? %r" % self._round_honest_mined)
+        logging.debug("# Bad Nodes in Queue: %d" % len(self._bad_nodes))
+        logging.debug("# Pending Blocks in Private Chain: %d" % len(self._tmp_blocks))
 
         if self._round_honest_mined and len_changed:
             if len(self._chain) - 1 < self._root.depth:
-                print("Reset Private Chain...")
+                logging.debug("Reset Private Chain...")
                 self._chain = self.main_chain
                 self._bad_nodes.clear()
                 self._tmp_blocks.clear()
             elif len(self._bad_nodes) > 0:
-                print("Cover Honest's New Block...")
+                logging.debug("Cover Honest's New Block...")
                 corrupted_node = self._bad_nodes.popleft()
                 block = self._tmp_blocks.popleft()
 

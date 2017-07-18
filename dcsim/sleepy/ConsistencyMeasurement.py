@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .Configuration import Configuration
 
 
-class Measurement(MeasurementBase):
+class ConsistencyMeasurement(MeasurementBase):
     def should_stop(self, round) -> bool:
         return self.stop or round >= self.max_round
 
@@ -51,62 +51,6 @@ class Measurement(MeasurementBase):
         if found != -1:
             logging.info("Inconsistency detected on node %d!" % found)
             self.stop = True
-
-    def report_selfish(self, round: int, adversary) -> None:
-        logging.info("Calculating Chain Quality...")
-        # print("@ Round %d" % round)
-
-        print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-        corrupted_set = set([c for c in adversary._corrupted_nodes])
-
-        for node in self._honest_nodes:
-            print(node.id)
-            chain_quality = []
-            chain_T = []
-            cnt = 0
-            chain = cast(HonestNode, node).main_chain
-            max_len = max(0, len(chain) - self._config.confirm_time)
-            for i in range(1, len(chain)):
-                if (i < max_len):
-                    if chain[i].pid in corrupted_set:
-                        cnt += 1
-                        chain_quality.append("corrupted")
-                    else:
-                        chain_quality.append("honest")
-                else:
-                    if chain[i].pid in corrupted_set:
-                        chain_T.append("corrupted")
-                    else:
-                        chain_T.append("honest")
-
-            cnt = min(cnt, max_len - 1)
-            if max_len <= 1:
-                print("Chain Quality: 1.000000")
-            else:
-                print("Chain Quality: %f" % (1 - cnt / (max_len - 1)))
-            print(list(chain_quality), list(chain_T))
-
-        print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-
-        # chain = self._adversary.main_chain
-        # cnt = 0
-        # chain_quality = []
-        # corrupted_set = set([c.id for c in self._corrupted_nodes])
-        # max_len = max(0, len(chain))  # - self._config.confirm_time)
-        # for i in range(1, max_len):
-        #     if chain[i].pid in corrupted_set:
-        #         cnt += 1
-        #         chain_quality.append("corrupted")
-        #     else:
-        #         chain_quality.append("honest")
-        # cnt = min(cnt, max_len)
-        # if max_len <= 1:
-        #     print("Chain Quality: 1.000000")
-        # else:
-        #     print("Chain Quality: %f" % (1 - cnt / (max_len - 1)))
-        # print(list(chain_quality))
-        print("@ Round %d end" % round)
-        print("----------------------------------------------------------------")
 
     def report_final(self):
         """

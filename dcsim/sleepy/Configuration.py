@@ -2,7 +2,7 @@ from typing import *
 from dcsim.framework import *
 from .ConsistencyAttack import ConsistencyAttack
 from .HonestNode import HonestNode
-from .Measurement import Measurement
+from .ConsistencyMeasurement import ConsistencyMeasurement
 
 
 class Configuration(ConfigurationBase):
