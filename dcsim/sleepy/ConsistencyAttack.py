@@ -75,6 +75,7 @@ class BlockTree():
         """
         self._depth = 0
         self._blockPool = {SuperRoot.hashval: SuperRoot}
+        self._main_chain = [SuperRoot]
 
     @property
     def depth(self) -> int:
@@ -83,6 +84,10 @@ class BlockTree():
         :return: the depth of the blocktree
         """
         return self._depth
+
+    @property
+    def main_chain(self):
+        return self._main_chain
 
     def insert(self, cur: TBlock):
         """
@@ -108,7 +113,13 @@ class BlockTree():
                 if node not in tmp.children:
                     tmp.children.append(node)
                 tmp = node
-            self._depth = max(self._depth, len(seq))
+            # self._depth = max(self._depth, len(seq))
+            seq.reverse()
+            if len(seq) > self._depth:
+                self._main_chain = [SuperRoot]
+                for node in seq:
+                    self._main_chain.append(node)
+            self._depth = len(seq)
 
 
 def valid(block: TBlock, timestamp: int, probability):

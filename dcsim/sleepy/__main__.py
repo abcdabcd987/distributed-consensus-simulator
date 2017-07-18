@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from dcsim.framework import *
 from dcsim.sleepy.HonestNode import HonestNode
 from dcsim.sleepy.ConsistencyAttack import ConsistencyAttack
+from dcsim.sleepy.SelfishMining import SelfishMining
 from dcsim.sleepy.Measurement import Measurement
 from .Configuration import Configuration
 from dcsim.utils import *
@@ -12,7 +13,7 @@ FSign = FSignHash
 
 def evaluate(config):
     results = []
-    for idx in range(100):
+    for idx in range(1):
         runner = Runner(config)
         runner.add_trusted_third_party(FSign('FSign'))
         runner.init()
@@ -23,14 +24,15 @@ def evaluate(config):
     return probability_of_success
 
 configs = []
-corrupt_ratios = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9]
+# corrupt_ratios = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9]
+corrupt_ratios = [0.2]
 success_probabilities = []
 total_nodes = 20
 for prob in corrupt_ratios:
     num_corrupted_nodes = int(total_nodes * prob)
     num_honest_nodes = total_nodes - num_corrupted_nodes
     config = Configuration(honest_node_type=HonestNode,
-                           adversary_controller_type=ConsistencyAttack,
+                           adversary_controller_type=SelfishMining,
                            measurement_type=Measurement,
                            num_honest_nodes=num_honest_nodes,
                            num_corrupted_nodes=num_corrupted_nodes,

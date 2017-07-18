@@ -104,9 +104,14 @@ class HonestNode(NodeBase):
                         and check_solution(message["value"], self._probability)\
                         and message["value"].timestamp <= ctx.round:
                     logging.debug("HonestNode.round_action: NodeId", self._nodeId, "accepted message", message["value"].hashval)
+
                     blocks.append(message["value"])
                 else:
                     continue
+
+        # print("Main chain for node %d" % self._nodeId)
+        # print(self.main_chain)
+        # print("- - - - - - ")
 
         for block in blocks:
             # check if this block has been received

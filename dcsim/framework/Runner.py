@@ -60,7 +60,8 @@ class Runner:
             self._adversary.round_action(round)
 
             # call the Measurement to give some report
-            self._measure.report_round(round)
+            # self._measure.report_round(round)
+            self._measure.report_selfish(round, self._adversary)
 
         # call the Measurement to give the final report
         return self._measure.report_final()

@@ -46,3 +46,7 @@ class MeasurementBase(metaclass=abc.ABCMeta):
         :param round: the index of the round
         """
         pass
+
+    @abc.abstractmethod
+    def report_selfish(self, round: int, adversary) -> None:
+        pass
