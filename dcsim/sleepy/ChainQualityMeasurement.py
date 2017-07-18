@@ -31,7 +31,7 @@ class ChainQualityMeasurement(MeasurementBase):
         self.max_round = config.max_round
 
     def report_round(self, round: int) -> None:
-        logging.info("Round {}".format(round()))
+        logging.info("Round {}".format(round))
         logging.info("Calculating Chain Quality...")
         corrupted_set = set([c for c in self._adversary._corrupted_nodes])
         for node in self._honest_nodes:

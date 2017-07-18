@@ -15,7 +15,7 @@ FSign = FSignHash
 
 def evaluateConsistency(config):
     results = []
-    for idx in range(20):
+    for idx in range(100):
         runner = Runner(config)
         runner.add_trusted_third_party(FSign('FSign'))
         runner.init()
@@ -28,7 +28,7 @@ def evaluateConsistency(config):
 
 def evaluateChainQuality(config):
     results = []
-    for idx in range(20):
+    for idx in range(100):
         runner = Runner(config)
         runner.add_trusted_third_party(FSign('FSign'))
         runner.init()
@@ -65,7 +65,7 @@ def runConsistencyExperiment():
 
 
 def runSelfishMiningExperiment():
-    corrupt_ratios = [0.0, 0.1, 0.15, 0.2]
+    corrupt_ratios = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
     average_chain_quality = []
     total_nodes = 20
     for prob in corrupt_ratios:
@@ -89,5 +89,5 @@ def runSelfishMiningExperiment():
     plt.show()
 
 
-# runConsistencyExperiment()
+#runConsistencyExperiment()
 runSelfishMiningExperiment()

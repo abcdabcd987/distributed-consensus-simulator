@@ -1,14 +1,14 @@
 Mission
 =======
 
-Implementation of a distributed consensus protocol in the sleeply model
+In this project, we implemented of a distributed consensus protocol in the sleepy model
 for pedagogical use. In the sleepy consensus protocol, we adopt a leader
 election to refrain from the computing resources’ waste of the core idea
-behind Nakamoto’s blockchian protocol“proofs-of-work”, with static
-corruption and sychronized clocks. The *Adversary* could control all
-corrputed nodes and have the ability to delay messages up to
+behind Nakamoto’s blockchain protocol“proofs-of-work”, with static
+corruption and synchronized clocks. The *Adversary* could control all
+corrupted nodes and have the ability to delay messages up to
 :math:`\Delta` time. The corrupted nodes hack the blockchain network
-with selfish mining and consistency attack. Finally we will see that
+with selfish mining and consistency attack. Finally, we will see that
 without the majority of the honest nodes, the properties\ *consistency*
 and *quality* of the blockchain can’t be guaranteed.
 
@@ -31,7 +31,7 @@ Distributed Consensus
 Introduction
 ------------
 
-First we will talk about distributed consensus. In a distributed system,
+First, we will talk about distributed consensus. In a distributed system,
 there are some rules that every node should follow. Honest nodes will
 behave according to those rules, while the corrupted nodes won’t. Under
 the interference of corrupted nodes, we want all honest nodes to reach
@@ -42,24 +42,13 @@ Background
 
 | The story starts from the Byzantine Generals’ Problem. Byzantine is
   now located in Istanbul, Turkey, which is the capital of the Eastern
-  Roman Empire. Because at that time the Byzantine Roman Empire was
-  vast, for the purpose of defense, each army is very far apart. The
-  generals can only rely on the message sent by postmen to communicate
-  with each other. At the time of the war, all the generals in the
-  Byzantine army should reach a consensus whether to attack or not. But
-  there may have traitors in the arm. At this time, in the case of known
-  members of the rebellion, the remaining loyal generals to reach a
-  consensus agreement without the influence of the traitors is the key
-  to this problem.
+  Roman Empire. Because at that time the Byzantine Roman Empire was vast, for the purpose of defense, each army is very far apart. The generals can only rely on the message sent by postmen to communicate with each other. At the time of the war, all the generals in the
+  Byzantine army should reach a consensus whether to attack or not. But there may have traitors in the arm. At this time, in the case of known members of the rebellion, the remaining loyal generals to reach a
+  consensus agreement without the influence of the traitors is the key to this problem.
 | In a distributed system, usually our goal is to reach Byzantine
-  Agreement. There may have some corrupted nodes controled by the force
-  of evil. Nodes exchange messages through pairwise link. At the
-  beginning, a sender node will send messages to other nodes. If the
+  Agreement. There may have some corrupted nodes controlled by the force of evil. Nodes exchange messages through a pairwise link. At the beginning, a sender node will send messages to other nodes. If the
   sender is honest, it will send the same message to everyone.
-  Otherwise, things become more complicated. Later on, every node sends
-  the message it received to its neighboring nodes. Finally we want all
-  honest node to reach agreement, which means all honest nodes have the
-  same output. Moreover, if the sender is honest, then everyone outputs
+  Otherwise, things become more complicated. Later on, every node sends the message it received to its neighboring nodes. Finally, we want all honest node to reach an agreement, which means all honest nodes have the same output. Moreover, if the sender is honest, then everyone outputs
   the message it received from the sender.
 
 Consensus
@@ -68,14 +57,12 @@ Consensus
 Consensus protocols are the most critical research object of distributed
 computing. A dream consensus protocol will realize a “linearly ordered
 log” abstraction, which often referred to as *state machine replication*
-in distributed systems literature. Simply speaking, every node maintians
-a ever-growing ordered log of transactions. The log should satisfy two
+in distributed systems literature. Simply speaking, every node maintains an ever-growing ordered log of transactions. The log should satisfy two
 properties:
 
 -  | **Consistency**
    | At any time, all honest nodes have consistent logs(For any two
-     honest nodes, either their logs are the same, or one log is the
-     prefix of another). And each log should be self-consistent.
+     honest nodes, either their logs are the same, or one log is the prefix of another). And each log should be self-consistent.
 
 -  | **Liveness**
    | If some honest node receives a transaction *tx* as input, or if
@@ -86,18 +73,12 @@ properties:
 Permission and Permissionless
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| Distributed systems have been analyzed historically in a permissioned
-  setting. In a this situation, everyone knows the number of the
-  participants in the system. And the communication channels among nodes
-  are authenticated.
+| Distributed systems have been analyzed historically in a permissioned setting. In a this situation, everyone knows the number of the
+  participants in the system. And the communication channels among nodes are authenticated.
 | With the development of peer-to-peer system, eventually, people
-  transfer interest to permissionless system. In this case, every node
-  is uncertained about the exact number of participants. Anyone can join
-  the protocol execution without geting permission from a centralized or
-  distributed authority. Moreover, the communication channels are
-  unauthenticated.
+  getting interested to the permissionless system. In this case, every node is uncertained about the exact number of participants. Anyone can join the protocol execution without geting permission from a centralized or distributed authority. Moreover, the communication channels are unauthenticated.
 | The difficulty of achieving permissionless consensus is from the
-  existence of so-called “sybill attack”, which can be easily
+  existence of so-called “Sybil attack”, which can be easily
   implemented by spawning lots of nodes so it can control the majority
   of the nodes.
 
@@ -150,7 +131,7 @@ Chain growth
 
 Chain quality
     : In any honest node’s chain, any sufficiently long window of
-    consecutive blocks contains a certain fraction of blocks that are
+    consecutive blocks contain a certain fraction of blocks that are
     mined by honest nodes.
 
 Consistency
@@ -165,8 +146,8 @@ Attack Methods
 
 One famous adversarial algorithm is called *selfish mining*, which means
 when a corrupt node mines a block, it doesn’t release its private chain
-immediately. Instead, it withhold its private chain until it observes
-some honest node has mined a chain of the equal enough. Then it release
+immediately. Instead, it withholds its private chain until it observes
+some honest node has mined a chain of the equal enough. Then it releases
 private chain ahead of honest nodes, wasting the mining power of honest
 nodes.
 
@@ -180,9 +161,7 @@ Before we talk about the protocol, we firstly show the following
 assumptions:
 
 Synchronized clocks
-    : We assume that all nodes can access a globally synchronized clock
-    that ticks over time. Each clock tick is referred as an atomic *time
-    step*. Nodes can perform unbounded ploynomial amount of computation
+    : We assume that all nodes can access a globally synchronized clock that ticks over time. Each clock tick is referred as an atomic *time step*. Nodes can perform unbounded polynomial amount of computation
     in each time step, as well as receive and send polynomially many
     messages.
 
@@ -215,14 +194,12 @@ Protocol Description
 
 In distributed computing, typically we consider two types of
 nodes\ *honest* nodes and *corrupted* nodes. We implemented a
-distributed consensus protocol in the spleepy model, which assuming that
+distributed consensus protocol in the sleepy model, which assumes that
 a :math:`majority` of the nodes are honest. It significantly departs
-from key ideas behind Nakamoto’s blockchain protocolthe need for
-“proofs-of-work”. The protocol relies on Public-Key-Infrastructure(PKI)
+from key ideas behind Nakamoto’s blockchain protocol the needs for “proofs-of-work”. The protocol relies on Public-Key-Infrastructure(PKI)
 and all nodes are assumed to have synchronized clocks.
 
-As showed by Pass and Shi :raw-latex:`\cite{cryptoeprint:2016:918}`. One
-target of sleepy consensus protocol is to remove the proof-of-work from
+As showed by Pass and Shi :raw-latex:`\cite{cryptoeprint:2016:918}`. One target of sleepy consensus protocol is to remove the proof-of-work from
 the Nakamoto blockchain while maintaining provable guarantees. To remove
 the proof-of-work from Nakamoto’s protocol, we make the following
 changes: we define the puzzle solution to be the form of :math:`(P, t)`
@@ -241,7 +218,7 @@ extend a chain with a block that includes the solution :math:`(P, t)`,
 the previous block’s hash :math:`h_{-1}` and the transactions
 :math:`TXs` to be confirmed. To verify that the block indeed came from
 :math:`P`, we require that the entire contents of the block i.e.
-:math:`(h_{-1}, TXs, t, P)` are signed under :math:`P`\ ’s public key.
+:math:`(h_{-1}, TXs, t, P)` are signed under:math:`P`\ ’s public key.
 The same as Nakamoto’s protocol, each node chooses the longest valid
 chain it has ever seen and extend the longest chain.
 
@@ -314,11 +291,6 @@ Honest Party
 Adversary Party
 ---------------
 
-API document
-------------
-
 Experiment Results
 ==================
 
-TBD
----

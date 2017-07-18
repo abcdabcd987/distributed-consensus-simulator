@@ -8,16 +8,10 @@ Welcome to Distributed Consensus Simulator's White Paper!
 
 .. toctree::
    :maxdepth: 2
-
+   :numbered:
 
    report
+   api_doc
 
 
-API Documents
--------------
-
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
