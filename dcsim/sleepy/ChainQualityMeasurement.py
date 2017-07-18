@@ -30,28 +30,37 @@ class ChainQualityMeasurement(MeasurementBase):
         self.max_round = config.max_round
 
     def report_round(self, round: int) -> None:
-        """
-        return the condition of each nodes ar this round
-        :param round: the index of the round
-        """
-        logging.info("----------------------------------------------------------------")
-        logging.info("@ Round %d" % round)
-        found = -1
+        logging.info("Round {}".format(round()))
+        logging.info("Calculating Chain Quality...")
+        corrupted_set = set([c for c in self._adversary._corrupted_nodes])
         for node in self._honest_nodes:
+            logging.debug(node.id)
+            chain_quality = []
+            chain_T = []
+            cnt = 0
             chain = cast(HonestNode, node).main_chain
-            for i in range(max(0, min(len(chain), len(self._log_for_honest[node])) - self._config.confirm_time)):
-                logging.debug("Measurement.report_round: checking chain of NodeId %d index %d" % (node.id, i))
-                if chain[i].hashval != self._log_for_honest[node][i].hashval:
-                    found = node.id
-                    break
-            logging.debug("The chain of node %d is:" % node.id)
-            for block in chain:
-                logging.debug(block.hashval)
-            self._log_for_honest[node] = chain
-        if found != -1:
-            logging.info("Inconsistency detected on node %d!" % found)
-            self.stop = True
+            max_len = max(0, len(chain) - self._config.confirm_time)
+            for i in range(1, len(chain)):
+                if (i < max_len):
+                    if chain[i].pid in corrupted_set:
+                        cnt += 1
+                        chain_quality.append("corrupted")
+                    else:
+                        chain_quality.append("honest")
+                else:
+                    if chain[i].pid in corrupted_set:
+                        chain_T.append("corrupted")
+                    else:
+                        chain_T.append("honest")
 
+            cnt = min(cnt, max_len - 1)
+
+            if max_len <= 1:
+                chain_quality_value = 1.0
+            else:
+                chain_quality_value = (1 - cnt / (max_len - 1))
+            logging.info("Chain Quality: %f" % chain_quality_value)
+            logging.debug(list(chain_quality), list(chain_T))
     def report_final(self):
         logging.info("Calculating Chain Quality...")
         corrupted_set = set([c for c in self._adversary._corrupted_nodes])
