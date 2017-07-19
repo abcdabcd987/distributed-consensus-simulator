@@ -271,7 +271,7 @@ Our protocol takes parameter :math:`p` as input, where :math:`p` is the
 probability each node is elected leader in a single time step. All nodes
 will invoke ``init`` function once it is spawned.
 
-Simulator Components
+imulator Components
 ====================
 
 In this section, we first introduce the overall structure of the
@@ -279,63 +279,64 @@ simulator, then we introduce the three components of our simulator:
 Framework, Honest Party and Adversary Party. The last part of this
 section is the API document.
 
-Structure
+Framework
 ---------
 
-With the synchronized clocks, each component takes action round by
-round. At the beginning of every round, nodes receive messages from the
-network, updates its own blockchain, and broadcast the updating
-information. All of the messaged broadcasted to the network will first
-get through an *Adversary Controller* (*Adv*). *Adv* has an “absolute”
-control of the whole network. It can determine whether to dalay a
-message and which messages should be delivered from network to honest
-nodes in next round. However, the capability of delay is limited, which
-is up to :math:`\Delta` rounds. Since the sole ability of *Adv* is
-delaying messages, there’s no package loss but only out-of-order
-messages. And *Adv* also has the control of all corrupted nodes, so we
-can neglect all corrupted nodes and focus our attention on the behavior
-of *Adv*. Moreover, there’s a trusted third party that can communicate
-over perfectly secure channels with all protocol participants computes
-the desired protocol outcome, which implemented the ideal functionality
-of the protocol.
+| |image|
+| As shown in the figure, our simulator runs in a round-by-round style.
+  The class ``framework.Runner`` controls the action in each round. By
+  creating the subclasses of class ``framework.ConfigurationBase``, user
+  can configure the parameters(e.g. number of rounds, ratio of corrupted
+  nodes) the run. Users can write subclasses of the class
+  ``framework.MeasurementBase`` to provide the function of measuring the
+  results(e.g. consistency and chain quality) of the experiment.
+
+In each round, the adversary firstly delivers messages to the
+corresponding receivers. Then, the honest nodes send the messages to the
+adversary controller since the adversary has the control of the network.
+The class ``framework.Context`` provides a easy way for the honest nodes
+to interact with the network.
+
+The class ``utils.FSignRSA`` and ``utils.FSignHash`` plays the role of
+trusted third party. User can also create the subclasses of class
+``framework.TrustedThirdPartyBase``.
 
 Framework
 ---------
 
-| Framework is the skeleton of all protocols based on blockchain. Later
-  we will get a tutorial about how to use our framework to implement
-  protocols other than Sleepy Consensus Protocol.
-| Each node has a unique ID, which is an integer. And they can take some
-  actions in every round.
-| With *Context*, network can communicate with each node, which is about
-  the input and output messages for each node in every single round.
-  Except for broadcast, a node can send message to another specified
-  node. In every round, each node will collect messages received from
-  network. After round action, honest nodes will broadcast some messages
-  while corrupted nodes will probably send messages to some designated
-  nodes.
-| For *Adversary Controller*, it has a list of honest nodes and
-  corrupted nodes. In every round, after receiving messages from honest
-  nodes, *Adv* will determine whether to delay a newly received message
-  and which messages should be delivered in next round. Since we only
-  concern the status of honest nodes and all corrupted nodes are
-  controlled by *Adv*, there’s no need to care about the interaction
-  between corrupted nodes and *Adv*.
-| *Measurement* assists in doing experiment. It can determine whether a
-  simulation should stop or not and output some useful information at
-  the end of each round.
+Our framework implement several abstract classes for the users implement
+their own subclasses:
+
+-  class ``AdversaryControllerBase`` is the super class for the user
+   defined adversary party.
+
+-  class ``ConfigurationBase`` is the super class for the user defined
+   running configuration.
+
+-  class ``Context`` the network interface for the nodes to communicate
+   with each other.
+
+-  class ``MeasurementBase`` is the super class for the user defined
+   measurement.
+
+-  class ``NodeBase`` is the super class for the user defined node type.
+
+-  class ``Runner`` is the default round-by-round runner.
+
+-  class ``TrustedThirdPartyBase`` is the super class for the user
+   defined trusted third party.
 
 Honest Party
 ------------
 
-Each honest node maintains:
+Each honest nodes has:
 
 -  node ID
 
 -  **blockchain** Since blockchain will fork, it’s actually a block
    tree. The longest chain is the main chain. According to Sleepy
-   Consensus Protocol, previous block should have smaller timestamp than
-   successor.
+   Consensus Protocol, the previous block should have smaller timestamp
+   than the successor.
 
 -  | **transaction pool**
    | Receive transactions(\ *tx*) from network and store in *tx* pool
@@ -345,26 +346,79 @@ Each honest node maintains:
      pool will form a new block append at the end of mainchain.
 
 -  | **orphan pool**
-   | Node will receive blocks from network. With the interference of
-     *Adv*, some blocks will be delayed, but not lost. Perhaps some
-     successive blocks have already received, but they can’t be
-     connected to the blocktree since they are waiting for their
-     “father” block. So we need a “pool” to store those “orphan” block.
-   | The delete operation of a block in orphan pool is very tricky. We
-     only store single blocks, but we need to remove all successors of
-     it at the same time, which results to a recursive process.
+   | The node will receive blocks from the network. With the
+     interference of *Adv*, some blocks will be delayed, but not lost.
+     Perhaps some successive blocks have already received, but they
+     can’t be connected to the block tree since they are waiting for
+     their “father” block. So we need a “pool” to store those “orphan”
+     block.
+   | The delete operation of a block in the orphan pool is very tricky.
+     We only store single blocks, but we need to remove all successors
+     of it at the same time, which results to a recursive process.
 
 -  | **probability**
    | *probability* is related to the mining difficulty :math:`D`. For
      node :math:`x`, if the hash value of its node ID and the current
-     time is less than :math:`D`, then :math:`x` is elected as leader
-     who has the right to mine a new block and broadcast to other nodes.
+     time is less than :math:`D`, then :math:`x` is elected as the
+     leader who has the right to mine a new block and broadcast to other
+     nodes.
 
 Adversary Party
 ---------------
 
+We implement 2 kinds of adversaries in this project: *Selfish Mining
+Attack* and *Consistency Attack*.
+
+Selfish Mining Attack
+~~~~~~~~~~~~~~~~~~~~~
+
+Ittay Eyal and Emin Gun
+Sirer :cite:`DBLP:journals/corr/EyalS13` introduced the
+selfish mining attack, and Vitalik Buterin presented the adversary’s precise
+strategy
+`here <https://bitcoinmagazine.com/articles/selfish-mining-a-25-attack-against-the-bitcoin-network-1383578440/>`__.
+In our project, we implement this attack method as
+``sleepy.SelfishMining`` class and the corresponding measurement
+``sleepy.ChainQualityMeasurement`` class.
+
+Consistency Attack
+------------------
+
+We also implemented a naive consistency attack which is described as
+follows:
+
+-  Pick the longest chain from all honest chains and its private chain.
+
+-  For every honest message: delay by :math:`\Delta`.
+
+-  If adversary’s private chain is longer than the honest chain and it’s
+   length is at least :math:`T + 1`, then it publish the chain and will
+   break consistency.
+
+-  | Here :math:`T` is the security parameter, except with probability
+     :math:`e^{-\Omega(T)}`:
+   | :math:`\forall` honest chains :math:`chain^{r}_{i}` and
+     :math:`chain_{j}^{r'}` s.t. :math:`r' \geq r`,
+     :math:`chain_{i}^r[:\text{-T}] < chain_j^{r'}`
+
+-  When the adversary has 60% of the computational power, he can keep
+   developing his own private chain until honest chain is long enough,
+   then release the chain to overwrite the last :math:` T ` blocks. So
+   that the honest chain may be overwrite.
+
+This attack method implemented in the class of
+``sleepy.ConsistencyAttack``.
+
 Experiment Results
 ==================
 
+For the 2 attacking methods, we implement several experiments on
+different sets of parameters, the figure shows the result of some of our
+parameters.
+
+.. |image| image:: structure.pdf
+
+Reference
+=========
 .. bibliography:: references.bib
 
