@@ -13,11 +13,11 @@ if TYPE_CHECKING:
 
 def check(id: int, timestamp: int, probability):
     """
-    check whether a node is awake
+    check whether a node is the leader at this round
 
     :param id: the id of the node
-    :param timestamp: the timestap of this round
-    :return: a boolean variable that decides whether a ode is awake
+    :param timestamp: the timestamp of this round
+    :return: a boolean variable that decides whether this node is the leader at this round
     """
     sha = hashlib.sha256()
     sha.update(("%d%d" % (id, timestamp)).encode("utf-8"))
@@ -43,7 +43,7 @@ class TransactionPool:
 
     def insert(self, tx: 'Tx'):
         """
-        insert the transaction to the transactionpool
+        insert a transaction into the transaction pool
 
         :param tx: the inserted transaction
         """
@@ -51,34 +51,39 @@ class TransactionPool:
 
     def get_all(self):
         """
-        get all the transaction to a list
+        get all the transactions in transaction pool
 
-        :return: A list contains all the transactions
+        :return: A list contains all transactions in transaction pool
         """
         return list(self._keys)
 
     def erase(self, tx: 'Tx'):
         """
-        delete a given trasaction
-
-        :param tx:
+        delete a given trasaction from transaction pool
         """
         self._keys.remove(tx)
 
     def clear(self):
         """
-        clear all the transactions in the pool
+        clear all the transactions in transaction pool
         """
         self._keys.clear()
 
 
 class BlockTree():
+    """
+    the blockchain of a node, which is actually a blocktree
+    """
     def __init__(self, key) -> None:
         """
-        initialze the blocktree, determins the root of the tree
+        initialze the blocktree with root of it
 
         :param key: useless
+        :param depth: length of main chain
+        :param _blockPool: store all blocks of blocktree
+        :param _main_chain: longest chain of blocktree
         """
+
         self._depth = 0
         self._blockPool = {SuperRoot.hashval: SuperRoot}
         self._main_chain = [SuperRoot]
@@ -98,14 +103,16 @@ class BlockTree():
 
     def insert(self, cur: TBlock):
         """
-        insert a given block to the blocktree
+        insert a given TBlock into the blocktree
 
-        :param cur: the inserted block
-        :return: none
+        :param cur: the inserted TBlock
         """
+
+        #check whether this TBlock is already in blocktree
         if cur.hashval in self._blockPool.keys():
             return
         tmp = cur
+        #seq contains the chain from cur to root
         seq = []
         while tmp.hashval != SuperRoot.hashval:
             seq.append(tmp)
@@ -113,6 +120,7 @@ class BlockTree():
             tmp = self._blockPool.get(tmp.pbhv, None)
             if tmp is None:
                 break
+        #if tmp is None, then the chain contains cur is incomplete and still wating for the receiving of some blocks
         if tmp is None:
             self._blockPool[cur.hashval] = cur
         else:
@@ -123,6 +131,7 @@ class BlockTree():
                 tmp = node
             # self._depth = max(self._depth, len(seq))
             seq.reverse()
+            #check whether seq is the longest chain, if so, update the main chain
             if len(seq) > self._depth:
                 self._main_chain = [SuperRoot]
                 for node in seq:
@@ -142,12 +151,16 @@ def valid(block: TBlock, timestamp: int, probability):
 
 
 class ConsistencyAttack(AdversaryControllerBase):
+    """
+    attack intends to break the consistency of blockchain
+    """
     def __init__(self, config: 'Configuration') -> None:
         """
-        Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
+        Initalize the Adversary Controller, set the config
 
-        :param corrupted_nodes: A tuple contains the corrupted nodes
         :param config: Configuration of the protocol
+        :param _chain: private chain
+        :param _pending_messagees: the pending messages at each round
         """
         super().__init__(config)
         self._root = BlockTree(SuperRoot)
@@ -161,19 +174,25 @@ class ConsistencyAttack(AdversaryControllerBase):
         self._trusted_third_parties[node_id].call('FSign', 'register')
 
     def round_action(self, round: int) -> None:
+        """
+        action of Adversary Controller in this round
+        """
         for bad_node_id in self._corrupted_nodes:
+            #find the leader of this round
             if check(bad_node_id, round, self._probabiltiy):
                 logging.debug('AdversaryController.round_action: NodeId', bad_node_id, 'chosen as the leader')
+                #mine new block
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), bad_node_id)
                 self._tx.clear()
+                #check the validity of timestamp
                 if self._chain[-1].timestamp < block.timestamp:
                     self._chain.append(block)
                 if len(self._chain) - 2 > self._root.depth:
+                #condition satisfied, attack!
                     logging.debug("Attacking honest length %d, corrupt chain length %d" %
                                   (self._root.depth, len(self._chain) - 1))
                     chain_to_broadcast = self._chain
                     self._chain = [SuperRoot]
-
                     pending_messages = self._pending_messages[round + 1]
                     for corrupted_node in self._corrupted_nodes:
                         ttp = self._trusted_third_parties[corrupted_node]
@@ -189,7 +208,7 @@ class ConsistencyAttack(AdversaryControllerBase):
 
     def _handle_new_messages(self, round: int, new_messages: List['MessageTuple']):
         """
-        handle the new messages, insert message to the block tree or transaction
+        handle the new messages, insert message into transaction pool or blocktree
 
         :param round: the current round
         :param new_messages: the new messages
@@ -197,15 +216,17 @@ class ConsistencyAttack(AdversaryControllerBase):
         for message_tuple in new_messages:
             message = message_tuple.message
             if message["type"] == 0:
+            #the message is a tx
                 if not self._tx.contain_key(message["value"]):
                     self._tx.insert(message["value"])
             else:
+            #the message is a block
                 if valid(message["value"], round, self._probabiltiy):
                     self._root.insert(message["value"])
 
     def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
         """
-        add new messages from the honest nodes
+        add new messages from the honest nodes, delay all of them by delta rounds
 
         :param round: the round that the messages are in
         :param sender_id: the id of the sender
