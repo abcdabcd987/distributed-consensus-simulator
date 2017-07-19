@@ -32,11 +32,17 @@ def runDummyAttackExperiment():
 
         print("running: {}".format(prob))
         success_probs.append(evalSuccess(config))
-
+    
+    with open('./dummyattack.csv', 'w') as f:
+        f.write("Ratio of Corrupted Nodes, Ratio of Successful Attack\n")
+        for x, y in zip(corrupt_ratios, success_probs):
+            f.write("{}, {}\n".format(x, y))
+    """
     plt.plot(corrupt_ratios, success_probs)
-    plt.ylabel('Probability of Success')
+    plt.ylabel('Ratio of Successful Attack')
     plt.xlabel('Ratio of Corrupted Nodes')
     plt.show()
+    """
 
 
 runDummyAttackExperiment()
