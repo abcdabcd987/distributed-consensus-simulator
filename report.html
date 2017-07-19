@@ -1,0 +1,438 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>1. Mission &#8212; Distributed Consensus Simulator 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="7. API Documents" href="api_doc.html" />
+    <link rel="prev" title="Welcome to Distributed Consensus Simulator’s White Paper!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mission">
+<h1>1. Mission<a class="headerlink" href="#mission" title="Permalink to this headline">¶</a></h1>
+<p>In this project, we implemented of a distributed consensus protocol in the sleepy model
+for pedagogical use. In the sleepy consensus protocol, we adopt a leader
+election to refrain from the computing resources’ waste of the core idea
+behind Nakamoto’s blockchain protocol“proofs-of-work”, with static
+corruption and synchronized clocks. The <em>Adversary</em> could control all
+corrupted nodes and have the ability to delay messages up to
+<span class="math">\(\Delta\)</span> time. The corrupted nodes hack the blockchain network
+with selfish mining and consistency attack. Finally, we will see that
+without the majority of the honest nodes, the properties<em>consistency</em>
+and <em>quality</em> of the blockchain can’t be guaranteed.</p>
+</div>
+<div class="section" id="our-team">
+<h1>2. Our Team<a class="headerlink" href="#our-team" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="22%" />
+<col width="19%" />
+<col width="22%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Framework</td>
+<td>Lequn Chen</td>
+<td>Bicheng Gao</td>
+<td>Songyu Ke</td>
+<td>Shichao Xu</td>
+</tr>
+<tr class="row-even"><td>Honest</td>
+<td>Wanquan Wu</td>
+<td>Ziqi Zeng</td>
+<td>Yi Jiang</td>
+<td>Zhendong Xue</td>
+</tr>
+<tr class="row-odd"><td>Adversary</td>
+<td>Haoming Lu</td>
+<td>Yuhao Zhou</td>
+<td>Xuan Zhang</td>
+<td>Cheng Wan</td>
+</tr>
+<tr class="row-even"><td>Integrator</td>
+<td>Zihao Ye</td>
+<td>Xueyuan Zhao</td>
+<td>Yunqi Li</td>
+<td>Zhi Qiu</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="distributed-consensus">
+<h1>3. Distributed Consensus<a class="headerlink" href="#distributed-consensus" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>3.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>First, we will talk about distributed consensus. In a distributed system,
+there are some rules that every node should follow. Honest nodes will
+behave according to those rules, while the corrupted nodes won’t. Under
+the interference of corrupted nodes, we want all honest nodes to reach
+some kind of consensus.</p>
+<div class="section" id="background">
+<h3>3.1.1. Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">The story starts from the Byzantine Generals’ Problem. Byzantine is
+now located in Istanbul, Turkey, which is the capital of the Eastern
+Roman Empire. Because at that time the Byzantine Roman Empire was vast, for the purpose of defense, each army is very far apart. The generals can only rely on the message sent by postmen to communicate with each other. At the time of the war, all the generals in the
+Byzantine army should reach a consensus whether to attack or not. But there may have traitors in the arm. At this time, in the case of known members of the rebellion, the remaining loyal generals to reach a
+consensus agreement without the influence of the traitors is the key to this problem.</div>
+<div class="line">In a distributed system, usually our goal is to reach Byzantine
+Agreement. There may have some corrupted nodes controlled by the force of evil. Nodes exchange messages through a pairwise link. At the beginning, a sender node will send messages to other nodes. If the
+sender is honest, it will send the same message to everyone.
+Otherwise, things become more complicated. Later on, every node sends the message it received to its neighboring nodes. Finally, we want all honest node to reach an agreement, which means all honest nodes have the same output. Moreover, if the sender is honest, then everyone outputs
+the message it received from the sender.</div>
+</div>
+</div>
+<div class="section" id="consensus">
+<h3>3.1.2. Consensus<a class="headerlink" href="#consensus" title="Permalink to this headline">¶</a></h3>
+<p>Consensus protocols are the most critical research object of distributed
+computing. A dream consensus protocol will realize a “linearly ordered
+log” abstraction, which often referred to as <em>state machine replication</em>
+in distributed systems literature. Simply speaking, every node maintains an ever-growing ordered log of transactions. The log should satisfy two
+properties:</p>
+<ul>
+<li><div class="first line-block">
+<div class="line"><strong>Consistency</strong></div>
+<div class="line">At any time, all honest nodes have consistent logs(For any two
+honest nodes, either their logs are the same, or one log is the prefix of another). And each log should be self-consistent.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Liveness</strong></div>
+<div class="line">If some honest node receives a transaction <em>tx</em> as input, or if
+<em>tx</em> appears in some honest node’s output log, then <em>tx</em> will
+appear in every other participant’s log within some fixed(small)
+amount of time.</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="permission-and-permissionless">
+<h3>3.1.3. Permission and Permissionless<a class="headerlink" href="#permission-and-permissionless" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">Distributed systems have been analyzed historically in a permissioned setting. In a this situation, everyone knows the number of the
+participants in the system. And the communication channels among nodes are authenticated.</div>
+<div class="line">With the development of peer-to-peer system, eventually, people
+getting interested to the permissionless system. In this case, every node is uncertained about the exact number of participants. Anyone can join the protocol execution without geting permission from a centralized or distributed authority. Moreover, the communication channels are unauthenticated.</div>
+<div class="line">The difficulty of achieving permissionless consensus is from the
+existence of so-called “Sybil attack”, which can be easily
+implemented by spawning lots of nodes so it can control the majority
+of the nodes.</div>
+</div>
+</div>
+</div>
+<div class="section" id="nakamotos-blockchain">
+<h2>3.2. Nakamoto’s Blockchain<a class="headerlink" href="#nakamotos-blockchain" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="protocol-description">
+<h3>3.2.1. Protocol Description<a class="headerlink" href="#protocol-description" title="Permalink to this headline">¶</a></h3>
+<p>In Nakamoto’s Blockchain model, every node maintains a
+<span class="math">\(\mathsf{chain}\)</span>. When a node receives a <span class="math">\(\mathsf{chain}\)</span>
+that is valid, it will update the chain in the following way:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>if |chain&#39;| &gt; |chain|:
+    chain := chain&#39;
+    broadcast chain
+</pre></div>
+</div>
+</div>
+<div class="section" id="proof-of-work">
+<h3>3.2.2. Proof of work<a class="headerlink" href="#proof-of-work" title="Permalink to this headline">¶</a></h3>
+<p>In every round of an execution with security parameter
+<span class="math">\(\mathcal{K}\)</span>, we assume all nodes have access to a random
+function <span class="math">\(H:\{0 , 1\} ^* \rightarrow \{0, 1\}^\mathcal{K}\)</span>. Let
+<span class="math">\(TXs\)</span> be the set of transactions in view but not appearing in
+<span class="math">\(\mathsf{chain}[:-T]\)</span>.</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>eta := random 0/1-bit string of length kappa
+if H(chain, TXs, eta) &lt; D:
+    chain := concatenate(chain, TXs, eta)
+    broadcast chain
+</pre></div>
+</div>
+<p>For our timestamp network, we implement the proof-of-work by
+incrementing <span class="math">\(\eta\)</span> in the block until a value is found that
+satisfies the corresponding hash function is less than a certain
+threshold <span class="math">\(D\)</span>.</p>
+</div>
+<div class="section" id="security">
+<h3>3.2.3. Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h3>
+<p>A blockchain protocol should satisfy chain growth, chain quality, and
+consistency.</p>
+<dl class="docutils">
+<dt>Chain growth</dt>
+<dd>: Honest nodes’ chains grow steadily, neither too fast nor too slow.</dd>
+<dt>Chain quality</dt>
+<dd>: In any honest node’s chain, any sufficiently long window of
+consecutive blocks contain a certain fraction of blocks that are
+mined by honest nodes.</dd>
+<dt>Consistency</dt>
+<dd>Except for <span class="math">\(e^{-\Omega(T)}\)</span> fraction of execution traces, let
+<span class="math">\(\mathsf{chain}_i^r\)</span>, <span class="math">\(\mathsf{chain}_j^{r'}\)</span> denote
+honest node <span class="math">\(i\)</span> and <span class="math">\(j\)</span>’s chains in round <span class="math">\(r\)</span>
+and <span class="math">\(r'\)</span> where <span class="math">\(r'&gt;r\)</span>, then
+<span class="math">\(\mathsf{chain}_i^r[:-T] \prec \mathsf{chain}_j^{r'}\)</span>.</dd>
+</dl>
+</div>
+<div class="section" id="attack-methods">
+<h3>3.2.4. Attack Methods<a class="headerlink" href="#attack-methods" title="Permalink to this headline">¶</a></h3>
+<p>One famous adversarial algorithm is called <em>selfish mining</em>, which means
+when a corrupt node mines a block, it doesn’t release its private chain
+immediately. Instead, it withholds its private chain until it observes
+some honest node has mined a chain of the equal enough. Then it releases
+private chain ahead of honest nodes, wasting the mining power of honest
+nodes.</p>
+</div>
+</div>
+</div>
+<div class="section" id="sleepy-consensus">
+<h1>4. Sleepy Consensus<a class="headerlink" href="#sleepy-consensus" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="problem-set">
+<h2>4.1. Problem Set<a class="headerlink" href="#problem-set" title="Permalink to this headline">¶</a></h2>
+<p>Before we talk about the protocol, we firstly show the following
+assumptions:</p>
+<dl class="docutils">
+<dt>Synchronized clocks</dt>
+<dd>: We assume that all nodes can access a globally synchronized clock that ticks over time. Each clock tick is referred as an atomic <em>time step</em>. Nodes can perform unbounded polynomial amount of computation
+in each time step, as well as receive and send polynomially many
+messages.</dd>
+<dt>Public-key infrastructure</dt>
+<dd><p class="first">: We assume that there exists a public-key infrastructure(PKI). More
+specifically, we shall assume that the PKI is an ideal functionality
+<span class="math">\(F_{CA}\)</span>(only available to the current protocol instance)
+that does the following:</p>
+<ul class="last simple">
+<li>On receiving <code class="docutils literal"><span class="pre">register(pk)</span></code> from <span class="math">\(P\)</span>, remember the pair
+<span class="math">\((\)</span><code class="docutils literal"><span class="pre">pk</span></code><span class="math">\(, P)\)</span> and ignore any future message
+from <span class="math">\(P\)</span>.</li>
+<li>On receiving <code class="docutils literal"><span class="pre">lookup(</span></code><span class="math">\(P\)</span><code class="docutils literal"><span class="pre">)</span></code>: return the store
+<code class="docutils literal"><span class="pre">pk</span></code> or <span class="math">\(\perp\)</span> if not found.</li>
+</ul>
+</dd>
+<dt>Network delivery</dt>
+<dd>: The adversary controls the message delivery between nodes. We
+assume that the adversary can arbitrarily delay and reorder
+messages, as long as all the messages sent from honest nodes are
+received by all honest nodes within <span class="math">\(\Delta\)</span> time steps.</dd>
+<dt>Static Corruptions</dt>
+<dd>: We assume that once our protocol starts to run, environment can
+not corrupt an honest node and the corrupt node can not become an
+honest node.</dd>
+</dl>
+</div>
+<div class="section" id="id1">
+<h2>4.2. Protocol Description<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>In distributed computing, typically we consider two types of
+nodes<em>honest</em> nodes and <em>corrupted</em> nodes. We implemented a
+distributed consensus protocol in the sleepy model, which assumes that
+a <span class="math">\(majority\)</span> of the nodes are honest. It significantly departs
+from key ideas behind Nakamoto’s blockchain protocol the needs for “proofs-of-work”. The protocol relies on Public-Key-Infrastructure(PKI)
+and all nodes are assumed to have synchronized clocks.</p>
+<p>As showed by Pass and Shi <a href="#id2"><span class="problematic" id="id3">:raw-latex:`\cite{cryptoeprint:2016:918}`</span></a>. One target of sleepy consensus protocol is to remove the proof-of-work from
+the Nakamoto blockchain while maintaining provable guarantees. To remove
+the proof-of-work from Nakamoto’s protocol, we make the following
+changes: we define the puzzle solution to be the form of <span class="math">\((P, t)\)</span>
+instead of rate limiting through computational power, where <span class="math">\(P\)</span> is
+the player’s identifier and <span class="math">\(t\)</span> is the block-time. The pair
+<span class="math">\((P, t)\)</span> is a “valid puzzle solution” if <span class="math">\(H(P,t) &lt; D_p\)</span>
+where <span class="math">\(H\)</span> denotes a pseudorandom function with a common reference
+string and <span class="math">\(D_p\)</span> is a parameter such that the has outcome is only
+smaller than <span class="math">\(D_p\)</span> with probability <span class="math">\(p\)</span>. If
+<span class="math">\(H(P,t) &lt; D_p\)</span> we say that <span class="math">\(P\)</span> is <em>elected leader at time
+t</em>. Note that several nodes may be elected leaders at the same time
+steps.</p>
+<p>A node <span class="math">\(P\)</span> that is elected leader at time step <span class="math">\(t\)</span> can
+extend a chain with a block that includes the solution <span class="math">\((P, t)\)</span>,
+the previous block’s hash <span class="math">\(h_{-1}\)</span> and the transactions
+<span class="math">\(TXs\)</span> to be confirmed. To verify that the block indeed came from
+<span class="math">\(P\)</span>, we require that the entire contents of the block i.e.
+<span class="math">\((h_{-1}, TXs, t, P)\)</span> are signed under:math:<cite>P</cite>’s public key.
+The same as Nakamoto’s protocol, each node chooses the longest valid
+chain it has ever seen and extend the longest chain.</p>
+<p>Note that the honest node’s only attempt to mine solutions of the form
+<span class="math">\((P, t)\)</span>, where <span class="math">\(t\)</span> is the current time step, however the
+adversary may use incorrect block-times such as the time in the future
+or the time in the past. To prevent this kind of attacks from happening,
+we have the following additional restrictions on the block-times in a
+valid chain:</p>
+<ol class="arabic simple">
+<li>A valid chain must have strictly increasing block-times;</li>
+<li>A valid chain cannot contain any block-times for the future;</li>
+</ol>
+<p>We present our Sleepy consensus protocol as follows:</p>
+<ul>
+<li><div class="first line-block">
+<div class="line">On input <code class="docutils literal"><span class="pre">init()</span></code> from environment <span class="math">\(Z\)</span>:</div>
+<div class="line">Generate <code class="docutils literal"><span class="pre">(pk,</span> <span class="pre">sk)</span></code>, register <code class="docutils literal"><span class="pre">pk</span></code> with <span class="math">\(F_{CA}\)</span>,
+initialize</div>
+</div>
+<blockquote>
+<div><div class="math">
+\[chain := (\perp,\perp,time=0,\perp,\perp,h=0)\]</div>
+</div></blockquote>
+</li>
+<li><div class="first line-block">
+<div class="line">On receive <span class="math">\(chain'\)</span>:</div>
+<div class="line">If <span class="math">\(|chain'| &gt; |chain|\)</span> and <span class="math">\(chain'\)</span> is valid and
+<span class="math">\(H(P,t) &lt; D_p\)</span> for valid <span class="math">\(P\)</span> and <span class="math">\(t\)</span>, then
+<span class="math">\(chain := chain'\)</span> and broadcast <span class="math">\(chain\)</span>.</div>
+</div>
+</li>
+<li><p class="first">For every time step <span class="math">\(t\)</span> and every honest node with party
+<span class="math">\(P\)</span>:</p>
+<ul>
+<li><p class="first">Receive transactions <span class="math">\(TXs\)</span> from environment <span class="math">\(Z\)</span>.</p>
+</li>
+<li><p class="first">If <span class="math">\(H(P, t) &lt; D_p\)</span> then let:</p>
+<div class="math">
+\[ \begin{align}\begin{aligned}\delta := \verb|sign|(\verb|sk|, chain[-1].h, TXs, t)\\and\end{aligned}\end{align} \]</div>
+<div class="math">
+\[ \begin{align}\begin{aligned}h' := hash(chain[-1].h,)\\Then let\end{aligned}\end{align} \]</div>
+<div class="math">
+\[chain := chain || (chain[-1].h, TXs, t, P, \delta, h')\]</div>
+</li>
+<li><p class="first">Output <code class="docutils literal"><span class="pre">extract(</span></code>chain<code class="docutils literal"><span class="pre">)</span></code> to <span class="math">\(Z\)</span>, where extract
+<code class="docutils literal"><span class="pre">extract</span></code> is the function outputs an ordered list containing the
+<span class="math">\(TXs\)</span> extracted from each block in <span class="math">\(chain\)</span>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Our protocol takes parameter <span class="math">\(p\)</span> as input, where <span class="math">\(p\)</span> is the
+probability each node is elected leader in a single time step. All nodes
+will invoke <code class="docutils literal"><span class="pre">init</span></code> function once it is spawned.</p>
+</div>
+</div>
+<div class="section" id="simulator-components">
+<h1>5. Simulator Components<a class="headerlink" href="#simulator-components" title="Permalink to this headline">¶</a></h1>
+<p>In this section, we first introduce the overall structure of the
+simulator, then we introduce the three components of our simulator:
+Framework, Honest Party and Adversary Party. The last part of this
+section is the API document.</p>
+<div class="section" id="structure">
+<h2>5.1. Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="framework">
+<h2>5.2. Framework<a class="headerlink" href="#framework" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="honest-party">
+<h2>5.3. Honest Party<a class="headerlink" href="#honest-party" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="adversary-party">
+<h2>5.4. Adversary Party<a class="headerlink" href="#adversary-party" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="experiment-results">
+<h1>6. Experiment Results<a class="headerlink" href="#experiment-results" title="Permalink to this headline">¶</a></h1>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Distributed Consensus Simulator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Mission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#our-team">2. Our Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#distributed-consensus">3. Distributed Consensus</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">3.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nakamotos-blockchain">3.2. Nakamoto’s Blockchain</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#sleepy-consensus">4. Sleepy Consensus</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#problem-set">4.1. Problem Set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">4.2. Protocol Description</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#simulator-components">5. Simulator Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure">5.1. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#framework">5.2. Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#honest-party">5.3. Honest Party</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adversary-party">5.4. Adversary Party</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#experiment-results">6. Experiment Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">7. API Documents</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Distributed Consensus Simulator’s White Paper!</a></li>
+      <li>Next: <a href="api_doc.html" title="next chapter">7. API Documents</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, IC3.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/report.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

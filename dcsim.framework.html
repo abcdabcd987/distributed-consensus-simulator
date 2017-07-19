@@ -1,0 +1,530 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>dcsim.framework package &#8212; Distributed Consensus Simulator 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dcsim-framework-package">
+<h1>dcsim.framework package<a class="headerlink" href="#dcsim-framework-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="dcsim-framework-adversarycontrollerbase-module">
+<h2>dcsim.framework.AdversaryControllerBase module<a class="headerlink" href="#dcsim-framework-adversarycontrollerbase-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.framework.AdversaryControllerBase"></span><dl class="class">
+<dt id="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase">
+<em class="property">class </em><code class="descclassname">dcsim.framework.AdversaryControllerBase.</code><code class="descname">AdversaryControllerBase</code><a class="headerlink" href="#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initalize the Adversary Controller, set the config and the number of the corrupted nodes,</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config</strong> – Configuration of the protocol</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.add_honest_node_messages">
+<code class="descname">add_honest_node_messages</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.add_honest_node_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>add new messages from the honest nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>round</strong> – the round that the messages are in</li>
+<li><strong>sender_id</strong> – the id of the sender</li>
+<li><strong>messages_to_send</strong> – A list that contains the new messages</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.corrupted_node_list">
+<code class="descname">corrupted_node_list</code><a class="headerlink" href="#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.corrupted_node_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.get_delivered_messages">
+<code class="descname">get_delivered_messages</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.get_delivered_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the delivered messages from all the nodes, returns a list contains all the messagetuples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>round</strong> – the round that these messages are in</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.round_action">
+<code class="descname">round_action</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.round_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.set_honest_node_list">
+<code class="descname">set_honest_node_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.set_honest_node_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.set_trusted_third_party">
+<code class="descname">set_trusted_third_party</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase.set_trusted_third_party" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.framework.ConfigurationBase">
+<span id="dcsim-framework-configurationbase-module"></span><h2>dcsim.framework.ConfigurationBase module<a class="headerlink" href="#module-dcsim.framework.ConfigurationBase" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dcsim.framework.ConfigurationBase.ConfigurationBase">
+<em class="property">class </em><code class="descclassname">dcsim.framework.ConfigurationBase.</code><code class="descname">ConfigurationBase</code><a class="headerlink" href="#dcsim.framework.ConfigurationBase.ConfigurationBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="dcsim.framework.ConfigurationBase.ConfigurationBase.adversary_controller_type">
+<code class="descname">adversary_controller_type</code><a class="headerlink" href="#dcsim.framework.ConfigurationBase.ConfigurationBase.adversary_controller_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the type of the adversary controller’s type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.ConfigurationBase.ConfigurationBase.honest_node_type">
+<code class="descname">honest_node_type</code><a class="headerlink" href="#dcsim.framework.ConfigurationBase.ConfigurationBase.honest_node_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the type of the hoest node</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.ConfigurationBase.ConfigurationBase.measurement_type">
+<code class="descname">measurement_type</code><a class="headerlink" href="#dcsim.framework.ConfigurationBase.ConfigurationBase.measurement_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the type of the Measurement(Base)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.ConfigurationBase.ConfigurationBase.num_corrupted_nodes">
+<code class="descname">num_corrupted_nodes</code><a class="headerlink" href="#dcsim.framework.ConfigurationBase.ConfigurationBase.num_corrupted_nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.ConfigurationBase.ConfigurationBase.num_honest_nodes">
+<code class="descname">num_honest_nodes</code><a class="headerlink" href="#dcsim.framework.ConfigurationBase.ConfigurationBase.num_honest_nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.framework.Context">
+<span id="dcsim-framework-context-module"></span><h2>dcsim.framework.Context module<a class="headerlink" href="#module-dcsim.framework.Context" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dcsim.framework.Context.Context">
+<em class="property">class </em><code class="descclassname">dcsim.framework.Context.</code><code class="descname">Context</code><span class="sig-paren">(</span><em>nodes: typing.Tuple[&lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;, ...], round: int, node: dcsim.framework.NodeBase.NodeBase, received_messages: typing.Tuple[dcsim.framework.MessageTuple.MessageTuple, ...]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.Context.Context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class docstring</p>
+<p>initialize the Context class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nodes</strong> – the nodes that will be broadcast to</li>
+<li><strong>round</strong> – the round that the context is in</li>
+<li><strong>node</strong> – the node of the sender</li>
+<li><strong>received_messages</strong> – having the shape of [(sender_id, receiver_id, round, message)] contains all messages that this node received in this round.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dcsim.framework.Context.Context.broadcast">
+<code class="descname">broadcast</code><span class="sig-paren">(</span><em>message: typing.Any</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.Context.Context.broadcast" title="Permalink to this definition">¶</a></dt>
+<dd><p>broadcasts a message to all nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – the message to be broadcast</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.Context.Context.messages_to_send">
+<code class="descname">messages_to_send</code><a class="headerlink" href="#dcsim.framework.Context.Context.messages_to_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the messages to be sent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list contains all the messages to be sent</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.Context.Context.received_messages">
+<code class="descname">received_messages</code><a class="headerlink" href="#dcsim.framework.Context.Context.received_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>reture the received messages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a tuple contains all the received messages</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.Context.Context.round">
+<code class="descname">round</code><a class="headerlink" href="#dcsim.framework.Context.Context.round" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.Context.Context.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>receiver: &lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;</em>, <em>message: typing.Any</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.Context.Context.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>sends a message to a given node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>receiver</strong> – the ndoe that receives the message</li>
+<li><strong>message</strong> – the messags that to be sent</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dcsim-framework-measurementbase-module">
+<h2>dcsim.framework.MeasurementBase module<a class="headerlink" href="#dcsim-framework-measurementbase-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.framework.MeasurementBase"></span><dl class="class">
+<dt id="dcsim.framework.MeasurementBase.MeasurementBase">
+<em class="property">class </em><code class="descclassname">dcsim.framework.MeasurementBase.</code><code class="descname">MeasurementBase</code><a class="headerlink" href="#dcsim.framework.MeasurementBase.MeasurementBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>honest_nodes</strong> – the honest nodes</li>
+<li><strong>adversary</strong> – the adversary controller is used</li>
+<li><strong>config</strong> – the configuration is used</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dcsim.framework.MeasurementBase.MeasurementBase.report_final">
+<code class="descname">report_final</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.MeasurementBase.MeasurementBase.report_final" title="Permalink to this definition">¶</a></dt>
+<dd><p>report the all the conditions and the result in the end</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.MeasurementBase.MeasurementBase.report_round">
+<code class="descname">report_round</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.MeasurementBase.MeasurementBase.report_round" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the condition of each nodes ar this round</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>round</strong> – the index of the round</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.MeasurementBase.MeasurementBase.should_stop">
+<code class="descname">should_stop</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#dcsim.framework.MeasurementBase.MeasurementBase.should_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>return whether the simulation should stop</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>round</strong> – the round the simulation is at</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.framework.MessageTuple">
+<span id="dcsim-framework-messagetuple-module"></span><h2>dcsim.framework.MessageTuple module<a class="headerlink" href="#module-dcsim.framework.MessageTuple" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dcsim.framework.MessageTuple.MessageTuple">
+<em class="property">class </em><code class="descclassname">dcsim.framework.MessageTuple.</code><code class="descname">MessageTuple</code><span class="sig-paren">(</span><em>sender</em>, <em>receiver</em>, <em>round</em>, <em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.MessageTuple.MessageTuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">tuple</span></code></p>
+<p>Create new instance of MessageTuple(sender, receiver, round, message)</p>
+<dl class="attribute">
+<dt id="dcsim.framework.MessageTuple.MessageTuple.message">
+<code class="descname">message</code><a class="headerlink" href="#dcsim.framework.MessageTuple.MessageTuple.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.MessageTuple.MessageTuple.receiver">
+<code class="descname">receiver</code><a class="headerlink" href="#dcsim.framework.MessageTuple.MessageTuple.receiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.MessageTuple.MessageTuple.round">
+<code class="descname">round</code><a class="headerlink" href="#dcsim.framework.MessageTuple.MessageTuple.round" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.MessageTuple.MessageTuple.sender">
+<code class="descname">sender</code><a class="headerlink" href="#dcsim.framework.MessageTuple.MessageTuple.sender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dcsim-framework-nodebase-module">
+<h2>dcsim.framework.NodeBase module<a class="headerlink" href="#dcsim-framework-nodebase-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.framework.NodeBase"></span><dl class="class">
+<dt id="dcsim.framework.NodeBase.NodeBase">
+<em class="property">class </em><code class="descclassname">dcsim.framework.NodeBase.</code><code class="descname">NodeBase</code><a class="headerlink" href="#dcsim.framework.NodeBase.NodeBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>intitialze the NodeBase, including the configuration and the nodeid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config</strong> – the configuration of this node</td>
+</tr>
+</tbody>
+</table>
+<dl class="staticmethod">
+<dt id="dcsim.framework.NodeBase.NodeBase.generate_node_id">
+<em class="property">static </em><code class="descname">generate_node_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; &lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;<a class="headerlink" href="#dcsim.framework.NodeBase.NodeBase.generate_node_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.NodeBase.NodeBase.id">
+<code class="descname">id</code><a class="headerlink" href="#dcsim.framework.NodeBase.NodeBase.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.NodeBase.NodeBase.round_action">
+<code class="descname">round_action</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.NodeBase.NodeBase.round_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>the round action of the</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.NodeBase.NodeBase.set_node_list">
+<code class="descname">set_node_list</code><span class="sig-paren">(</span><em>node_ids: typing.Tuple[_ForwardRef('NodeId'), ...]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.NodeBase.NodeBase.set_node_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the node list using a tuple contains all the nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_ids</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.NodeBase.NodeBase.set_trusted_third_party">
+<code class="descname">set_trusted_third_party</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.NodeBase.NodeBase.set_trusted_third_party" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.framework.NodeId">
+<span id="dcsim-framework-nodeid-module"></span><h2>dcsim.framework.NodeId module<a class="headerlink" href="#module-dcsim.framework.NodeId" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dcsim.framework.Runner">
+<span id="dcsim-framework-runner-module"></span><h2>dcsim.framework.Runner module<a class="headerlink" href="#module-dcsim.framework.Runner" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dcsim.framework.Runner.Runner">
+<em class="property">class </em><code class="descclassname">dcsim.framework.Runner.</code><code class="descname">Runner</code><span class="sig-paren">(</span><em>config: dcsim.framework.ConfigurationBase.ConfigurationBase</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.Runner.Runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dcsim.framework.Runner.Runner.add_trusted_third_party">
+<code class="descname">add_trusted_third_party</code><span class="sig-paren">(</span><em>ttp</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.Runner.Runner.add_trusted_third_party" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.Runner.Runner.init">
+<code class="descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.Runner.Runner.init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.Runner.Runner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.Runner.Runner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.framework.TrustedThirdPartyBase">
+<span id="dcsim-framework-trustedthirdpartybase-module"></span><h2>dcsim.framework.TrustedThirdPartyBase module<a class="headerlink" href="#module-dcsim.framework.TrustedThirdPartyBase" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase">
+<em class="property">class </em><code class="descclassname">dcsim.framework.TrustedThirdPartyBase.</code><code class="descname">TrustedThirdPartyBase</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase.call">
+<code class="descname">call</code><span class="sig-paren">(</span><em>caller: 'NodeId'</em>, <em>function_name: str</em>, <em>args</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase.call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase.name">
+<code class="descname">name</code><a class="headerlink" href="#dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase.round_action">
+<code class="descname">round_action</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.framework.TrustedThirdPartyBase.TrustedThirdPartyBase.round_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dcsim-framework-trustedthirdpartycaller-module">
+<h2>dcsim.framework.TrustedThirdPartyCaller module<a class="headerlink" href="#dcsim-framework-trustedthirdpartycaller-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.framework.TrustedThirdPartyCaller"></span><dl class="class">
+<dt id="dcsim.framework.TrustedThirdPartyCaller.TrustedThirdPartyCaller">
+<em class="property">class </em><code class="descclassname">dcsim.framework.TrustedThirdPartyCaller.</code><code class="descname">TrustedThirdPartyCaller</code><a class="headerlink" href="#dcsim.framework.TrustedThirdPartyCaller.TrustedThirdPartyCaller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dcsim.framework.TrustedThirdPartyCaller.TrustedThirdPartyCaller.call">
+<code class="descname">call</code><span class="sig-paren">(</span><em>party_name: str</em>, <em>function_name: str</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; typing.Any<a class="headerlink" href="#dcsim.framework.TrustedThirdPartyCaller.TrustedThirdPartyCaller.call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.framework">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dcsim.framework" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Distributed Consensus Simulator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="report.html">1. Mission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#our-team">2. Our Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#distributed-consensus">3. Distributed Consensus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#sleepy-consensus">4. Sleepy Consensus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#simulator-components">5. Simulator Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#experiment-results">6. Experiment Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">7. API Documents</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, IC3.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/dcsim.framework.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

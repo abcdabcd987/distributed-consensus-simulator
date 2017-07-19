@@ -1,0 +1,1010 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>dcsim.sleepy package &#8212; Distributed Consensus Simulator 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dcsim-sleepy-package">
+<h1>dcsim.sleepy package<a class="headerlink" href="#dcsim-sleepy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="dcsim-sleepy-chainqualitymeasurement-module">
+<h2>dcsim.sleepy.ChainQualityMeasurement module<a class="headerlink" href="#dcsim-sleepy-chainqualitymeasurement-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.sleepy.ChainQualityMeasurement"></span><dl class="class">
+<dt id="dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.ChainQualityMeasurement.</code><code class="descname">ChainQualityMeasurement</code><a class="headerlink" href="#dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dcsim.framework.html#dcsim.framework.MeasurementBase.MeasurementBase" title="dcsim.framework.MeasurementBase.MeasurementBase"><code class="xref py py-class docutils literal"><span class="pre">dcsim.framework.MeasurementBase.MeasurementBase</span></code></a></p>
+<p>Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>corrupted_nodes</strong> – the corrupted nodes</li>
+<li><strong>honest_nodes</strong> – the honest nodes</li>
+<li><strong>adversary</strong> – the adversary controller is used</li>
+<li><strong>config</strong> – the configuration is used</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement.report_final">
+<code class="descname">report_final</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement.report_final" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement.report_round">
+<code class="descname">report_round</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement.report_round" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement.should_stop">
+<code class="descname">should_stop</code><span class="sig-paren">(</span><em>round</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#dcsim.sleepy.ChainQualityMeasurement.ChainQualityMeasurement.should_stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.sleepy.Configuration">
+<span id="dcsim-sleepy-configuration-module"></span><h2>dcsim.sleepy.Configuration module<a class="headerlink" href="#module-dcsim.sleepy.Configuration" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dcsim.sleepy.Configuration.Configuration">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.Configuration.</code><code class="descname">Configuration</code><span class="sig-paren">(</span><em>honest_node_type</em>, <em>adversary_controller_type</em>, <em>measurement_type</em>, <em>num_honest_nodes</em>, <em>num_corrupted_nodes</em>, <em>max_delay</em>, <em>confirm_time</em>, <em>probability</em>, <em>max_round</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dcsim.framework.html#dcsim.framework.ConfigurationBase.ConfigurationBase" title="dcsim.framework.ConfigurationBase.ConfigurationBase"><code class="xref py py-class docutils literal"><span class="pre">dcsim.framework.ConfigurationBase.ConfigurationBase</span></code></a></p>
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.adversary_controller_type">
+<code class="descname">adversary_controller_type</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.adversary_controller_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.confirm_time">
+<code class="descname">confirm_time</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.confirm_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.honest_node_type">
+<code class="descname">honest_node_type</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.honest_node_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.max_delay">
+<code class="descname">max_delay</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.max_delay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.max_round">
+<code class="descname">max_round</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.max_round" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.measurement_type">
+<code class="descname">measurement_type</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.measurement_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.num_corrupted_nodes">
+<code class="descname">num_corrupted_nodes</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.num_corrupted_nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.num_honest_nodes">
+<code class="descname">num_honest_nodes</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.num_honest_nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.Configuration.Configuration.probability">
+<code class="descname">probability</code><a class="headerlink" href="#dcsim.sleepy.Configuration.Configuration.probability" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dcsim-sleepy-consistencyattack-module">
+<h2>dcsim.sleepy.ConsistencyAttack module<a class="headerlink" href="#dcsim-sleepy-consistencyattack-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.sleepy.ConsistencyAttack"></span><dl class="class">
+<dt id="dcsim.sleepy.ConsistencyAttack.BlockTree">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.ConsistencyAttack.</code><code class="descname">BlockTree</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.BlockTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>initialze the blocktree, determins the root of the tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> – useless</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dcsim.sleepy.ConsistencyAttack.BlockTree.depth">
+<code class="descname">depth</code><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.BlockTree.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the depth of the blocktree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the depth of the blocktree</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.BlockTree.insert">
+<code class="descname">insert</code><span class="sig-paren">(</span><em>cur: dcsim.sleepy.utils.TBlock</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.BlockTree.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert a given block to the blocktree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cur</strong> – the inserted block</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">none</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.ConsistencyAttack.BlockTree.main_chain">
+<code class="descname">main_chain</code><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.BlockTree.main_chain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dcsim.sleepy.ConsistencyAttack.ConsistencyAttack">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.ConsistencyAttack.</code><code class="descname">ConsistencyAttack</code><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.ConsistencyAttack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dcsim.framework.html#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase" title="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase"><code class="xref py py-class docutils literal"><span class="pre">dcsim.framework.AdversaryControllerBase.AdversaryControllerBase</span></code></a></p>
+<p>Initalize the Adversary Controller, set the config and the number of the corrupted nodes,</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>corrupted_nodes</strong> – A tuple contains the corrupted nodes</li>
+<li><strong>config</strong> – Configuration of the protocol</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.add_honest_node_messages">
+<code class="descname">add_honest_node_messages</code><span class="sig-paren">(</span><em>round: int, sender_id: &lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;, messages_to_send: typing.List[_ForwardRef('MessageTuple')]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.add_honest_node_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>add new messages from the honest nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>round</strong> – the round that the messages are in</li>
+<li><strong>sender_id</strong> – the id of the sender</li>
+<li><strong>messages_to_send</strong> – A list that contains the new messages</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.get_delivered_messages">
+<code class="descname">get_delivered_messages</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; typing.List[_ForwardRef('MessageTuple')]<a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.get_delivered_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the delivered messages from all the nodes, returns a list contains all the messagetuples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>round</strong> – the round that these messages are in</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list contains all the messagetuples</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.round_action">
+<code class="descname">round_action</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.round_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.set_trusted_third_party">
+<code class="descname">set_trusted_third_party</code><span class="sig-paren">(</span><em>node_id: &lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;</em>, <em>trusted_third_party: dcsim.framework.TrustedThirdPartyCaller.TrustedThirdPartyCaller</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.ConsistencyAttack.set_trusted_third_party" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dcsim.sleepy.ConsistencyAttack.TransactionPool">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.ConsistencyAttack.</code><code class="descname">TransactionPool</code> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.TransactionPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initialze the transactionpool</p>
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.TransactionPool.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.TransactionPool.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>clear all the transactions in the pool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.TransactionPool.contain_key">
+<code class="descname">contain_key</code><span class="sig-paren">(</span><em>tx: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b69840&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.TransactionPool.contain_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>return whether a given transaction is in the pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tx</strong> – the given transaction</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">whether a given transaction is in the pool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.TransactionPool.erase">
+<code class="descname">erase</code><span class="sig-paren">(</span><em>tx: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b69840&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.TransactionPool.erase" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete a given trasaction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tx</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.TransactionPool.get_all">
+<code class="descname">get_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.TransactionPool.get_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all the transaction to a list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list contains all the transactions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyAttack.TransactionPool.insert">
+<code class="descname">insert</code><span class="sig-paren">(</span><em>tx: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b69840&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.TransactionPool.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert the transaction to the transactionpool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tx</strong> – the inserted transaction</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dcsim.sleepy.ConsistencyAttack.check">
+<code class="descclassname">dcsim.sleepy.ConsistencyAttack.</code><code class="descname">check</code><span class="sig-paren">(</span><em>id: int</em>, <em>timestamp: int</em>, <em>probability</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>check whether a node is awake</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> – the id of the node</li>
+<li><strong>timestamp</strong> – the timestap of this round</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a boolean variable that decides whether a ode is awake</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dcsim.sleepy.ConsistencyAttack.valid">
+<code class="descclassname">dcsim.sleepy.ConsistencyAttack.</code><code class="descname">valid</code><span class="sig-paren">(</span><em>block: dcsim.sleepy.utils.TBlock</em>, <em>timestamp: int</em>, <em>probability</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyAttack.valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>decide whether a block is valid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>block</strong> – the given block</li>
+<li><strong>timestamp</strong> – the current timestamp</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">whether the block is valid</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="dcsim-sleepy-consistencymeasurement-module">
+<h2>dcsim.sleepy.ConsistencyMeasurement module<a class="headerlink" href="#dcsim-sleepy-consistencymeasurement-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.sleepy.ConsistencyMeasurement"></span><dl class="class">
+<dt id="dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.ConsistencyMeasurement.</code><code class="descname">ConsistencyMeasurement</code><a class="headerlink" href="#dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dcsim.framework.html#dcsim.framework.MeasurementBase.MeasurementBase" title="dcsim.framework.MeasurementBase.MeasurementBase"><code class="xref py py-class docutils literal"><span class="pre">dcsim.framework.MeasurementBase.MeasurementBase</span></code></a></p>
+<p>Initialize the MeasurementBase, incluing set the corrupted nodes, honest nodes, adversary Controller, te Configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>corrupted_nodes</strong> – the corrupted nodes</li>
+<li><strong>honest_nodes</strong> – the honest nodes</li>
+<li><strong>adversary</strong> – the adversary controller is used</li>
+<li><strong>config</strong> – the configuration is used</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement.report_final">
+<code class="descname">report_final</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement.report_final" title="Permalink to this definition">¶</a></dt>
+<dd><p>report the all the conditions and the result in the end</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement.report_round">
+<code class="descname">report_round</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement.report_round" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the condition of each nodes ar this round</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>round</strong> – the index of the round</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement.should_stop">
+<code class="descname">should_stop</code><span class="sig-paren">(</span><em>round</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#dcsim.sleepy.ConsistencyMeasurement.ConsistencyMeasurement.should_stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dcsim-sleepy-honestnode-module">
+<h2>dcsim.sleepy.HonestNode module<a class="headerlink" href="#dcsim-sleepy-honestnode-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.sleepy.HonestNode"></span><dl class="class">
+<dt id="dcsim.sleepy.HonestNode.HonestNode">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.HonestNode.</code><code class="descname">HonestNode</code><a class="headerlink" href="#dcsim.sleepy.HonestNode.HonestNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dcsim.framework.html#dcsim.framework.NodeBase.NodeBase" title="dcsim.framework.NodeBase.NodeBase"><code class="xref py py-class docutils literal"><span class="pre">dcsim.framework.NodeBase.NodeBase</span></code></a></p>
+<p>Initilize the hoestnode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config</strong> – the configuration of the node</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dcsim.sleepy.HonestNode.HonestNode.main_chain">
+<code class="descname">main_chain</code><a class="headerlink" href="#dcsim.sleepy.HonestNode.HonestNode.main_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the blockchain’s mainchain</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the blockchain’s mainchain</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.HonestNode.HonestNode.recursive_add_block_from_orphan_pool">
+<code class="descname">recursive_add_block_from_orphan_pool</code><span class="sig-paren">(</span><em>curnode: dcsim.sleepy.utils.TNode</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.HonestNode.HonestNode.recursive_add_block_from_orphan_pool" title="Permalink to this definition">¶</a></dt>
+<dd><p>recursively add the subtree(root has already been added and removed) of curnode to blockchain, and remove them from orphan pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>curnode</strong> – the root of the subtree needed to be added from the orphan pool</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.HonestNode.HonestNode.recursive_remove_block_from_orphan_pool">
+<code class="descname">recursive_remove_block_from_orphan_pool</code><span class="sig-paren">(</span><em>block: dcsim.sleepy.utils.TBlock</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.HonestNode.HonestNode.recursive_remove_block_from_orphan_pool" title="Permalink to this definition">¶</a></dt>
+<dd><p>recursively remove the subtree(the root has already been removed) of the given block from the orphan pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>block</strong> – the root of the subtree needed to be removed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.HonestNode.HonestNode.round_action">
+<code class="descname">round_action</code><span class="sig-paren">(</span><em>ctx: dcsim.framework.Context.Context</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.HonestNode.HonestNode.round_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>the round action of the honest node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> – use the ctx to do inputs and outputs for a node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">none</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.HonestNode.HonestNode.set_trusted_third_party">
+<code class="descname">set_trusted_third_party</code><span class="sig-paren">(</span><em>trusted_third_party: dcsim.framework.TrustedThirdPartyCaller.TrustedThirdPartyCaller</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.HonestNode.HonestNode.set_trusted_third_party" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dcsim-sleepy-selfishmining-module">
+<h2>dcsim.sleepy.SelfishMining module<a class="headerlink" href="#dcsim-sleepy-selfishmining-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dcsim.sleepy.SelfishMining"></span><dl class="class">
+<dt id="dcsim.sleepy.SelfishMining.SelfishMining">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.SelfishMining.</code><code class="descname">SelfishMining</code><a class="headerlink" href="#dcsim.sleepy.SelfishMining.SelfishMining" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dcsim.framework.html#dcsim.framework.AdversaryControllerBase.AdversaryControllerBase" title="dcsim.framework.AdversaryControllerBase.AdversaryControllerBase"><code class="xref py py-class docutils literal"><span class="pre">dcsim.framework.AdversaryControllerBase.AdversaryControllerBase</span></code></a></p>
+<dl class="method">
+<dt id="dcsim.sleepy.SelfishMining.SelfishMining.add_honest_node_messages">
+<code class="descname">add_honest_node_messages</code><span class="sig-paren">(</span><em>round: int, sender_id: &lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;, messages_to_send: typing.List[_ForwardRef('MessageTuple')]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.SelfishMining.SelfishMining.add_honest_node_messages" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.SelfishMining.SelfishMining.get_delivered_messages">
+<code class="descname">get_delivered_messages</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span> &#x2192; typing.List[_ForwardRef('MessageTuple')]<a class="headerlink" href="#dcsim.sleepy.SelfishMining.SelfishMining.get_delivered_messages" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.SelfishMining.SelfishMining.main_chain">
+<code class="descname">main_chain</code><a class="headerlink" href="#dcsim.sleepy.SelfishMining.SelfishMining.main_chain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.SelfishMining.SelfishMining.round_action">
+<code class="descname">round_action</code><span class="sig-paren">(</span><em>round: int</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.SelfishMining.SelfishMining.round_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.SelfishMining.SelfishMining.set_trusted_third_party">
+<code class="descname">set_trusted_third_party</code><span class="sig-paren">(</span><em>node_id: &lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;</em>, <em>trusted_third_party: dcsim.framework.TrustedThirdPartyCaller.TrustedThirdPartyCaller</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.SelfishMining.SelfishMining.set_trusted_third_party" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.sleepy.utils">
+<span id="dcsim-sleepy-utils-module"></span><h2>dcsim.sleepy.utils module<a class="headerlink" href="#module-dcsim.sleepy.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dcsim.sleepy.utils.BlockChain">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.utils.</code><code class="descname">BlockChain</code> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.utils.BlockChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>initialize the blockchain</p>
+<dl class="method">
+<dt id="dcsim.sleepy.utils.BlockChain.add_child">
+<code class="descname">add_child</code><span class="sig-paren">(</span><em>t_node: dcsim.sleepy.utils.TNode</em>, <em>block: dcsim.sleepy.utils.TBlock</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.BlockChain.add_child" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a child to after the given TNode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t_node</strong> – the node who want the this child</li>
+<li><strong>block</strong> – the child to be added</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the new TNode</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.BlockChain.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>hash_val: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b698c8&gt;</em><span class="sig-paren">)</span> &#x2192; typing.Union[_ForwardRef('TNode'), NoneType]<a class="headerlink" href="#dcsim.sleepy.utils.BlockChain.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>find a TNode whose hash equal to hash_val</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hash_val</strong> – the hash value given</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a TNode with given hash_val</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.BlockChain.get_top">
+<code class="descname">get_top</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dcsim.sleepy.utils.TNode<a class="headerlink" href="#dcsim.sleepy.utils.BlockChain.get_top" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.utils.BlockChain.main_chain">
+<code class="descname">main_chain</code><a class="headerlink" href="#dcsim.sleepy.utils.BlockChain.main_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>return TBlocks of mainchain</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">TBlocks of mainchain</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dcsim.sleepy.utils.OrphanBlockPool">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.utils.</code><code class="descname">OrphanBlockPool</code> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.utils.OrphanBlockPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>store the blocks that has been received but wait for the receipt of its previous block</p>
+<p>initialize the orphan block pool</p>
+<dl class="method">
+<dt id="dcsim.sleepy.utils.OrphanBlockPool.add_block">
+<code class="descname">add_block</code><span class="sig-paren">(</span><em>ablock: dcsim.sleepy.utils.TBlock</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.OrphanBlockPool.add_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a block to orphan pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ablock</strong> – block to be added</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.OrphanBlockPool.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>hashval: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b698c8&gt;</em><span class="sig-paren">)</span> &#x2192; typing.Union[typing.List[dcsim.sleepy.utils.TBlock], NoneType]<a class="headerlink" href="#dcsim.sleepy.utils.OrphanBlockPool.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>find the child whose hashvalue equal to the given hashvalue</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hashval</strong> – the given hash value</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the children whose hashvalue equal to the given hashvalue</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.OrphanBlockPool.pop_children">
+<code class="descname">pop_children</code><span class="sig-paren">(</span><em>hv: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b698c8&gt;</em><span class="sig-paren">)</span> &#x2192; typing.Union[typing.List[dcsim.sleepy.utils.TBlock], NoneType]<a class="headerlink" href="#dcsim.sleepy.utils.OrphanBlockPool.pop_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove the blocks whose father’s hashval is hv from orphan pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hv</strong> – the given hash value</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the removed blocks</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dcsim.sleepy.utils.TBlock">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.utils.</code><code class="descname">TBlock</code><span class="sig-paren">(</span><em>pbhv: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b698c8&gt;, txs: typing.List[&lt;function NewType.&lt;locals&gt;.new_type at 0x105b69840&gt;], timestamp: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b69950&gt;, pid: &lt;function NewType.&lt;locals&gt;.new_type at 0x1058c9730&gt;</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.utils.TBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initialize the block of the transactions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pbhv</strong> – the hash of the previous block</li>
+<li><strong>txs</strong> – the transactions contained in this block</li>
+<li><strong>timestamp</strong> – the timestap of this block</li>
+<li><strong>pid</strong> – the sender id of this block</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dcsim.sleepy.utils.TBlock.hashval">
+<code class="descname">hashval</code><a class="headerlink" href="#dcsim.sleepy.utils.TBlock.hashval" title="Permalink to this definition">¶</a></dt>
+<dd><p>the hash value of this block</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.utils.TBlock.id">
+<code class="descname">id</code><a class="headerlink" href="#dcsim.sleepy.utils.TBlock.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the pid of the block</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the pid of the block</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.utils.TBlock.round">
+<code class="descname">round</code><a class="headerlink" href="#dcsim.sleepy.utils.TBlock.round" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the timestamp of this block</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the timestamp of this block</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dcsim.sleepy.utils.TBlock.serialize">
+<code class="descname">serialize</code><a class="headerlink" href="#dcsim.sleepy.utils.TBlock.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>get pickle of the informations in this block</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the pickle of all the informations in this block</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dcsim.sleepy.utils.TNode">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.utils.</code><code class="descname">TNode</code><span class="sig-paren">(</span><em>depth</em>, <em>block</em>, <em>father</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.TNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initialize the TNode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>depth</strong> – the depth of the this TNode</li>
+<li><strong>block</strong> – corresponding TBlock</li>
+<li><strong>father</strong> – previous TNode</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TNode.add_child">
+<code class="descname">add_child</code><span class="sig-paren">(</span><em>new_node: dcsim.sleepy.utils.TNode</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#dcsim.sleepy.utils.TNode.add_child" title="Permalink to this definition">¶</a></dt>
+<dd><p>all the children to this node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_node</strong> – the children node to be added</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">whether the addition succeed</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TNode.get_child_index">
+<code class="descname">get_child_index</code><span class="sig-paren">(</span><em>child_node: dcsim.sleepy.utils.TNode</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#dcsim.sleepy.utils.TNode.get_child_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the index of the child_node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>child_node</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the index of child_node</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TNode.get_children">
+<code class="descname">get_children</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.TNode.get_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the children of this TNode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the chlldren of this TNode</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TNode.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>p_hash: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b698c8&gt;</em><span class="sig-paren">)</span> &#x2192; typing.Union[_ForwardRef('TNode'), NoneType]<a class="headerlink" href="#dcsim.sleepy.utils.TNode.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>find a node in its subtree with hashval p_hash</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p_hash</strong> – the hash of the TNode to be searched</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the TNode found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TNode.transfer_chain">
+<code class="descname">transfer_chain</code><span class="sig-paren">(</span><em>i: int</em>, <em>j: int</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.TNode.transfer_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>swap the order of two children</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i</strong> – one node to be swap</li>
+<li><strong>j</strong> – another node to be swap</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dcsim.sleepy.utils.TxPool">
+<em class="property">class </em><code class="descclassname">dcsim.sleepy.utils.</code><code class="descname">TxPool</code> &#x2192; None<a class="headerlink" href="#dcsim.sleepy.utils.TxPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>store all received txs
+at the end of each round, all txs in the txpool form a new block, and clear it</p>
+<p>initialize the transaction pool</p>
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TxPool.add_tx">
+<code class="descname">add_tx</code><span class="sig-paren">(</span><em>tx: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b69840&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.TxPool.add_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a trasaction to the pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tx</strong> – the inserted transaction</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TxPool.clear_all">
+<code class="descname">clear_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.TxPool.clear_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete all the transactions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TxPool.find_tx">
+<code class="descname">find_tx</code><span class="sig-paren">(</span><em>tx</em><span class="sig-paren">)</span> &#x2192; typing.Union[Tx, NoneType]<a class="headerlink" href="#dcsim.sleepy.utils.TxPool.find_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>find a transaction in the pool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tx</strong> – the given transaction</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the found transation or none if not found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TxPool.get_all">
+<code class="descname">get_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.TxPool.get_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all the transactions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">all the transactions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dcsim.sleepy.utils.TxPool.remove_tx">
+<code class="descname">remove_tx</code><span class="sig-paren">(</span><em>tx</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#dcsim.sleepy.utils.TxPool.remove_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove a given transaction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tx</strong> – the transaction to be removed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">whether the removement is success or not</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dcsim.sleepy.utils.check_solution">
+<code class="descclassname">dcsim.sleepy.utils.</code><code class="descname">check_solution</code><span class="sig-paren">(</span><em>tblock: dcsim.sleepy.utils.TBlock</em>, <em>probability</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.check_solution" title="Permalink to this definition">¶</a></dt>
+<dd><p>check whether the tblock is the leader</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tblock</strong> – the block to be checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">whether the block satisfies the restriction</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dcsim.sleepy.utils.check_tx">
+<code class="descclassname">dcsim.sleepy.utils.</code><code class="descname">check_tx</code><span class="sig-paren">(</span><em>tx: &lt;function NewType.&lt;locals&gt;.new_type at 0x105b69840&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#dcsim.sleepy.utils.check_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>check whether the transaction is none</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tx</strong> – the given transaction</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">whether the transaction is none</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dcsim.sleepy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dcsim.sleepy" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Distributed Consensus Simulator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="report.html">1. Mission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#our-team">2. Our Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#distributed-consensus">3. Distributed Consensus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#sleepy-consensus">4. Sleepy Consensus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#simulator-components">5. Simulator Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html#experiment-results">6. Experiment Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">7. API Documents</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, IC3.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/dcsim.sleepy.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
