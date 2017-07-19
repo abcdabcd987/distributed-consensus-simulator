@@ -12,10 +12,10 @@ class HonestNode(NodeBase):
         message_tuples = ctx.received_messages
         round = ctx.round
 
-        if round == 1:
+        if round == 2:
             for message_tuple in message_tuples:
                 message = message_tuple.message
-                self._votes.append(message["value"])
+                self._votes.append(message)
 
             cnts = [0, 0]
             for vote in self._votes:
@@ -29,7 +29,6 @@ class HonestNode(NodeBase):
             self._votes = []
         else:
             self._choices.append(randint(0, 1))
-            self._votes.append(self.choices[-1])
             ctx.broadcast(self._choices[-1])
 
     @property

@@ -19,11 +19,11 @@ class Measurement(MeasurementBase):
 
     def report_final(self):
         logging.info("Final result.")
-        round = 1
+        round = 2
         success = False
         consensus = 2
         for node in self._honest_nodes:
-            choice = node.choices[round]
+            choice = node.choices[1]
             if (consensus == 2):
                 consensus = choice
 
@@ -32,7 +32,7 @@ class Measurement(MeasurementBase):
 
         if success:
             logging.info("Attack successful.")
-            return 0
+            return 1
         else:
             logging.info("Attack failed.")
-            return 1
+            return 0
