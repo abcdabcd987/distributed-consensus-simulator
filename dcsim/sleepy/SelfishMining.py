@@ -90,6 +90,17 @@ class SelfishMining(AdversaryControllerBase):
                     packed = {"type": 1, "value": block, "signature": sig}
                     t = MessageTuple(sender=corrupted_node, receiver=honest_node, round=round, message=packed)
                     pending_messages.append(t)
+                if len(self._tmp_blocks) > 0:
+                    corrupted_node = self._bad_nodes.popleft()
+                    block = self._tmp_blocks.popleft()
+
+                    pending_messages = self._pending_messages[round + 1]
+                    ttp = self._trusted_third_parties[corrupted_node]
+                    for honest_node in self._honest_nodes:
+                        sig = ttp.call('FSign', 'sign', message=block.serialize)
+                        packed = {"type": 1, "value": block, "signature": sig}
+                        t = MessageTuple(sender=corrupted_node, receiver=honest_node, round=round, message=packed)
+                        pending_messages.append(t)
 
         self._round_honest_mined = False
 

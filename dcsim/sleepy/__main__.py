@@ -78,7 +78,7 @@ def runSelfishMiningExperiment():
         num_corrupted_nodes = int(total_nodes * prob)
         num_honest_nodes = total_nodes - num_corrupted_nodes
         if prob > 0.7:
-            max_round = 200
+            max_round = 100
         else:
             max_round = 50
         config = Configuration(honest_node_type=HonestNode,
