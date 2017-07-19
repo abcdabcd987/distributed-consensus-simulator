@@ -282,7 +282,7 @@ section is the API document.
 Framework
 ---------
 
-| |image|
+| .. image:: structure.pdf
 | As shown in the figure, our simulator runs in a round-by-round style.
   The class ``framework.Runner`` controls the action in each round. By
   creating the subclasses of class ``framework.ConfigurationBase``, user
@@ -412,11 +412,17 @@ This attack method implemented in the class of
 Experiment Results
 ==================
 
-For the 2 attacking methods, we implement several experiments on
-different sets of parameters, the figure shows the result of some of our
-parameters.
+For the 2 attacking methods, we implement several experiments on various
+sets of parameters. The following figure shows the relation between the
+probability of success and ratio of corrupted nodes for the naive
+consistency attack and the relation between chain quality between the
+ratio of corrupted nodes under the parameter setting of
 
-.. |image| image:: structure.pdf
+.. math:: n=20,\Delta = 2, T = 6, p = 0.05
+
+.. image:: results.pdf
+    :scale: 300 %
+    :align: center
 
 Reference
 =========
