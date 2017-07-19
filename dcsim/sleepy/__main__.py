@@ -8,7 +8,7 @@ from dcsim.sleepy.ChainQualityMeasurement import ChainQualityMeasurement
 from .Configuration import Configuration
 from dcsim.utils import *
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 FSign = FSignHash
 # FSign = FSignRSA
 
@@ -40,8 +40,7 @@ def evaluateChainQuality(config, rounds):
 
 
 def runConsistencyExperiment():
-    #corrupt_ratios = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9]
-    corrupt_ratios = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.95, 1.0]
+    corrupt_ratios = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
     success_probabilities = []
     total_nodes = 20
     for prob in corrupt_ratios:
@@ -70,9 +69,7 @@ def runConsistencyExperiment():
     '''
 
 def runSelfishMiningExperiment():
-    #corrupt_ratios = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
-    #corrupt_ratios = [0.6, 0.65 ,0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1]
-    corrupt_ratios = [0.8]
+    corrupt_ratios = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
     average_chain_quality = []
     total_nodes = 20
     for prob in corrupt_ratios:

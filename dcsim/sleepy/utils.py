@@ -149,9 +149,7 @@ class TNode:
         self.num = 0  # type: int
 
         # previous block hash value
-        if father is None:
-            self.block.pbhv = "0"
-        else:
+        if father:
             self.block.pbhv = father.hash
 
     def get_children(self):

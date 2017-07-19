@@ -64,8 +64,4 @@ class Runner:
             self._measure.report_round(round)
 
         # call the Measurement to give the final report
-        idx = 0
-        for node in self._honest_nodes:
-            print(idx,node.id)
-            idx = idx + 1
         return self._measure.report_final()
