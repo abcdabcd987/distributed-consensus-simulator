@@ -57,7 +57,7 @@ class SelfishMining(AdversaryControllerBase):
 
         for bad_node_id in self._corrupted_nodes:
             if check(bad_node_id, round, self._probabiltiy):
-                logging.debug('AdversaryController.round_instruction: NodeId', bad_node_id, 'chosen as the leader')
+                logging.debug('AdversaryController.round_instruction: NodeId {} chosen as the leader'.format(bad_node_id))
                 block = TBlock(self._chain[-1].hashval, self._tx.get_all(), cast(Timestamp, round), bad_node_id)
                 self._tx.clear()
 

@@ -61,11 +61,12 @@ class ChainQualityMeasurement(MeasurementBase):
             else:
                 chain_quality_value = (1 - cnt / (max_len - 1))
             logging.info("Chain Quality: %f" % chain_quality_value)
-            logging.debug(list(chain_quality), list(chain_T))
+            logging.debug(str(node.id) + ":" + repr((list(chain_quality), list(chain_T))))
 
     def report_final(self):
         logging.info("Calculating Chain Quality...")
         corrupted_set = set([c for c in self._adversary._corrupted_nodes])
+        average_chain_quality_value = 0
         for node in self._honest_nodes:
             logging.debug(node.id)
             chain_quality = []
@@ -92,6 +93,8 @@ class ChainQualityMeasurement(MeasurementBase):
                 chain_quality_value = 1.0
             else:
                 chain_quality_value = (1 - cnt / (max_len - 1))
+            average_chain_quality_value += chain_quality_value
             logging.info("Chain Quality: %f" % chain_quality_value)
-            logging.debug(list(chain_quality), list(chain_T))
-            return chain_quality_value
+            logging.debug(str(node.id) + ":" + repr((list(chain_quality), list(chain_T))))
+
+        return average_chain_quality_value / len(self._honest_nodes)

@@ -100,7 +100,7 @@ class HonestNode(NodeBase):
                 else:
                     continue
             elif message["type"] == 1:   # its a block
-                logging.debug("HonestNode.round_action: NodeId", self._nodeId, "dealing with", message["value"])
+                logging.debug("HonestNode.round_action: NodeId {} dealing with {}".format(self._nodeId, message["value"] ))
                 verified = self._trusted_third_party.call('FSign', 'verify',
                                                           signature=message['signature'],
                                                           message=message['value'].serialize,
@@ -108,11 +108,14 @@ class HonestNode(NodeBase):
                 if verified \
                         and check_solution(message["value"], self._probability)\
                         and message["value"].timestamp <= ctx.round:
-                    logging.debug("HonestNode.round_action: NodeId", self._nodeId,
-                                  "accepted message", message["value"].hashval)
+                    logging.debug("HonestNode.round_action: NodeId {} accepted message {}".format(self._nodeId,
+                                  message["value"].hashval))
 
                     blocks.append(message["value"])
                 else:
+                    logging.debug("HonestNode.round_action: NodeId {} declined message {}".format(self._nodeId,
+                                                                                                  message[
+                                                                                                      "value"].hashval))
                     continue
 
         # print("Main chain for node %d" % self._nodeId)
@@ -121,20 +124,25 @@ class HonestNode(NodeBase):
 
         for block in blocks:
             # check if this block has been received
+
             if self._block_chain.find(block.hashval) is not None:
                 continue
             elif self._orphanpool.find(block.hashval):
                 continue
+            logging.debug("HonestNode.round_action: NodeId {} received a new block".format(self._nodeId))
 
             # cur_node : father of block
             cur_node = self._block_chain.find(block.pbhv)
             if cur_node is None:
+                logging.debug("HonestNode.round_action: NodeId {} received an orphan".format(self._nodeId))
                 self._orphanpool.add_block(block)
             # timestamp check failed, no need to forward
             elif cur_node.block.timestamp >= block.timestamp:
                 self.recursive_remove_block_from_orphan_pool(block)
+                logging.debug("HonestNode.round_action: NodeId {} received invalid time stamp".format(self._nodeId))
                 continue
             else:
+                logging.debug("HonestNode.round_action: NodeId {} has added a block".format(self._nodeId))
                 # block added to the tail of mainchain
                 if cur_node == self._block_chain.get_top():
                     for tx in block.txs:
@@ -151,7 +159,7 @@ class HonestNode(NodeBase):
         t = ctx._round
         my_block: TBlock = TBlock(pbhv, txs, cast(Timestamp, t), self._nodeId)
         if check_solution(my_block, self._probability):
-            logging.debug("HonestNode.round_action: NodeId", self._nodeId, "chosen as the leader")
+            logging.debug("HonestNode.round_action: NodeId {} chosen as the leader".format(self._nodeId))
             self._block_chain.add_child(self._block_chain.get_top(), my_block)
             my_sig = self._trusted_third_party.call('FSign', 'sign', message=my_block.serialize)
             ctx.broadcast({"type": 1, "value": my_block, "signature": my_sig})
