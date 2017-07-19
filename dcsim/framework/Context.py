@@ -16,10 +16,9 @@ class Context:
         """
         initialize the Context class
 
-        :param nodes: the nodes that will be broadcast to
-        :param round: the round that the context is in
-        :param node: the node of the sender
-        :param received_messages: having the shape of [(sender_id, receiver_id, round, message)] contains all messages that this node received in this round.
+        :param nodes: nodes that will be broadcasted
+        :param node: sender
+        :param received_messages: having the shape of [(sender_id, receiver_id, round, message)] contains all messages that this node has received in this round.
         """
         self._nodes = nodes
         self._round = round
@@ -35,8 +34,8 @@ class Context:
         """
         sends a message to a given node
 
-        :param receiver: the ndoe that receives the message
-        :param message: the messags that to be sent
+        :param receiver: the ndoe that will receive the message
+        :param message: the message to be sent
         """
         sender = self._node.id  # type: NodeId
         message_tuple = MessageTuple(sender=sender, receiver=receiver, round=self._round, message=message)
@@ -44,7 +43,7 @@ class Context:
 
     def broadcast(self, message: Any) -> None:
         """
-        broadcasts a message to all nodes
+        broadcast a message to all nodes
 
         :param message: the message to be broadcast
         """
