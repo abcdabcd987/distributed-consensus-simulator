@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class NodeBase(metaclass=abc.ABCMeta):
     def __init__(self, config: 'ConfigurationBase') -> None:
         """
-        intitialze the NodeBase, including the configuration and the nodeid
+        intitialze a Node, including the configuration
 
         :param config: the configuration of this node
         """
@@ -37,12 +37,14 @@ class NodeBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def round_action(self, ctx: 'Context') -> None:
         """
-        the round action of the
+        the action of a node in each round
 
-        :param ctx:
         """
         pass
 
     @property
     def id(self) -> 'NodeId':
+        """
+        :return: node_id
+        """
         return self._id

@@ -6,6 +6,10 @@ if TYPE_CHECKING:
 
 
 class MessageTuple(NamedTuple):
+    """
+    send message from sender to receiver in designated round
+
+    """
     sender: 'NodeId'
     receiver: 'NodeId'
     round: int

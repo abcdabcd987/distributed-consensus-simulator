@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class AdversaryControllerBase(metaclass=abc.ABCMeta):
     def __init__(self, config: 'ConfigurationBase') -> None:
         """
-        Initalize the Adversary Controller, set the config and the number of the corrupted nodes,
+        Initalize the Adversary Controller, set the config, get the list of all corrupted nodes
 
         :param config: Configuration of the protocol
         """
@@ -33,7 +33,7 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_delivered_messages(self, round: int) -> List['MessageTuple']:
         """
-        Get the delivered messages from all the nodes, returns a list contains all the messagetuples
+        get all delivered messages in designated round
 
         :param round: the round that these messages are in
         """
@@ -41,12 +41,16 @@ class AdversaryControllerBase(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def round_action(self, round: int) -> None:
+        """
+        the action of adversary controller in designated round
+
+        """
         pass
 
     @abc.abstractmethod
     def add_honest_node_messages(self, round: int, sender_id: 'NodeId', messages_to_send: List['MessageTuple']) -> None:
         """
-        add new messages from the honest nodes
+        add messages(messages_to_send) sent from node(sender_id) in designated (round) to adversary controller
 
         :param round: the round that the messages are in
         :param sender_id: the id of the sender
