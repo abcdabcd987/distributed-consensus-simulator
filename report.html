@@ -72,12 +72,12 @@ and <em>quality</em> of the blockchain can’t be guaranteed.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>Lequn Chen</td>
-<td>Wanquan Wu</td>
+<td>Wanquan Wu *</td>
 <td>Haoming Lu</td>
 <td>Zihao Ye</td>
 </tr>
 <tr class="row-odd"><td>Bicheng Gao</td>
-<td>Ziqi Zeng</td>
+<td>Ziqi Zeng *</td>
 <td>Yuhao Zhou</td>
 <td>Xueyuan Zhao</td>
 </tr>
@@ -93,6 +93,8 @@ and <em>quality</em> of the blockchain can’t be guaranteed.</p>
 </tr>
 </tbody>
 </table>
+<p>Most of us are from Shanghai Jiao Tong University. Two of us * are from
+Huazhong University of Science and Technology.</p>
 </div>
 <div class="section" id="distributed-consensus">
 <h1>3. Distributed Consensus<a class="headerlink" href="#distributed-consensus" title="Permalink to this headline">¶</a></h1>
@@ -357,24 +359,22 @@ probability each node is elected leader in a single time step. All nodes
 will invoke <code class="docutils literal"><span class="pre">init</span></code> function once it is spawned.</p>
 </div>
 </div>
-<div class="section" id="imulator-components">
-<h1>5. imulator Components<a class="headerlink" href="#imulator-components" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="simulator-components">
+<h1>5. Simulator Components<a class="headerlink" href="#simulator-components" title="Permalink to this headline">¶</a></h1>
 <p>In this section, we first introduce the overall structure of the
 simulator, then we introduce the three components of our simulator:
 Framework, Honest Party and Adversary Party. The last part of this
 section is the API document.</p>
-<div class="section" id="framework">
-<h2>5.1. Framework<a class="headerlink" href="#framework" title="Permalink to this headline">¶</a></h2>
-<div class="line-block">
-<div class="line">.. image:: structure.pdf</div>
-<div class="line">As shown in the figure, our simulator runs in a round-by-round style.
+<div class="section" id="structure">
+<h2>5.1. Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/structure.png" src="_images/structure.png" />
+<p>As shown in the figure, our simulator runs in a round-by-round style.
 The class <code class="docutils literal"><span class="pre">framework.Runner</span></code> controls the action in each round. By
 creating the subclasses of class <code class="docutils literal"><span class="pre">framework.ConfigurationBase</span></code>, user
 can configure the parameters(e.g. number of rounds, ratio of corrupted
 nodes) the run. Users can write subclasses of the class
 <code class="docutils literal"><span class="pre">framework.MeasurementBase</span></code> to provide the function of measuring the
-results(e.g. consistency and chain quality) of the experiment.</div>
-</div>
+results(e.g. consistency and chain quality) of the experiment.</p>
 <p>In each round, the adversary firstly delivers messages to the
 corresponding receivers. Then, the honest nodes send the messages to the
 adversary controller since the adversary has the control of the network.
@@ -384,8 +384,8 @@ to interact with the network.</p>
 trusted third party. User can also create the subclasses of class
 <code class="docutils literal"><span class="pre">framework.TrustedThirdPartyBase</span></code>.</p>
 </div>
-<div class="section" id="id3">
-<h2>5.2. Framework<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="framework">
+<h2>5.2. Framework<a class="headerlink" href="#framework" title="Permalink to this headline">¶</a></h2>
 <p>Our framework implement several abstract classes for the users implement
 their own subclasses:</p>
 <ul class="simple">
@@ -454,7 +454,7 @@ Attack</em> and <em>Consistency Attack</em>.</p>
 <div class="section" id="selfish-mining-attack">
 <h3>5.4.1. Selfish Mining Attack<a class="headerlink" href="#selfish-mining-attack" title="Permalink to this headline">¶</a></h3>
 <p>Ittay Eyal and Emin Gun
-Sirer <a class="reference internal" href="#dblp-journals-corr-eyals13" id="id4">[ES13]</a> introduced the
+Sirer <a class="reference internal" href="#dblp-journals-corr-eyals13" id="id3">[ES13]</a> introduced the
 selfish mining attack, and Vitalik Buterin presented the adversary’s precise
 strategy
 <a class="reference external" href="https://bitcoinmagazine.com/articles/selfish-mining-a-25-attack-against-the-bitcoin-network-1383578440/">here</a>.
@@ -503,14 +503,14 @@ consistency attack and the relation between chain quality between the
 ratio of corrupted nodes under the parameter setting of</p>
 <div class="math">
 \[n=20,\Delta = 2, T = 6, p = 0.05\]</div>
-<a class="reference internal image-reference" href="_images/results.pdf"><img alt="_images/results.pdf" class="align-center" src="_images/results.pdf" /></a>
+<a class="reference internal image-reference" href="_images/results.png"><img alt="_images/results.png" class="align-center" src="_images/results.png" style="width: 750.0px; height: 450.0px;" /></a>
 </div>
 <div class="section" id="reference">
 <h1>7. Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
 <p id="bibtex-bibliography-report-0"><table class="docutils citation" frame="void" id="dblp-journals-corr-eyals13" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[ES13]</a></td><td>Ittay Eyal and Emin&nbsp;Gün Sirer. Majority is not enough: bitcoin mining is vulnerable. <em>CoRR</em>, 2013. URL: <a class="reference external" href="http://arxiv.org/abs/1311.0243">http://arxiv.org/abs/1311.0243</a>.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[ES13]</a></td><td>Ittay Eyal and Emin&nbsp;Gün Sirer. Majority is not enough: bitcoin mining is vulnerable. <em>CoRR</em>, 2013. URL: <a class="reference external" href="http://arxiv.org/abs/1311.0243">http://arxiv.org/abs/1311.0243</a>.</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="cryptoeprint-2016-918" rules="none">
@@ -551,9 +551,9 @@ ratio of corrupted nodes under the parameter setting of</p>
 <li class="toctree-l2"><a class="reference internal" href="#id1">4.2. Protocol Description</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#imulator-components">5. imulator Components</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#framework">5.1. Framework</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">5.2. Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#simulator-components">5. Simulator Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure">5.1. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#framework">5.2. Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#honest-party">5.3. Honest Party</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adversary-party">5.4. Adversary Party</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#consistency-attack">5.5. Consistency Attack</a></li>
