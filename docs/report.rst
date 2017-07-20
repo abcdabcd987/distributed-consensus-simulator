@@ -18,11 +18,14 @@ Our Team
 ============= ============= ============= =============
 Framework     Honest        Adversary     Integrator
 ============= ============= ============= =============
-Lequn Chen    Wanquan Wu    Haoming Lu    Zihao Ye
-Bicheng Gao   Ziqi Zeng     Yuhao Zhou    Xueyuan Zhao
+Lequn Chen    Wanquan Wu *  Haoming Lu    Zihao Ye
+Bicheng Gao   Ziqi Zeng *   Yuhao Zhou    Xueyuan Zhao
 Songyu Ke     Yi Jiang      Xuan Zhang    Yunqi Li
 Shichao Xu    Zhendong Xue  Cheng Wan     Zhi Qiu
 ============= ============= ============= =============
+
+Most of us are from Shanghai Jiao Tong University. Two of us * are from
+Huazhong University of Science and Technology.
 
 
 Distributed Consensus
@@ -271,7 +274,7 @@ Our protocol takes parameter :math:`p` as input, where :math:`p` is the
 probability each node is elected leader in a single time step. All nodes
 will invoke ``init`` function once it is spawned.
 
-imulator Components
+Simulator Components
 ====================
 
 In this section, we first introduce the overall structure of the
@@ -279,17 +282,18 @@ simulator, then we introduce the three components of our simulator:
 Framework, Honest Party and Adversary Party. The last part of this
 section is the API document.
 
-Framework
+Structure
 ---------
 
-| .. image:: structure.pdf
-| As shown in the figure, our simulator runs in a round-by-round style.
-  The class ``framework.Runner`` controls the action in each round. By
-  creating the subclasses of class ``framework.ConfigurationBase``, user
-  can configure the parameters(e.g. number of rounds, ratio of corrupted
-  nodes) the run. Users can write subclasses of the class
-  ``framework.MeasurementBase`` to provide the function of measuring the
-  results(e.g. consistency and chain quality) of the experiment.
+.. image:: structure.png
+
+As shown in the figure, our simulator runs in a round-by-round style.
+The class ``framework.Runner`` controls the action in each round. By
+creating the subclasses of class ``framework.ConfigurationBase``, user
+can configure the parameters(e.g. number of rounds, ratio of corrupted
+nodes) the run. Users can write subclasses of the class
+``framework.MeasurementBase`` to provide the function of measuring the
+results(e.g. consistency and chain quality) of the experiment.
 
 In each round, the adversary firstly delivers messages to the
 corresponding receivers. Then, the honest nodes send the messages to the
@@ -420,8 +424,8 @@ ratio of corrupted nodes under the parameter setting of
 
 .. math:: n=20,\Delta = 2, T = 6, p = 0.05
 
-.. image:: results.pdf
-    :scale: 300 %
+.. image:: results.png
+    :scale: 50%
     :align: center
 
 Reference
