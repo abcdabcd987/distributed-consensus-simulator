@@ -524,15 +524,15 @@ number, and send 1 to honest people whose id is an even number.</p>
 </div>
 <div class="section" id="implementation">
 <h2>7.2. Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<p>In class , we provide the interface for runner to get access to
+<p>In class <code class="docutils literal"><span class="pre">Configuration</span></code>, we provide the interface for runner to get access to
 necessary information().</p>
-<p>In class , we simulate what honest people will do in function
+<p>In class <code class="docutils literal"><span class="pre">HonestNode</span></code>, we simulate what honest people will do in function
 <em>round_action</em>(In this protocol, only two rounds are required: the
 first round to generate honest node’s own choice, the second round to
 gather all choice one receives).</p>
-<p>In class , we implement our adversarial algorithm(which we discussed
+<p>In class <code class="docutils literal"><span class="pre">DummyAttack</span></code>, we implement our adversarial algorithm(which we discussed
 above) in function <em>round_action</em>.</p>
-<p>In class , we set when to stop the simulation(2 rounds), and report the
+<p>In class <code class="docutils literal"><span class="pre">Measurement</span></code>, we set when to stop the simulation(2 rounds), and report the
 intermediate result after each round and eventually, report a final
 result(We say an attack is successful if and only if the consensus among
 honest people is broken).</p>
