@@ -24,7 +24,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="7. API Documents" href="api_doc.html" />
+    <link rel="next" title="8. API Documents" href="api_doc.html" />
     <link rel="prev" title="Welcome to Distributed Consensus Simulator’s White Paper!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -51,42 +51,44 @@ corruption and synchronized clocks. The <em>Adversary</em> could control all
 corrupted nodes and have the ability to delay messages up to
 <span class="math">\(\Delta\)</span> time. The corrupted nodes hack the blockchain network
 with selfish mining and consistency attack. Finally, we will see that
-without the majority of the honest nodes, the properties<em>consistency</em>
+without the majority of the honest nodes, the properties <em>consistency</em>
 and <em>quality</em> of the blockchain can’t be guaranteed.</p>
 </div>
 <div class="section" id="our-team">
 <h1>2. Our Team<a class="headerlink" href="#our-team" title="Permalink to this headline">¶</a></h1>
 <table border="1" class="docutils">
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="22%" />
-<col width="19%" />
-<col width="22%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
 </colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Framework</th>
+<th class="head">Honest</th>
+<th class="head">Adversary</th>
+<th class="head">Integrator</th>
+</tr>
+</thead>
 <tbody valign="top">
-<tr class="row-odd"><td>Framework</td>
-<td>Lequn Chen</td>
-<td>Bicheng Gao</td>
-<td>Songyu Ke</td>
-<td>Shichao Xu</td>
-</tr>
-<tr class="row-even"><td>Honest</td>
+<tr class="row-even"><td>Lequn Chen</td>
 <td>Wanquan Wu</td>
-<td>Ziqi Zeng</td>
-<td>Yi Jiang</td>
-<td>Zhendong Xue</td>
-</tr>
-<tr class="row-odd"><td>Adversary</td>
 <td>Haoming Lu</td>
-<td>Yuhao Zhou</td>
-<td>Xuan Zhang</td>
-<td>Cheng Wan</td>
-</tr>
-<tr class="row-even"><td>Integrator</td>
 <td>Zihao Ye</td>
+</tr>
+<tr class="row-odd"><td>Bicheng Gao</td>
+<td>Ziqi Zeng</td>
+<td>Yuhao Zhou</td>
 <td>Xueyuan Zhao</td>
+</tr>
+<tr class="row-even"><td>Songyu Ke</td>
+<td>Yi Jiang</td>
+<td>Xuan Zhang</td>
 <td>Yunqi Li</td>
+</tr>
+<tr class="row-odd"><td>Shichao Xu</td>
+<td>Zhendong Xue</td>
+<td>Cheng Wan</td>
 <td>Zhi Qiu</td>
 </tr>
 </tbody>
@@ -189,20 +191,29 @@ threshold <span class="math">\(D\)</span>.</p>
 <h3>3.2.3. Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h3>
 <p>A blockchain protocol should satisfy chain growth, chain quality, and
 consistency.</p>
-<dl class="docutils">
-<dt>Chain growth</dt>
-<dd>: Honest nodes’ chains grow steadily, neither too fast nor too slow.</dd>
-<dt>Chain quality</dt>
-<dd>: In any honest node’s chain, any sufficiently long window of
+<ul>
+<li><div class="first line-block">
+<div class="line"><strong>Chain growth</strong></div>
+<div class="line">Honest nodes’ chains grow steadily, neither too fast nor too slow.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Chain quality</strong></div>
+<div class="line">In any honest node’s chain, any sufficiently long window of
 consecutive blocks contain a certain fraction of blocks that are
-mined by honest nodes.</dd>
-<dt>Consistency</dt>
-<dd>Except for <span class="math">\(e^{-\Omega(T)}\)</span> fraction of execution traces, let
+mined by honest nodes.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Consistency</strong></div>
+<div class="line">Except for <span class="math">\(e^{-\Omega(T)}\)</span> fraction of execution traces, let
 <span class="math">\(\mathsf{chain}_i^r\)</span>, <span class="math">\(\mathsf{chain}_j^{r'}\)</span> denote
 honest node <span class="math">\(i\)</span> and <span class="math">\(j\)</span>’s chains in round <span class="math">\(r\)</span>
 and <span class="math">\(r'\)</span> where <span class="math">\(r'&gt;r\)</span>, then
-<span class="math">\(\mathsf{chain}_i^r[:-T] \prec \mathsf{chain}_j^{r'}\)</span>.</dd>
-</dl>
+<span class="math">\(\mathsf{chain}_i^r[:-T] \prec \mathsf{chain}_j^{r'}\)</span>.</div>
+</div>
+</li>
+</ul>
 </div>
 <div class="section" id="attack-methods">
 <h3>3.2.4. Attack Methods<a class="headerlink" href="#attack-methods" title="Permalink to this headline">¶</a></h3>
@@ -221,34 +232,47 @@ nodes.</p>
 <h2>4.1. Problem Set<a class="headerlink" href="#problem-set" title="Permalink to this headline">¶</a></h2>
 <p>Before we talk about the protocol, we firstly show the following
 assumptions:</p>
-<dl class="docutils">
-<dt>Synchronized clocks</dt>
-<dd>: We assume that all nodes can access a globally synchronized clock that ticks over time. Each clock tick is referred as an atomic <em>time step</em>. Nodes can perform unbounded polynomial amount of computation
+<ul>
+<li><div class="first line-block">
+<div class="line"><strong>Synchronized clocks</strong></div>
+<div class="line">We assume that all nodes can access a globally synchronized clock that ticks over time. Each clock tick is referred as an atomic <em>time step</em>. Nodes can perform unbounded polynomial amount of computation
 in each time step, as well as receive and send polynomially many
-messages.</dd>
-<dt>Public-key infrastructure</dt>
-<dd><p class="first">: We assume that there exists a public-key infrastructure(PKI). More
+messages.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Public-key infrastructure</strong></div>
+<div class="line">We assume that there exists a public-key infrastructure(PKI). More
 specifically, we shall assume that the PKI is an ideal functionality
 <span class="math">\(F_{CA}\)</span>(only available to the current protocol instance)
-that does the following:</p>
-<ul class="last simple">
+that does the following:</div>
+</div>
+<blockquote>
+<div><ul class="simple">
 <li>On receiving <code class="docutils literal"><span class="pre">register(pk)</span></code> from <span class="math">\(P\)</span>, remember the pair
 <span class="math">\((\)</span><code class="docutils literal"><span class="pre">pk</span></code><span class="math">\(, P)\)</span> and ignore any future message
 from <span class="math">\(P\)</span>.</li>
 <li>On receiving <code class="docutils literal"><span class="pre">lookup(</span></code><span class="math">\(P\)</span><code class="docutils literal"><span class="pre">)</span></code>: return the store
 <code class="docutils literal"><span class="pre">pk</span></code> or <span class="math">\(\perp\)</span> if not found.</li>
 </ul>
-</dd>
-<dt>Network delivery</dt>
-<dd>: The adversary controls the message delivery between nodes. We
+</div></blockquote>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Network delivery</strong></div>
+<div class="line">The adversary controls the message delivery between nodes. We
 assume that the adversary can arbitrarily delay and reorder
 messages, as long as all the messages sent from honest nodes are
-received by all honest nodes within <span class="math">\(\Delta\)</span> time steps.</dd>
-<dt>Static Corruptions</dt>
-<dd>: We assume that once our protocol starts to run, environment can
+received by all honest nodes within <span class="math">\(\Delta\)</span> time steps.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Static Corruptions</strong></div>
+<div class="line">We assume that once our protocol starts to run, environment can
 not corrupt an honest node and the corrupt node can not become an
-honest node.</dd>
-</dl>
+honest node.</div>
+</div>
+</li>
+</ul>
 </div>
 <div class="section" id="id1">
 <h2>4.2. Protocol Description<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
@@ -258,7 +282,7 @@ distributed consensus protocol in the sleepy model, which assumes that
 a <span class="math">\(majority\)</span> of the nodes are honest. It significantly departs
 from key ideas behind Nakamoto’s blockchain protocol the needs for “proofs-of-work”. The protocol relies on Public-Key-Infrastructure(PKI)
 and all nodes are assumed to have synchronized clocks.</p>
-<p>As showed by Pass and Shi <a href="#id2"><span class="problematic" id="id3">:raw-latex:`\cite{cryptoeprint:2016:918}`</span></a>. One target of sleepy consensus protocol is to remove the proof-of-work from
+<p>As showed by Pass and Shi <a class="reference internal" href="#cryptoeprint-2016-918" id="id2">[PS16]</a> . One target of sleepy consensus protocol is to remove the proof-of-work from
 the Nakamoto blockchain while maintaining provable guarantees. To remove
 the proof-of-work from Nakamoto’s protocol, we make the following
 changes: we define the puzzle solution to be the form of <span class="math">\((P, t)\)</span>
@@ -333,27 +357,169 @@ probability each node is elected leader in a single time step. All nodes
 will invoke <code class="docutils literal"><span class="pre">init</span></code> function once it is spawned.</p>
 </div>
 </div>
-<div class="section" id="simulator-components">
-<h1>5. Simulator Components<a class="headerlink" href="#simulator-components" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="imulator-components">
+<h1>5. imulator Components<a class="headerlink" href="#imulator-components" title="Permalink to this headline">¶</a></h1>
 <p>In this section, we first introduce the overall structure of the
 simulator, then we introduce the three components of our simulator:
 Framework, Honest Party and Adversary Party. The last part of this
 section is the API document.</p>
-<div class="section" id="structure">
-<h2>5.1. Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
-</div>
 <div class="section" id="framework">
-<h2>5.2. Framework<a class="headerlink" href="#framework" title="Permalink to this headline">¶</a></h2>
+<h2>5.1. Framework<a class="headerlink" href="#framework" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">.. image:: structure.pdf</div>
+<div class="line">As shown in the figure, our simulator runs in a round-by-round style.
+The class <code class="docutils literal"><span class="pre">framework.Runner</span></code> controls the action in each round. By
+creating the subclasses of class <code class="docutils literal"><span class="pre">framework.ConfigurationBase</span></code>, user
+can configure the parameters(e.g. number of rounds, ratio of corrupted
+nodes) the run. Users can write subclasses of the class
+<code class="docutils literal"><span class="pre">framework.MeasurementBase</span></code> to provide the function of measuring the
+results(e.g. consistency and chain quality) of the experiment.</div>
+</div>
+<p>In each round, the adversary firstly delivers messages to the
+corresponding receivers. Then, the honest nodes send the messages to the
+adversary controller since the adversary has the control of the network.
+The class <code class="docutils literal"><span class="pre">framework.Context</span></code> provides a easy way for the honest nodes
+to interact with the network.</p>
+<p>The class <code class="docutils literal"><span class="pre">utils.FSignRSA</span></code> and <code class="docutils literal"><span class="pre">utils.FSignHash</span></code> plays the role of
+trusted third party. User can also create the subclasses of class
+<code class="docutils literal"><span class="pre">framework.TrustedThirdPartyBase</span></code>.</p>
+</div>
+<div class="section" id="id3">
+<h2>5.2. Framework<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>Our framework implement several abstract classes for the users implement
+their own subclasses:</p>
+<ul class="simple">
+<li>class <code class="docutils literal"><span class="pre">AdversaryControllerBase</span></code> is the super class for the user
+defined adversary party.</li>
+<li>class <code class="docutils literal"><span class="pre">ConfigurationBase</span></code> is the super class for the user defined
+running configuration.</li>
+<li>class <code class="docutils literal"><span class="pre">Context</span></code> the network interface for the nodes to communicate
+with each other.</li>
+<li>class <code class="docutils literal"><span class="pre">MeasurementBase</span></code> is the super class for the user defined
+measurement.</li>
+<li>class <code class="docutils literal"><span class="pre">NodeBase</span></code> is the super class for the user defined node type.</li>
+<li>class <code class="docutils literal"><span class="pre">Runner</span></code> is the default round-by-round runner.</li>
+<li>class <code class="docutils literal"><span class="pre">TrustedThirdPartyBase</span></code> is the super class for the user
+defined trusted third party.</li>
+</ul>
 </div>
 <div class="section" id="honest-party">
 <h2>5.3. Honest Party<a class="headerlink" href="#honest-party" title="Permalink to this headline">¶</a></h2>
+<p>Each honest nodes has:</p>
+<ul>
+<li><p class="first">node ID</p>
+</li>
+<li><p class="first"><strong>blockchain</strong> Since blockchain will fork, it’s actually a block
+tree. The longest chain is the main chain. According to Sleepy
+Consensus Protocol, the previous block should have smaller timestamp
+than the successor.</p>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>transaction pool</strong></div>
+<div class="line">Receive transactions(<em>tx</em>) from network and store in <em>tx</em> pool
+temporarily. If the node receives a <em>tx</em> not in current <em>tx</em> pool,
+the node will forward(broadcast) this <em>tx</em> with its own signature
+immediately. At the end of each round, all <em>tx</em>s remained in <em>tx</em>
+pool will form a new block append at the end of mainchain.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>orphan pool</strong></div>
+<div class="line">The node will receive blocks from the network. With the
+interference of <em>Adv</em>, some blocks will be delayed, but not lost.
+Perhaps some successive blocks have already received, but they
+can’t be connected to the block tree since they are waiting for
+their “father” block. So we need a “pool” to store those “orphan”
+block.</div>
+<div class="line">The delete operation of a block in the orphan pool is very tricky.
+We only store single blocks, but we need to remove all successors
+of it at the same time, which results to a recursive process.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>probability</strong></div>
+<div class="line"><em>probability</em> is related to the mining difficulty <span class="math">\(D\)</span>. For
+node <span class="math">\(x\)</span>, if the hash value of its node ID and the current
+time is less than <span class="math">\(D\)</span>, then <span class="math">\(x\)</span> is elected as the
+leader who has the right to mine a new block and broadcast to other
+nodes.</div>
+</div>
+</li>
+</ul>
 </div>
 <div class="section" id="adversary-party">
 <h2>5.4. Adversary Party<a class="headerlink" href="#adversary-party" title="Permalink to this headline">¶</a></h2>
+<p>We implement 2 kinds of adversaries in this project: <em>Selfish Mining
+Attack</em> and <em>Consistency Attack</em>.</p>
+<div class="section" id="selfish-mining-attack">
+<h3>5.4.1. Selfish Mining Attack<a class="headerlink" href="#selfish-mining-attack" title="Permalink to this headline">¶</a></h3>
+<p>Ittay Eyal and Emin Gun
+Sirer <a class="reference internal" href="#dblp-journals-corr-eyals13" id="id4">[ES13]</a> introduced the
+selfish mining attack, and Vitalik Buterin presented the adversary’s precise
+strategy
+<a class="reference external" href="https://bitcoinmagazine.com/articles/selfish-mining-a-25-attack-against-the-bitcoin-network-1383578440/">here</a>.
+In our project, we implement this attack method as
+<code class="docutils literal"><span class="pre">sleepy.SelfishMining</span></code> class and the corresponding measurement
+<code class="docutils literal"><span class="pre">sleepy.ChainQualityMeasurement</span></code> class.</p>
+</div>
+</div>
+<div class="section" id="consistency-attack">
+<h2>5.5. Consistency Attack<a class="headerlink" href="#consistency-attack" title="Permalink to this headline">¶</a></h2>
+<p>We also implemented a naive consistency attack which is described as
+follows:</p>
+<ul>
+<li><p class="first">Pick the longest chain from all honest chains and its private chain.</p>
+</li>
+<li><p class="first">For every honest message: delay by <span class="math">\(\Delta\)</span>.</p>
+</li>
+<li><p class="first">If adversary’s private chain is longer than the honest chain and it’s
+length is at least <span class="math">\(T + 1\)</span>, then it publish the chain and will
+break consistency.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Here <span class="math">\(T\)</span> is the security parameter, except with probability
+<span class="math">\(e^{-\Omega(T)}\)</span>:</div>
+<div class="line"><span class="math">\(\forall\)</span> honest chains <span class="math">\(chain^{r}_{i}\)</span> and
+<span class="math">\(chain_{j}^{r'}\)</span> s.t. <span class="math">\(r' \geq r\)</span>,
+<span class="math">\(chain_{i}^r[:\text{-T}] &lt; chain_j^{r'}\)</span></div>
+</div>
+</li>
+<li><p class="first">When the adversary has 60% of the computational power, he can keep
+developing his own private chain until honest chain is long enough,
+then release the chain to overwrite the last :math:` T ` blocks. So
+that the honest chain may be overwrite.</p>
+</li>
+</ul>
+<p>This attack method implemented in the class of
+<code class="docutils literal"><span class="pre">sleepy.ConsistencyAttack</span></code>.</p>
 </div>
 </div>
 <div class="section" id="experiment-results">
 <h1>6. Experiment Results<a class="headerlink" href="#experiment-results" title="Permalink to this headline">¶</a></h1>
+<p>For the 2 attacking methods, we implement several experiments on various
+sets of parameters. The following figure shows the relation between the
+probability of success and ratio of corrupted nodes for the naive
+consistency attack and the relation between chain quality between the
+ratio of corrupted nodes under the parameter setting of</p>
+<div class="math">
+\[n=20,\Delta = 2, T = 6, p = 0.05\]</div>
+<a class="reference internal image-reference" href="_images/results.pdf"><img alt="_images/results.pdf" class="align-center" src="_images/results.pdf" /></a>
+</div>
+<div class="section" id="reference">
+<h1>7. Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<p id="bibtex-bibliography-report-0"><table class="docutils citation" frame="void" id="dblp-journals-corr-eyals13" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[ES13]</a></td><td>Ittay Eyal and Emin&nbsp;Gün Sirer. Majority is not enough: bitcoin mining is vulnerable. <em>CoRR</em>, 2013. URL: <a class="reference external" href="http://arxiv.org/abs/1311.0243">http://arxiv.org/abs/1311.0243</a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="cryptoeprint-2016-918" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[PS16]</a></td><td>Rafael Pass and Elaine Shi. The sleepy model of consensus. Cryptology ePrint Archive, Report 2016/918, 2016. <span><a class="reference external" href="#"></a></span>http://eprint.iacr.org/2016/918.</td></tr>
+</tbody>
+</table>
+</p>
 </div>
 
 
@@ -385,15 +551,17 @@ section is the API document.</p>
 <li class="toctree-l2"><a class="reference internal" href="#id1">4.2. Protocol Description</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#simulator-components">5. Simulator Components</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#structure">5.1. Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#framework">5.2. Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#imulator-components">5. imulator Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#framework">5.1. Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">5.2. Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#honest-party">5.3. Honest Party</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adversary-party">5.4. Adversary Party</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#consistency-attack">5.5. Consistency Attack</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#experiment-results">6. Experiment Results</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_doc.html">7. API Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#reference">7. Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">8. API Documents</a></li>
 </ul>
 
 <div class="relations">
@@ -401,7 +569,7 @@ section is the API document.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to Distributed Consensus Simulator’s White Paper!</a></li>
-      <li>Next: <a href="api_doc.html" title="next chapter">7. API Documents</a></li>
+      <li>Next: <a href="api_doc.html" title="next chapter">8. API Documents</a></li>
   </ul></li>
 </ul>
 </div>

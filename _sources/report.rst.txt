@@ -9,21 +9,21 @@ corruption and synchronized clocks. The *Adversary* could control all
 corrupted nodes and have the ability to delay messages up to
 :math:`\Delta` time. The corrupted nodes hack the blockchain network
 with selfish mining and consistency attack. Finally, we will see that
-without the majority of the honest nodes, the properties\ *consistency*
+without the majority of the honest nodes, the properties *consistency*
 and *quality* of the blockchain can’t be guaranteed.
+
 
 Our Team
 ========
+============= ============= ============= =============
+Framework     Honest        Adversary     Integrator
+============= ============= ============= =============
+Lequn Chen    Wanquan Wu    Haoming Lu    Zihao Ye
+Bicheng Gao   Ziqi Zeng     Yuhao Zhou    Xueyuan Zhao
+Songyu Ke     Yi Jiang      Xuan Zhang    Yunqi Li
+Shichao Xu    Zhendong Xue  Cheng Wan     Zhi Qiu
+============= ============= ============= =============
 
-+--------------+--------------+----------------+--------------+----------------+
-| Framework    | Lequn Chen   | Bicheng Gao    | Songyu Ke    | Shichao Xu     |
-+--------------+--------------+----------------+--------------+----------------+
-| Honest       | Wanquan Wu   | Ziqi Zeng      | Yi Jiang     | Zhendong Xue   |
-+--------------+--------------+----------------+--------------+----------------+
-| Adversary    | Haoming Lu   | Yuhao Zhou     | Xuan Zhang   | Cheng Wan      |
-+--------------+--------------+----------------+--------------+----------------+
-| Integrator   | Zihao Ye     | Xueyuan Zhao   | Yunqi Li     | Zhi Qiu        |
-+--------------+--------------+----------------+--------------+----------------+
 
 Distributed Consensus
 =====================
@@ -126,16 +126,16 @@ Security
 A blockchain protocol should satisfy chain growth, chain quality, and
 consistency.
 
-Chain growth
-    : Honest nodes’ chains grow steadily, neither too fast nor too slow.
+-   | **Chain growth**
+    | Honest nodes’ chains grow steadily, neither too fast nor too slow.
 
-Chain quality
-    : In any honest node’s chain, any sufficiently long window of
+- | **Chain quality**
+  | In any honest node’s chain, any sufficiently long window of
     consecutive blocks contain a certain fraction of blocks that are
     mined by honest nodes.
 
-Consistency
-    Except for :math:`e^{-\Omega(T)}` fraction of execution traces, let
+- | **Consistency**
+  | Except for :math:`e^{-\Omega(T)}` fraction of execution traces, let
     :math:`\mathsf{chain}_i^r`, :math:`\mathsf{chain}_j^{r'}` denote
     honest node :math:`i` and :math:`j`\ ’s chains in round :math:`r`
     and :math:`r'` where :math:`r'>r`, then
@@ -160,16 +160,16 @@ Problem Set
 Before we talk about the protocol, we firstly show the following
 assumptions:
 
-Synchronized clocks
-    : We assume that all nodes can access a globally synchronized clock that ticks over time. Each clock tick is referred as an atomic *time step*. Nodes can perform unbounded polynomial amount of computation
+- | **Synchronized clocks**
+  | We assume that all nodes can access a globally synchronized clock that ticks over time. Each clock tick is referred as an atomic *time step*. Nodes can perform unbounded polynomial amount of computation
     in each time step, as well as receive and send polynomially many
     messages.
 
-Public-key infrastructure
-    : We assume that there exists a public-key infrastructure(PKI). More
-    specifically, we shall assume that the PKI is an ideal functionality
-    :math:`F_{CA}`\ (only available to the current protocol instance)
-    that does the following:
+- | **Public-key infrastructure**
+  | We assume that there exists a public-key infrastructure(PKI). More
+      specifically, we shall assume that the PKI is an ideal functionality
+      :math:`F_{CA}`\ (only available to the current protocol instance)
+      that does the following:
 
     -  On receiving ``register(pk)`` from :math:`P`, remember the pair
        :math:`(`\ ``pk``\ :math:`, P)` and ignore any future message
@@ -178,14 +178,14 @@ Public-key infrastructure
     -  On receiving ``lookup(``\ :math:`P`\ ``)``: return the store
        ``pk`` or :math:`\perp` if not found.
 
-Network delivery
-    : The adversary controls the message delivery between nodes. We
+- | **Network delivery**
+  | The adversary controls the message delivery between nodes. We
     assume that the adversary can arbitrarily delay and reorder
     messages, as long as all the messages sent from honest nodes are
     received by all honest nodes within :math:`\Delta` time steps.
 
-Static Corruptions
-    : We assume that once our protocol starts to run, environment can
+- | **Static Corruptions**
+  | We assume that once our protocol starts to run, environment can
     not corrupt an honest node and the corrupt node can not become an
     honest node.
 
@@ -199,7 +199,7 @@ a :math:`majority` of the nodes are honest. It significantly departs
 from key ideas behind Nakamoto’s blockchain protocol the needs for “proofs-of-work”. The protocol relies on Public-Key-Infrastructure(PKI)
 and all nodes are assumed to have synchronized clocks.
 
-As showed by Pass and Shi :raw-latex:`\cite{cryptoeprint:2016:918}`. One target of sleepy consensus protocol is to remove the proof-of-work from
+As showed by Pass and Shi :cite:`cryptoeprint:2016:918` . One target of sleepy consensus protocol is to remove the proof-of-work from
 the Nakamoto blockchain while maintaining provable guarantees. To remove
 the proof-of-work from Nakamoto’s protocol, we make the following
 changes: we define the puzzle solution to be the form of :math:`(P, t)`
@@ -271,7 +271,7 @@ Our protocol takes parameter :math:`p` as input, where :math:`p` is the
 probability each node is elected leader in a single time step. All nodes
 will invoke ``init`` function once it is spawned.
 
-Simulator Components
+imulator Components
 ====================
 
 In this section, we first introduce the overall structure of the
@@ -279,18 +279,152 @@ simulator, then we introduce the three components of our simulator:
 Framework, Honest Party and Adversary Party. The last part of this
 section is the API document.
 
-Structure
+Framework
 ---------
+
+| .. image:: structure.pdf
+| As shown in the figure, our simulator runs in a round-by-round style.
+  The class ``framework.Runner`` controls the action in each round. By
+  creating the subclasses of class ``framework.ConfigurationBase``, user
+  can configure the parameters(e.g. number of rounds, ratio of corrupted
+  nodes) the run. Users can write subclasses of the class
+  ``framework.MeasurementBase`` to provide the function of measuring the
+  results(e.g. consistency and chain quality) of the experiment.
+
+In each round, the adversary firstly delivers messages to the
+corresponding receivers. Then, the honest nodes send the messages to the
+adversary controller since the adversary has the control of the network.
+The class ``framework.Context`` provides a easy way for the honest nodes
+to interact with the network.
+
+The class ``utils.FSignRSA`` and ``utils.FSignHash`` plays the role of
+trusted third party. User can also create the subclasses of class
+``framework.TrustedThirdPartyBase``.
 
 Framework
 ---------
 
+Our framework implement several abstract classes for the users implement
+their own subclasses:
+
+-  class ``AdversaryControllerBase`` is the super class for the user
+   defined adversary party.
+
+-  class ``ConfigurationBase`` is the super class for the user defined
+   running configuration.
+
+-  class ``Context`` the network interface for the nodes to communicate
+   with each other.
+
+-  class ``MeasurementBase`` is the super class for the user defined
+   measurement.
+
+-  class ``NodeBase`` is the super class for the user defined node type.
+
+-  class ``Runner`` is the default round-by-round runner.
+
+-  class ``TrustedThirdPartyBase`` is the super class for the user
+   defined trusted third party.
+
 Honest Party
 ------------
+
+Each honest nodes has:
+
+-  node ID
+
+-  **blockchain** Since blockchain will fork, it’s actually a block
+   tree. The longest chain is the main chain. According to Sleepy
+   Consensus Protocol, the previous block should have smaller timestamp
+   than the successor.
+
+-  | **transaction pool**
+   | Receive transactions(\ *tx*) from network and store in *tx* pool
+     temporarily. If the node receives a *tx* not in current *tx* pool,
+     the node will forward(broadcast) this *tx* with its own signature
+     immediately. At the end of each round, all *tx*\ s remained in *tx*
+     pool will form a new block append at the end of mainchain.
+
+-  | **orphan pool**
+   | The node will receive blocks from the network. With the
+     interference of *Adv*, some blocks will be delayed, but not lost.
+     Perhaps some successive blocks have already received, but they
+     can’t be connected to the block tree since they are waiting for
+     their “father” block. So we need a “pool” to store those “orphan”
+     block.
+   | The delete operation of a block in the orphan pool is very tricky.
+     We only store single blocks, but we need to remove all successors
+     of it at the same time, which results to a recursive process.
+
+-  | **probability**
+   | *probability* is related to the mining difficulty :math:`D`. For
+     node :math:`x`, if the hash value of its node ID and the current
+     time is less than :math:`D`, then :math:`x` is elected as the
+     leader who has the right to mine a new block and broadcast to other
+     nodes.
 
 Adversary Party
 ---------------
 
+We implement 2 kinds of adversaries in this project: *Selfish Mining
+Attack* and *Consistency Attack*.
+
+Selfish Mining Attack
+~~~~~~~~~~~~~~~~~~~~~
+
+Ittay Eyal and Emin Gun
+Sirer :cite:`DBLP:journals/corr/EyalS13` introduced the
+selfish mining attack, and Vitalik Buterin presented the adversary’s precise
+strategy
+`here <https://bitcoinmagazine.com/articles/selfish-mining-a-25-attack-against-the-bitcoin-network-1383578440/>`__.
+In our project, we implement this attack method as
+``sleepy.SelfishMining`` class and the corresponding measurement
+``sleepy.ChainQualityMeasurement`` class.
+
+Consistency Attack
+------------------
+
+We also implemented a naive consistency attack which is described as
+follows:
+
+-  Pick the longest chain from all honest chains and its private chain.
+
+-  For every honest message: delay by :math:`\Delta`.
+
+-  If adversary’s private chain is longer than the honest chain and it’s
+   length is at least :math:`T + 1`, then it publish the chain and will
+   break consistency.
+
+-  | Here :math:`T` is the security parameter, except with probability
+     :math:`e^{-\Omega(T)}`:
+   | :math:`\forall` honest chains :math:`chain^{r}_{i}` and
+     :math:`chain_{j}^{r'}` s.t. :math:`r' \geq r`,
+     :math:`chain_{i}^r[:\text{-T}] < chain_j^{r'}`
+
+-  When the adversary has 60% of the computational power, he can keep
+   developing his own private chain until honest chain is long enough,
+   then release the chain to overwrite the last :math:` T ` blocks. So
+   that the honest chain may be overwrite.
+
+This attack method implemented in the class of
+``sleepy.ConsistencyAttack``.
+
 Experiment Results
 ==================
+
+For the 2 attacking methods, we implement several experiments on various
+sets of parameters. The following figure shows the relation between the
+probability of success and ratio of corrupted nodes for the naive
+consistency attack and the relation between chain quality between the
+ratio of corrupted nodes under the parameter setting of
+
+.. math:: n=20,\Delta = 2, T = 6, p = 0.05
+
+.. image:: results.pdf
+    :scale: 300 %
+    :align: center
+
+Reference
+=========
+.. bibliography:: references.bib
 
