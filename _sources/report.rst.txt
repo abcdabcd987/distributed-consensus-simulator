@@ -425,8 +425,72 @@ ratio of corrupted nodes under the parameter setting of
 .. math:: n=20,\Delta = 2, T = 6, p = 0.05
 
 .. image:: results.png
-    :scale: 50%
-    :align: center
+
+Tutorial
+========
+
+This section contains a tutorial demonstrating how to implement a
+protocol and how to attack it in our framework. For more details, please
+refer to our source code in *dcsim.dummy*.
+
+Description
+-----------
+
+The protocol we use here is easy to understand:
+
+Supposing a scenario in which :math:`n` people are voting for one of the
+two candidates(0/1), some of them are honest while the others are
+corrupt. Honest people have their own choice, and broadcast it. The
+final choice of an honest people is the majority of all people’s choices
+he/she receives. If all individuals are honest, they should reach a
+consensus.
+
+What attackers do is to send 0 to honest people whose id is an odd
+number, and send 1 to honest people whose id is an even number.
+
+Implementation
+--------------
+
+In class , we provide the interface for runner to get access to
+necessary information().
+
+In class , we simulate what honest people will do in function
+*round\_action*\ (In this protocol, only two rounds are required: the
+first round to generate honest node’s own choice, the second round to
+gather all choice one receives).
+
+In class , we implement our adversarial algorithm(which we discussed
+above) in function *round\_action*.
+
+In class , we set when to stop the simulation(2 rounds), and report the
+intermediate result after each round and eventually, report a final
+result(We say an attack is successful if and only if the consensus among
+honest people is broken).
+
+In the main loop, we set different parameters and simulate the protocol
+by calling runner again and again:
+
+::
+
+    runner = Runner(config)
+    runner.init()
+    res = runner.run()
+    results.append(res)
+
+By averaging results, we get the estimation to the probability of
+successful attack.
+
+Result
+------
+
+In our experiment setting, we let :math:`n=50`, and use a group of
+different corrupt ratios(from :math:`\%2` to :math:`\%96`, with interval
+:math:`\%2`).
+
+The figure below suggests how does the success rate grows as the corrupt
+node ratios increase.
+
+.. image:: dummyattack.png
 
 Reference
 =========

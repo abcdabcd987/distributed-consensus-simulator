@@ -24,7 +24,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="8. API Documents" href="api_doc.html" />
+    <link rel="next" title="9. API Documents" href="api_doc.html" />
     <link rel="prev" title="Welcome to Distributed Consensus Simulator’s White Paper!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -503,10 +503,62 @@ consistency attack and the relation between chain quality between the
 ratio of corrupted nodes under the parameter setting of</p>
 <div class="math">
 \[n=20,\Delta = 2, T = 6, p = 0.05\]</div>
-<a class="reference internal image-reference" href="_images/results.png"><img alt="_images/results.png" class="align-center" src="_images/results.png" style="width: 750.0px; height: 450.0px;" /></a>
+<img alt="_images/results.png" src="_images/results.png" />
+</div>
+<div class="section" id="tutorial">
+<h1>7. Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This section contains a tutorial demonstrating how to implement a
+protocol and how to attack it in our framework. For more details, please
+refer to our source code in <em>dcsim.dummy</em>.</p>
+<div class="section" id="description">
+<h2>7.1. Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The protocol we use here is easy to understand:</p>
+<p>Supposing a scenario in which <span class="math">\(n\)</span> people are voting for one of the
+two candidates(0/1), some of them are honest while the others are
+corrupt. Honest people have their own choice, and broadcast it. The
+final choice of an honest people is the majority of all people’s choices
+he/she receives. If all individuals are honest, they should reach a
+consensus.</p>
+<p>What attackers do is to send 0 to honest people whose id is an odd
+number, and send 1 to honest people whose id is an even number.</p>
+</div>
+<div class="section" id="implementation">
+<h2>7.2. Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>In class , we provide the interface for runner to get access to
+necessary information().</p>
+<p>In class , we simulate what honest people will do in function
+<em>round_action</em>(In this protocol, only two rounds are required: the
+first round to generate honest node’s own choice, the second round to
+gather all choice one receives).</p>
+<p>In class , we implement our adversarial algorithm(which we discussed
+above) in function <em>round_action</em>.</p>
+<p>In class , we set when to stop the simulation(2 rounds), and report the
+intermediate result after each round and eventually, report a final
+result(We say an attack is successful if and only if the consensus among
+honest people is broken).</p>
+<p>In the main loop, we set different parameters and simulate the protocol
+by calling runner again and again:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">runner</span> <span class="o">=</span> <span class="n">Runner</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">runner</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By averaging results, we get the estimation to the probability of
+successful attack.</p>
+</div>
+<div class="section" id="result">
+<h2>7.3. Result<a class="headerlink" href="#result" title="Permalink to this headline">¶</a></h2>
+<p>In our experiment setting, we let <span class="math">\(n=50\)</span>, and use a group of
+different corrupt ratios(from <span class="math">\(\%2\)</span> to <span class="math">\(\%96\)</span>, with interval
+<span class="math">\(\%2\)</span>).</p>
+<p>The figure below suggests how does the success rate grows as the corrupt
+node ratios increase.</p>
+<img alt="_images/dummyattack.png" src="_images/dummyattack.png" />
+</div>
 </div>
 <div class="section" id="reference">
-<h1>7. Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<h1>8. Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
 <p id="bibtex-bibliography-report-0"><table class="docutils citation" frame="void" id="dblp-journals-corr-eyals13" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -560,8 +612,14 @@ ratio of corrupted nodes under the parameter setting of</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#experiment-results">6. Experiment Results</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#reference">7. Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_doc.html">8. API Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#tutorial">7. Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#description">7.1. Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation">7.2. Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#result">7.3. Result</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#reference">8. Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">9. API Documents</a></li>
 </ul>
 
 <div class="relations">
@@ -569,7 +627,7 @@ ratio of corrupted nodes under the parameter setting of</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to Distributed Consensus Simulator’s White Paper!</a></li>
-      <li>Next: <a href="api_doc.html" title="next chapter">8. API Documents</a></li>
+      <li>Next: <a href="api_doc.html" title="next chapter">9. API Documents</a></li>
   </ul></li>
 </ul>
 </div>
