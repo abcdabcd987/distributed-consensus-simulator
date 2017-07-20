@@ -451,18 +451,18 @@ number, and send 1 to honest people whose id is an even number.
 Implementation
 --------------
 
-In class , we provide the interface for runner to get access to
+In class ``Configuration``, we provide the interface for runner to get access to
 necessary information().
 
-In class , we simulate what honest people will do in function
+In class ``HonestNode``, we simulate what honest people will do in function
 *round\_action*\ (In this protocol, only two rounds are required: the
 first round to generate honest node’s own choice, the second round to
 gather all choice one receives).
 
-In class , we implement our adversarial algorithm(which we discussed
+In class ``DummyAttack``, we implement our adversarial algorithm(which we discussed
 above) in function *round\_action*.
 
-In class , we set when to stop the simulation(2 rounds), and report the
+In class ``Measurement``, we set when to stop the simulation(2 rounds), and report the
 intermediate result after each round and eventually, report a final
 result(We say an attack is successful if and only if the consensus among
 honest people is broken).
